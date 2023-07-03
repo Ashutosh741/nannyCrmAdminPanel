@@ -1,0 +1,245 @@
+import React, { useEffect, useState } from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import adminLayout from "../hoc/adminLayout";
+import { URL } from "../Url";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+
+function Booking() {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+  const apiCategory = () => {
+    setLoading(true);
+    axios
+      .get(`${URL}/booking`)
+      .then((res) => {
+        setList(res.data.data);
+        setLoading(false);
+        console.log(list);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
+  };
+
+  const handleDownloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(list);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Data");
+    XLSX.writeFile(workbook, "customer_data.xlsx");
+  };
+
+  useEffect(() => {
+    apiCategory();
+  }, []);
+
+  const filterData = (data) => {
+    const filteredList = data.filter((item) => {
+      const nameMatch = item.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      return nameMatch;
+    });
+    return filteredList;
+  };
+
+  useEffect(() => {
+    const filteredList = filterData(list);
+    setFilteredData(filteredList);
+    setCurrentPage(1);
+  }, [list, searchTerm]);
+
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  //   const handleSearch = (event) => {
+  //     setSearchTerm(event.target.value);
+  //   };
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reset pagination to the first page when searching
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Sorting logic
+  // const sortedData = filteredData.sort((a, b) => {
+  //   if (a[sortConfig.key] < b[sortConfig.key]) {
+  //     return sortConfig.direction === "ascending" ? -1 : 1;
+  //   }
+  //   if (a[sortConfig.key] > b[sortConfig.key]) {
+  //     return sortConfig.direction === "ascending" ? 1 : -1;
+  //   }
+  //   return 0;
+  // });
+
+  // Sorting logic
+  const sortedData = filteredData.sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? 1 : -1;
+    }
+    // Sort by createdAt in descending order
+    if (a.createdAt > b.createdAt) {
+      return -1;
+    }
+    if (a.createdAt < b.createdAt) {
+      return 1;
+    }
+    return 0;
+  });
+
+  // Pagination logic
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const currentItems = sortedData.slice(firstIndex, lastIndex);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  return (
+    <>
+      <section className="regList">
+        <Container>
+          <Row>
+            <Col md="12">
+              <div className="my-3 text-end">
+                <div className="d-flex align-items-center gap-5 w-100">
+                  {/* Search Field */}
+                  <div className="w-100">
+                    <input
+                      type="search"
+                      className="form-control"
+                      placeholder="Search by name"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                    />
+                  </div>
+                  <div className="w-100 text-end">
+                    <Button className="btn bg-primary text-white">
+                      <Link className="" to={"/customer"}>
+                        Add Customer
+                      </Link>
+                    </Button>
+                    {/* Download Excel Button */}
+                    <Button
+                      className="btn bg-primary text-white mx-2"
+                      onClick={handleDownloadExcel}
+                    >
+                      Download Excel
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="table-responsive rounded-3">
+                <table className="table table-responsive table-sm table-stripped table-bordered p-0">
+                  <thead className="bg-blue text-white">
+                    <tr className="text-uppercase">
+                      <th>Sr. No</th>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Message</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+
+                  {loading ? (
+                    <div className="text-center d-flex justify-content-center p-3">
+                      Loading...
+                    </div>
+                  ) : (
+                    <tbody>
+                      {currentItems
+                        .map((item, index) => {
+                          const newIndex = index + 1;
+                          return (
+                            <tr key={index}>
+                              <td>{newIndex}</td>
+                              <td>{item.name}</td>
+                              <td>{item.phone}</td>
+                              <td>{item.message}</td>
+                              {/* <td>{item.createdAt.substring(0, 10)}</td> */}
+                              <td>
+                                {item.createdAt
+                                  ? item.createdAt.substring(0, 10)
+                                  : ""}
+                              </td>
+                            </tr>
+                          );
+                        })
+                        .reverse()}
+                    </tbody>
+                  )}
+                </table>
+              </div>
+              {/* Pagination */}
+              <div className="pagination-container">
+                <nav>
+                  <ul className="pagination">
+                    <li
+                      className={`page-item ${
+                        currentPage === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        Previous
+                      </button>
+                    </li>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                      <li
+                        className={`page-item ${
+                          currentPage === index + 1 ? "active" : ""
+                        }`}
+                        key={index}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(index + 1)}
+                        >
+                          {index + 1}
+                        </button>
+                      </li>
+                    ))}
+                    <li
+                      className={`page-item ${
+                        currentPage === totalPages ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+    </>
+  );
+}
+
+export default adminLayout(Booking);
