@@ -8,8 +8,24 @@ import "../assets/css/profile.css";
 import aayawork from "../assets/images/aayawork.png";
 
 import { URL } from "../Url";
+import CustomerPaymentReceipt from "./newPages/CustomerPaymentReceipt";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 
 function PaymentEdit() {
+
+  // const tableRef = useRef();
+
+  // const handlePrint = useReactToPrint({
+  //   display : "block",
+  //   content: () => tableRef.current,
+  // });
+
+  const handlePrint = ()=>{
+    navigate('/customerPaymentReceipt')
+  }
+
+
   const [tech, setTech] = useState([]);
 
   const [aya, setAya] = useState([]);
@@ -199,6 +215,8 @@ function PaymentEdit() {
   };
 
   // pagination
+
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -437,6 +455,8 @@ function PaymentEdit() {
                           <th className="">Balance</th>
                           <th className="">Status</th>
                           <th className="">Payment Date</th>
+                          <th className="">Invoice</th>
+
                         </tr>
                       </thead>
 
@@ -486,6 +506,10 @@ function PaymentEdit() {
                                     {item.currentdate
                                       ? item.currentdate.substring(0, 10)
                                       : ""}
+                                  </td>
+                                  <td>
+                                    <button className="bg-primary btn text-white" onClick={handlePrint}>PRINT</button>
+                                    {/* <CustomerPaymentReceipt className="container d-none" customerPrint={tableRef}/> */}
                                   </td>
                                 </tr>
                               );

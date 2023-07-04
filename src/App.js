@@ -1,5 +1,6 @@
 import 'font-awesome/css/font-awesome.min.css';
 import './assets/css/app.css';
+
 import DashboardPage from './pages/DashboardPage';
 import TypographyPage from './pages/TypographyPage'
 import LoginPage from './pages/auth/LoginPage'
@@ -30,6 +31,7 @@ import TotalAvailbleWork from './navigationPage/TotalAvailbleWork';
 import SecurityMoney from './navigationPage/SecurityMoney';
 import TotalAmountRec from './navigationPage/TotalAmountRec';
 import TotalAyaPayment from './navigationPage/TotalAyaPayment';
+import CustomerPaymentReceipt from './pages/newPages/CustomerPaymentReceipt';
 
 
 function App() {
@@ -84,7 +86,7 @@ function App() {
                 <Route exact path='/securityAmount' element={<SecurityMoney />} />
                 <Route exact path='/totalAmount' element={<TotalAmountRec />} />
                 <Route exact path='/totalAyapaid' element={<TotalAyaPayment />} />
-                
+                <Route exact path='/customerPaymentReceipt' element = {<CustomerPaymentReceipt/>}/>
             </Routes>
         </Router>
     )

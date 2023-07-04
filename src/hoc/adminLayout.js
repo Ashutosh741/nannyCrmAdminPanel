@@ -31,11 +31,11 @@ const adminLayout = (ChildComponent) => {
             }
 
             return (
-                <div className="d-flex" id="wrapper">
+                <div className="d-flex w-100" id="wrapper">
                     {/* <!-- Sidebar--> */}
                     <Sidebar />
                     {/* <!-- Page content wrapper--> */}
-                    <div className="main" id="page-content-wrapper">
+                    <div className="main w-100" id="page-content-wrapper">
                         {/* <!-- Top navigation--> */}
                         <Header />
                         {/* <!-- Page content--> */}
