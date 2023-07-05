@@ -86,7 +86,9 @@ function App() {
                 <Route exact path='/securityAmount' element={<SecurityMoney />} />
                 <Route exact path='/totalAmount' element={<TotalAmountRec />} />
                 <Route exact path='/totalAyapaid' element={<TotalAyaPayment />} />
-                <Route exact path='/customerPaymentReceipt' element = {<CustomerPaymentReceipt/>}/>
+                <Route path='generateBill' element = {<CustomerPaymentReceipt/>}/>
+                {/* <Route path = ':id' element = {<CustomerPaymentReceipt/>}/> */}
+                {/* </Route> */}
             </Routes>
         </Router>
     )

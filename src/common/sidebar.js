@@ -4,10 +4,11 @@
 import React from "react";
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useParams } from 'react-router-dom';
 import logo from '../assets/images/logo.png'
 
 const Sidebar = () => {
+    // const { id } = useParams();
     return (
         <div className="border-end sidenav" id="sidebar-wrapper">
             <div className="sidebar-heading border-bottom">
@@ -77,6 +78,11 @@ const Sidebar = () => {
                     <li className="my-3">
                         <NavLink tag="a" className="" to="/attendence">
                             <i class="fa-solid fa-clipboard-user"></i> Attendence Form
+                        </NavLink>
+                    </li>
+                    <li className="my-3">
+                        <NavLink tag="a" className="" to="/generateBill">
+                            <i class="fa-solid fa-clipboard-user"></i> Generate Bill
                         </NavLink>
                     </li>
                 </ul>

@@ -21,9 +21,11 @@ function PaymentEdit() {
   //   content: () => tableRef.current,
   // });
 
-  const handlePrint = ()=>{
-    navigate('/customerPaymentReceipt')
+  const handleInvoice = ()=>{
+    // console.log(id)
+    navigate(`/generateBill/${id}`)
   }
+  // const {id} = useParams();
 
 
   const [tech, setTech] = useState([]);
@@ -46,6 +48,7 @@ function PaymentEdit() {
   const [border, setBorder] = useState(false);
   const [totalCustomerBill, setTotalCustomerBill] = useState("");
   const [totalRecieved, setTotalReceived] = useState("");
+  const [generatedBill,setGeneratedBill] = useState('');
 
   const [checkassign, setChcekAssign] = useState("");
 
@@ -60,6 +63,7 @@ function PaymentEdit() {
       const response = await axios.get(`${URL}/customerreg/${id}`);
       const techData = response.data.data;
       setTech(techData);
+      setGeneratedBill(techData.generatedBill);
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
       setChcekAssign(assigncheck);
@@ -264,11 +268,13 @@ function PaymentEdit() {
             {showbox ? (
               <>
                 <Col md="9">
+                  <div className="invoice-button text-end">
+                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Download Invoice</button>
+                  </div>
                   <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
-                    <h6 className="border-bottom pb-2 mb-0 mb-3 ">
-                      Personal Info
-                    </h6>
-
+                      <h6 className="border-bottom pb-2 mb-0 mb-3 ">
+                        Personal Info
+                      </h6>
                     <Form onSubmit={handleFormSubmit}>
                       <Row>
                         <Col md="6">
@@ -276,9 +282,10 @@ function PaymentEdit() {
                           <input
                             type="text"
                             name="customerbill"
-                            value={customerbill || ""}
+                            value={generatedBill}
+                            readOnly
                             className={`form-control `}
-                            onChange={(e) => setCustomerbill(e.target.value)}
+                            // onChange={(e) => setCustomerbill(e.target.value)}
                           />
                         </Col>
                         {/* <Col md="6">
@@ -455,7 +462,7 @@ function PaymentEdit() {
                           <th className="">Balance</th>
                           <th className="">Status</th>
                           <th className="">Payment Date</th>
-                          <th className="">Invoice</th>
+                          {/* <th className="">Invoice</th> */}
 
                         </tr>
                       </thead>
@@ -508,7 +515,7 @@ function PaymentEdit() {
                                       : ""}
                                   </td>
                                   <td>
-                                    <button className="bg-primary btn text-white" onClick={handlePrint}>PRINT</button>
+                                    {/* <button className="bg-primary btn text-white" onClick={handlePrint}>PRINT</button> */}
                                     {/* <CustomerPaymentReceipt className="container d-none" customerPrint={tableRef}/> */}
                                   </td>
                                 </tr>
