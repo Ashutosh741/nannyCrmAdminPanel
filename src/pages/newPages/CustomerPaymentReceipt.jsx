@@ -10,6 +10,16 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { Pagination } from "react-bootstrap";
 
+// abhi bus itna krna hai table update hota rhe,
+// usmein jab bhi generate bill pr click kre , to ek nya entry ban kar aa jaye
+// jismein se hm, download bhi kr skte hai bill 
+
+// to ise kaise krna hai?
+// sabse phle to customer bill ki value jo hai wo set ho jaane chahiye, generate bill krte hi
+// phle yeh kro uske baad ka batata hoon
+
+//
+
 
 const CustomerPaymentReceipt = (props) => {
 
@@ -24,6 +34,8 @@ const CustomerPaymentReceipt = (props) => {
     const [rate,setRate] = useState(0)
     const [customerId,setCustomerId] = useState('');
     const [generatedBill, setgeneratedBill] = useState(0);
+    const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
+    const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
     // const [searchQuery, setSearchQuery] = useState("");
     // const [customerpayment, setCustomerPayment] = useState([]);
 
@@ -43,10 +55,21 @@ const CustomerPaymentReceipt = (props) => {
             // setCustomerCode(data.customerCode)
             setContactNumber(data.contactNumber);
             setName(data.name);
+            setAssignedAyaDetails(data.assignedAyaDetails)
             // console.log(presentAddress)
+            // console.log(assignedAyaDetails)
         }
         catch(e){
             console.log("error in fetching customer data:",e)
+        }
+    }
+
+
+    for(let i=0;i<assignedAyaDetails;i++){
+        const ayaDetails = assignedAyaDetails[i];
+        // console.log(ayaDetails)
+        if(ayaDetails[1]<={toDate} && ayaDetails[2] >= {fromDate}){
+            assignedAyaInBetween+=ayaDetails[0];
         }
     }
 
@@ -127,12 +150,14 @@ const CustomerPaymentReceipt = (props) => {
           const response = await fetch(`${URL}/customerreg/${customerId}`, {
             method: "PUT",
             body: JSON.stringify({
+
+              generatedCustomerId : customerId,
+              generatedTime : Date.now(),  
               generatedBill: generatedBill,
-              generatedTime : Date.now(),
               generatedToDate : toDate,
               generatedFromDate : fromDate,
               generatedRate : rate,
-              
+              generatedAyaAssigned : "shakuntala"  
             }),
             headers: {
               "Content-Type": "application/json",
@@ -401,14 +426,3 @@ const CustomerPaymentReceipt = (props) => {
 
 
 export default adminLayout(CustomerPaymentReceipt)
-
-
-//  generate bill ka ek nya url bnega jisme hm log
-// jisme hm log jis bhi user mein honge , uska token iske link ke aage add ho jayega, 
-// useke baad details fetch ho jayenge
-// to yeh jo hoga , wo download invoice pr click krne pr hoga
-// to jo total money hoga, wo uska customer bill mein save ho jayega
-// usmein se wo jitna bhi pay krta hai, uska ek nya row bankar , table mein insert ho jayega
-
-// table mein ek aaya working in that period, wo bhi show krega
-// 
