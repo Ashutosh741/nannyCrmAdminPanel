@@ -10,15 +10,18 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { Pagination } from "react-bootstrap";
 
-// abhi bus itna krna hai table update hota rhe,
-// usmein jab bhi generate bill pr click kre , to ek nya entry ban kar aa jaye
-// jismein se hm, download bhi kr skte hai bill 
 
-// to ise kaise krna hai?
-// sabse phle to customer bill ki value jo hai wo set ho jaane chahiye, generate bill krte hi
-// phle yeh kro uske baad ka batata hoon
+//yeh kar to diya hai , pr ismein ek chota sa issue hai ki, jo sata object save ho rha hai, use reverse
+// krna hai taaki, elements ko easily fetch kr paaayein, wrna size nikalkar, krna pdega
+// yeh to ho gya hai, pr calculations wgerah rah rhe hai
 
-//
+// ab jo mujhe next kaam krna tha, wo hai ki, mujjhe table ko build krna hai
+// generate bill ke click pr
+// ab use kaise kre ??
+
+// usko to waise krna easy hi hai 
+// kuki generated invoice ko map krke, saare elements ko uske index pr fetch kranaa hai bas
+// ab dekho ki table mein map kaise krenge, or data ko fetch kaise kraye?
 
 
 const CustomerPaymentReceipt = (props) => {
@@ -36,12 +39,36 @@ const CustomerPaymentReceipt = (props) => {
     const [generatedBill, setgeneratedBill] = useState(0);
     const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
     const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
+    const [generatedInvoice,setGeneratedInvoice] = useState([]);
     // const [searchQuery, setSearchQuery] = useState("");
     // const [customerpayment, setCustomerPayment] = useState([]);
 
     // const currentItems = customerpayment.slice(indexOfFirstItem, indexOfLastItem);
 
     const {id} = useParams();
+
+    const fetchPrintDetails = async(index)=>{
+        // alert(index)
+
+        try{
+            const response = await axios.get(`${URL}/customerreg/${customerCode}`)
+            // console.log("what data is",response.data.data.generatedInvoice[index]);
+            const data = response.data.data.generatedInvoice[index];
+
+            // const data = response.data.data;
+            setRate(data.generatedRate);
+            setFromDate(data.generatedFromDate);
+            setToDate(data.generatedToDate);
+            setgeneratedBill(data.generatedBill);
+            // handleGenerateBill();
+
+
+        }catch(err){
+            console.log("error in fetching printing details",err);
+        }
+        handlePrint()
+    }
+
     const fetchCustomerData = async()=>{
         try{
             const response = await axios.get(`${URL}/customerreg/${customerCode}`);
@@ -50,8 +77,10 @@ const CustomerPaymentReceipt = (props) => {
             setCustomerId(response.data.data._id)
             setCustomerData(response.data.data);
             const data = response.data.data
+            // console.log("generated Invoice",data)
+            setGeneratedInvoice(data.generatedInvoice);
             // setCustomerPayment(data.customerpayment);
-            setPresentAddress(data.presentAddress);
+            setPresentAddress(data.presentAddress); 
             // setCustomerCode(data.customerCode)
             setContactNumber(data.contactNumber);
             setName(data.name);
@@ -122,7 +151,7 @@ const CustomerPaymentReceipt = (props) => {
     const get_diff_days  =  () => {
         if(toDate && fromDate){
             let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime());
-            console.log(Math.floor(diff/86400000) + 1);
+            // console.log(Math.floor(diff/86400000) + 1);
             return diff/(1000*86400);
         }else{
             console.log('not a number')
@@ -130,6 +159,10 @@ const CustomerPaymentReceipt = (props) => {
      
     }
 
+    const currentTime = ()=>{
+        let time = parseFloat(Date.now());
+        return time /(1000*86400);
+    }
     // const generatedBill = get_diff_days()*{rate};
     
     useEffect(()=>{
@@ -137,6 +170,7 @@ const CustomerPaymentReceipt = (props) => {
         const calculatedgeneratedBill = get_diff_days() * rate;
         setgeneratedBill(calculatedgeneratedBill);
         fetchCustomerData();
+        // currentTime();
         
     },[fromDate, toDate,rate,customerCode])
 
@@ -152,7 +186,7 @@ const CustomerPaymentReceipt = (props) => {
             body: JSON.stringify({
 
               generatedCustomerId : customerId,
-              generatedTime : Date.now(),  
+              generatedTime : new Date().toLocaleTimeString(),  
               generatedBill: generatedBill,
               generatedToDate : toDate,
               generatedFromDate : fromDate,
@@ -167,7 +201,23 @@ const CustomerPaymentReceipt = (props) => {
     
           const data = await response.json();
           console.log(data);
-          alert("data Submitted Succesfully");
+        //   alert("data Submitted Succesfully");
+            const newInvoice = {
+                generatedCustomerId: customerId,
+                generatedTime: new Date().toLocaleTimeString(),  
+                generatedBill: generatedBill,
+                generatedToDate: toDate,
+                generatedFromDate: fromDate,
+                generatedRate: rate,
+                generatedAyaAssigned: "shakuntala"
+            };
+            
+            setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
+            
+            setFromDate("");
+            setToDate("");
+            setRate(0);
+
         } catch (err) {
           console.log(customerId);
 
@@ -176,9 +226,9 @@ const CustomerPaymentReceipt = (props) => {
       };
     
 
-    // const handlePrint = useReactToPrint({
-    // content: () => tableRef.current,
-    // });
+    const handlePrint = useReactToPrint({
+    content: () => tableRef.current,
+    });
 
     const convertNumberToWords = (number) => {
         // Define arrays for one-digit, two-digit, and tens multiples names
@@ -358,9 +408,9 @@ const CustomerPaymentReceipt = (props) => {
                 </div>
 
             </div>
-            <div className="print-btn text-center">
-            <button className='btn bg-primary text-white' >Generate Bill</button>
-        </div>
+            <div className="print-btn text-center billButton">
+            <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
+            </div>
             </form>
         </div>
       </div>
@@ -385,12 +435,13 @@ const CustomerPaymentReceipt = (props) => {
                     <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                       <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
-                          <th className="">Customer Id</th>
+                          <th className="">Customer Code</th>
+                          <th className="">Time</th>
                           <th className="">Generated Bill</th>
-                          <th className="">Aya Assigned</th>
                           <th className="">To Data</th>
                           <th className="">From Date</th>
                           <th className="">Rate</th>
+                          <th className="">Aya Assigned</th>
                           <th className="">Download Bill</th>
                           
                           {/* <th className="">Invoice</th> */}
@@ -398,9 +449,24 @@ const CustomerPaymentReceipt = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {/* <tr>Customer ID</tr> */}
-                        <td></td>
+                            {generatedInvoice && generatedInvoice.map((item,index) => {
+                                return (
+                                <tr key={item.generatedCustomerId}>
+                                    <td>{customerCode}</td>
+                                    <td>{item.generatedTime}</td>
+                                    <td>{item.generatedBill}</td>
+                                    <td>{item.generatedToDate}</td>
+                                    <td>{item.generatedFromDate}</td>
+                                    <td>{item.generatedRate}</td>
+                                    <td>{item.generatedAyaAssigned}</td>
+                                    <td>
+                                    <button className="btn bg-primary text-white" onClick = {()=>fetchPrintDetails(index)}>Print</button>
+                                    </td>
+                                </tr>
+                                );
+                            }).reverse()}
                       </tbody>
+
                     </table>
                   </div>
                   {/* <Pagination>

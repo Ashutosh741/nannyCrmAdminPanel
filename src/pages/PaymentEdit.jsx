@@ -63,9 +63,12 @@ function PaymentEdit() {
       const response = await axios.get(`${URL}/customerreg/${id}`);
       const techData = response.data.data;
       setTech(techData);
-      setGeneratedBill(techData.generatedBill);
+      console.log("techdata" , techData)
+      setGeneratedBill(techData.generatedInvoice[0].generatedBill);
+      console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
+      // console.log(techData.generatedInvoice.generatedBill)
       setChcekAssign(assigncheck);
       // console.log("checking assing check", assigncheck);
 
@@ -99,7 +102,7 @@ function PaymentEdit() {
       const response = await fetch(`${URL}/customerreg/${id}`, {
         method: "PUT",
         body: JSON.stringify({
-          customerbill: customerbill,
+          customerbill: generatedBill,
           paymentstatus: paymentstatus,
           amount_received: amountRec,
           month: month,
