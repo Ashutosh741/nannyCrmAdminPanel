@@ -10,20 +10,6 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { Pagination } from "react-bootstrap";
 
-
-//yeh kar to diya hai , pr ismein ek chota sa issue hai ki, jo sata object save ho rha hai, use reverse
-// krna hai taaki, elements ko easily fetch kr paaayein, wrna size nikalkar, krna pdega
-// yeh to ho gya hai, pr calculations wgerah rah rhe hai
-
-// ab jo mujhe next kaam krna tha, wo hai ki, mujjhe table ko build krna hai
-// generate bill ke click pr
-// ab use kaise kre ??
-
-// usko to waise krna easy hi hai 
-// kuki generated invoice ko map krke, saare elements ko uske index pr fetch kranaa hai bas
-// ab dekho ki table mein map kaise krenge, or data ko fetch kaise kraye?
-
-
 const CustomerPaymentReceipt = (props) => {
 
     const [name, setName] = useState('')
@@ -158,11 +144,6 @@ const CustomerPaymentReceipt = (props) => {
         }
      
     }
-
-    const currentTime = ()=>{
-        let time = parseFloat(Date.now());
-        return time /(1000*86400);
-    }
     // const generatedBill = get_diff_days()*{rate};
     
     useEffect(()=>{
@@ -230,76 +211,112 @@ const CustomerPaymentReceipt = (props) => {
     content: () => tableRef.current,
     });
 
-    const convertNumberToWords = (number) => {
-        // Define arrays for one-digit, two-digit, and tens multiples names
-        const units = [
-            "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-            "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-        ];
-        const tens = [
-            "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-        ];
-        const scales = ["", "Thousand", "Million", "Billion", "Trillion"];
+    function convertNumberToWords(number) {
+        const units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+      
+        if (number === 0) {
+          return 'zero';
+        }
+      
+        if (number < 20) {
+          return units[number];
+        }
+      
+        if (number < 100) {
+          return tens[Math.floor(number / 10)] + ' ' + units[number % 10];
+        }
+      
+        if (number < 1000) {
+          return units[Math.floor(number / 100)] + ' hundred ' + convertNumberToWords(number % 100);
+        }
+      
+        if (number < 1000000) {
+          return convertNumberToWords(Math.floor(number / 1000)) + ' thousand ' + convertNumberToWords(number % 1000);
+        }
+      
+        if (number < 1000000000) {
+          return convertNumberToWords(Math.floor(number / 1000000)) + ' million ' + convertNumberToWords(number % 1000000);
+        }
+      
+        if (number < 1000000000000) {
+          return convertNumberToWords(Math.floor(number / 1000000000)) + ' billion ' + convertNumberToWords(number % 1000000000);
+        }
+      
+        return 'Number is too large to convert.';
+      }
+    // const convertNumberToWords = (number) => {
+    //     // Define arrays for one-digit, two-digit, and tens multiples names
+    //     const units = [
+    //         "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+    //         "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    //     ];
+    //     const tens = [
+    //         "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    //     ];
+    //     const scales = ["", "Thousand", "Million", "Billion", "Trillion"];
 
-        // Split the number into groups of three digits
-        const digits = number.toString().split(/(?=(?:\d{3})+(?:\.|$))/g);
+    //     // Split the number into groups of three digits
+    //     const digits = number.toString().split(/(?=(?:\d{3})+(?:\.|$))/g);
 
-        // Convert each group of three digits to words
-        const words = digits.map((group, index) => {
-            const [hundreds, tensUnits] = group.split(/(?=(?:\d{1})+(?:\.|$))/g);
-            let result = "";
-            if (hundreds > 0) {
-                result += `${units[hundreds]} Hundred `;
-            }
-            if (tensUnits > 0) {
-                if (tensUnits < 20) {
-                    result += `${units[parseInt(tensUnits)]} `;
-                } else {
-                    const [tensDigit, unitsDigit] = tensUnits.split(/(?=(?:\d{1})+(?:\.|$))/g);
-                    result += `${tens[parseInt(tensDigit)]} ${units[parseInt(unitsDigit)]} `;
-                }
-            }
-            if (group > 0) {
-                result += scales[index];
-            }
-            return result.trim();
-        });
+    //     // Convert each group of three digits to words
+    //     const words = digits.map((group, index) => {
+    //         const [hundreds, tensUnits] = group.split(/(?=(?:\d{1})+(?:\.|$))/g);
+    //         let result = "";
+    //         if (hundreds > 0) {
+    //             result += `${units[hundreds]} Hundred `;
+    //         }
+    //         if (tensUnits > 0) {
+    //             if (tensUnits < 20) {
+    //                 result += `${units[parseInt(tensUnits)]} `;
+    //             } else {
+    //                 const [tensDigit, unitsDigit] = tensUnits.split(/(?=(?:\d{1})+(?:\.|$))/g);
+    //                 result += `${tens[parseInt(tensDigit)]} ${units[parseInt(unitsDigit)]} `;
+    //             }
+    //         }
+    //         if (group > 0) {
+    //             result += scales[index];
+    //         }
+    //         return result.trim();
+    //     });
 
-        // Join the groups of words together
-        return words.reverse().join(" ");
-    };
+    //     // Join the groups of words together
+    //     return words.reverse().join(" ");
+    // };
 
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
   return (
     <>
-        
-      <div className='container' ref={tableRef}>
-        <div className="row">
-            <form onSubmit={handleGenerateBill}>
-            <div className="col-12">
-                <div className="col-4 ms-3">
-                    <div className="">
-                    <label
-                        style={{
-                        display: "inline-block",
-                        fontSize: "16px",
-                        marginRight: "20px",
-                        }}
-                        className="fw-bold mb-1"
-                    >
-                        Customer Code :{" "}
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={customerCode}
-                        onChange={(e) => setCustomerCode(e.target.value)}
-                    />
+                        <div className="col-4 ms-3">
+                        <div className="">
+                        <label
+                            style={{
+                            display: "inline-block",
+                            fontSize: "16px",
+                            marginRight: "20px",
+                            }}
+                            className="fw-bold mb-1"
+                        >
+                            Customer Code :{" "}
+                        </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={customerCode}
+                            onChange={(e) => setCustomerCode(e.target.value)}
+                        />
                     {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
                     </div>
                 </div>
+        
+      <div className='container'  ref={tableRef}>
+        <div className="row">
+
+            <form onSubmit={handleGenerateBill}>
+            <div className="col-12">
+
                 <div className="row receipt">
                     <div className="col-6">
                         <img src = {logo} className='companyLogo'/>
@@ -408,12 +425,13 @@ const CustomerPaymentReceipt = (props) => {
                 </div>
 
             </div>
-            <div className="print-btn text-center billButton">
-            <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
-            </div>
             </form>
+
         </div>
       </div>
+      <div className="print-btn text-center billButton">
+            <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
+            </div>
 
       <section>
             <Container>
