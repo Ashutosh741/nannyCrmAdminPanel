@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactPaginate from "react-paginate";
 import { useReactToPrint } from "react-to-print";
 import '../../assets/css/customerPayment.css';
 import logo from "../../assets/images/logo.png";
@@ -12,7 +13,6 @@ import { Pagination } from "react-bootstrap";
 
 // --------SMALL CHANGES ---------
 
-// pagination
 // filter by month
 // leave days input 
 
@@ -33,12 +33,21 @@ const CustomerPaymentReceipt = (props) => {
     const [generatedBill, setgeneratedBill] = useState(0);
     const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
     const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
-    const [generatedInvoice,setGeneratedInvoice] = useState([]);
+    const [generatedInvoice, setGeneratedInvoice] = useState([]);
     const [showGeneratedButton,setShowGeneratedButton] = useState(true);
-    // const [searchQuery, setSearchQuery] = useState("");
-    // const [customerpayment, setCustomerPayment] = useState([]);
+    const itemsPerPage = 10;
+    const pageNumbers = Math.ceil(generatedInvoice.length / itemsPerPage);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    // const currentItems = customerpayment.slice(indexOfFirstItem, indexOfLastItem);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = generatedInvoice.slice(indexOfFirstItem, indexOfLastItem);
+
+
+  // const handlePageChange = (selectedPage) => {
+  //   setCurrentPage(selectedPage.selected);
+  // };
+
 
     const {id} = useParams();
 
@@ -55,6 +64,7 @@ const CustomerPaymentReceipt = (props) => {
             setFromDate(data.generatedFromDate);
             setToDate(data.generatedToDate);
             setgeneratedBill(data.generatedBill);
+            
             // handleGenerateBill();
 
 
@@ -75,7 +85,8 @@ const CustomerPaymentReceipt = (props) => {
             setCustomerData(response.data.data);
             const data = response.data.data
             // console.log("generated Invoice",data.generatedInvoice)
-            setGeneratedInvoice(data.generatedInvoice);
+            // setGeneratedInvoice(data.generatedInvoice);
+            setGeneratedInvoice(data.generatedInvoice || []); 
             // setCustomerPayment(data.customerpayment);
             setPresentAddress(data.presentAddress); 
             // setCustomerCode(data.customerCode)
@@ -217,7 +228,7 @@ const CustomerPaymentReceipt = (props) => {
 
           console.log("error in submitting generatedBill",err);
         }
-      setShowGeneratedButton(false)
+      // setShowGeneratedButton(true)
       };
     
 
@@ -411,6 +422,7 @@ const CustomerPaymentReceipt = (props) => {
             </form>
         </div>
       </div>
+      {generatedInvoice.length > 0 && (
       <section>
             <Container>
               <Row>
@@ -446,44 +458,53 @@ const CustomerPaymentReceipt = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                            {generatedInvoice && generatedInvoice.map((item,index) => {
-                                return (
-                                <tr key={item.generatedCustomerId}>
-                                    <td>{index+1}</td>
-                                    <td>{customerCode}</td>
-                                    <td>{item.generatedTime}</td>
-                                    <td>{item.generatedBill}</td>
-                                    <td>{item.generatedToDate}</td>
-                                    <td>{item.generatedFromDate}</td>
-                                    <td>{item.generatedRate}</td>
-                                    <td>{item.generatedAyaAssigned}</td>
-                                    <td>
-                                    <button className="btn bg-primary text-white" onClick = {()=>fetchPrintDetails(index)}>Print</button>
-                                    </td>
-                                </tr>
-                                );
-                            }).reverse()}
+                      {currentItems.map((item, index) => {
+                        if (item) {
+                          return (
+                            <tr key={item.generatedCustomerId}>
+                              <td>{index + 1}</td>
+                              <td>{customerCode}</td>
+                              <td>{item.generatedTime}</td>
+                              <td>{item.generatedBill}</td>
+                              <td>{item.generatedToDate}</td>
+                              <td>{item.generatedFromDate}</td>
+                              <td>{item.generatedRate}</td>
+                              <td>{item.generatedAyaAssigned}</td>
+                              <td>
+                                <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
+                              </td>
+                            </tr>
+                          );
+                        }
+                      }).reverse()}
+                      
+
                       </tbody>
 
                     </table>
                   </div>
-                  {/* <Pagination>
-                    {pageNumbers.map((number) => (
-                      <Pagination.Item
-                        key={number}
-                        active={number === currentPage}
-                        onClick={() => setCurrentPage(number)}
-                      >
-                        {number}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination> */}
+                  <Pagination>
+                    {Array.from({ length: pageNumbers }).map((_, index) => {
+                      const number = index + 1;
+                      return (
+                        <Pagination.Item
+                          key={number}
+                          active={number === currentPage}
+                          onClick={() => setCurrentPage(number)}
+                        >
+                          {number}
+                        </Pagination.Item>
+                      );
+                    })}
+                  </Pagination>
+
+
                 </Col>
               </Row>
             </Container>
+
       </section>
-
-
+      )}
     </>
   )
 }
