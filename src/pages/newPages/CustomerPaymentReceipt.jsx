@@ -13,9 +13,8 @@ import { Pagination } from "react-bootstrap";
 
 // --------SMALL CHANGES ---------
 
-// filter by month
 // leave days input 
-
+// aya assigned
 
 
 const CustomerPaymentReceipt = (props) => {
@@ -35,9 +34,10 @@ const CustomerPaymentReceipt = (props) => {
     const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
     const [generatedInvoice, setGeneratedInvoice] = useState([]);
     const [showGeneratedButton,setShowGeneratedButton] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [leaveTaken,setLeaveTaken] = useState(0);
     const itemsPerPage = 10;
     const pageNumbers = Math.ceil(generatedInvoice.length / itemsPerPage);
-    const [currentPage, setCurrentPage] = useState(1);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -160,9 +160,10 @@ const CustomerPaymentReceipt = (props) => {
 
     const get_diff_days  =  () => {
         if(toDate && fromDate){
-            let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime());
+            let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
             // console.log(Math.floor(diff/86400000) + 1);
-            return diff/(1000*86400);
+            // diff -= leaveTaken
+            return  Math.ceil(diff/(1000*86400));
         }else{
             // console.log('not a number')
         }
@@ -172,12 +173,14 @@ const CustomerPaymentReceipt = (props) => {
     
     useEffect(()=>{
         // rate
-        const calculatedgeneratedBill = get_diff_days() * rate;
+        let calculatedgeneratedBill = (get_diff_days()-leaveTaken) * rate;
+        if(calculatedgeneratedBill < 0)calculatedgeneratedBill = 0;
         setgeneratedBill(calculatedgeneratedBill);
         fetchCustomerData();
+
         // currentTime();
         
-    },[fromDate, toDate,rate,customerCode])
+    },[fromDate, toDate,rate,customerCode,leaveTaken])
 
     const tableRef = useRef();
 
@@ -366,20 +369,27 @@ const CustomerPaymentReceipt = (props) => {
                         </div>
                     </div>
                     <div className="col-12 row-6 mb-2">
-                        <div className="duration col-6">
-                            <label>DURATION DATE FROM :
+                        <div className="duration col-5">
+                            <label>DURATION DATE FROM:
                             <input type="date" value = {fromDate} onChange={(e)=>setFromDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="to col-3">
-                            <label>TO :
+                        <div className="to col-4">
+                            <label>TO DATE:
                             <input type="date" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="total col-3">
+                        <div className="total col-2">
                             <span>TOTAL DAYS: </span>{get_diff_days()}
                         </div>
+                        <div className="leave col-5">
+                          <label>LEAVE: 
+                            <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
+                          </label>
+                        </div>
                     </div>
+
+                
 
                     <div className="col-12 row-7 mb-2">
                         <div className="amountInWord">

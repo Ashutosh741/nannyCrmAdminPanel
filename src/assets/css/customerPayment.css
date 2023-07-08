@@ -153,3 +153,22 @@ input[type="date"]{
 .amountInWord,.partyName{
     text-transform: uppercase;
 }
+
+.total{
+    position: relative;
+    left : -85px;
+}
+
+.leave{
+    position: relative;
+    left : -65px;
+}
+
+.to{
+    position: relative;
+    left : -20px;
+}
+
+.leave input{
+    width : 20%;
+}

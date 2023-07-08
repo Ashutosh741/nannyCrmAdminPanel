@@ -64,7 +64,8 @@ function PaymentEdit() {
       const techData = response.data.data;
       setTech(techData);
       console.log("techdata" , techData)
-      setGeneratedBill(techData.generatedInvoice[techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)].generatedBill);
+      // isse customer ka bill latest generated bill se update ho rha 
+      setGeneratedBill(techData.generatedInvoice[techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)].generatedBill); 
       console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
