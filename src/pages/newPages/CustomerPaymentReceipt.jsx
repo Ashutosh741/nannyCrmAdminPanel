@@ -13,8 +13,11 @@ import { Pagination } from "react-bootstrap";
 
 // --------SMALL CHANGES ---------
 
-// leave days input 
-// aya assigned
+// on customer bill when no bill is generated then, on opening page customer payment
+// it should have a button of generated bill which redirect to generate, customer bill
+//
+
+// aya assigned --> not cleared some point
 
 
 const CustomerPaymentReceipt = (props) => {
@@ -359,11 +362,11 @@ const CustomerPaymentReceipt = (props) => {
                     </div>
                     <div className="col-12 row-5 mb-2">
                         <div className="mobile col-6">
-                            <span>MOBILE NO. {contactNumber}</span>
+                            <span>MOBILE NO: {contactNumber}</span>
                         </div>
                         <div className="rate col-6">
                                 <label>PER DAY RATE : 
-                                    <input type="text" value={rate} onChange={(e)=>setRate(e.target.value)}/>
+                                    <input type="number" min="0" value={rate} onChange={(e)=>setRate(e.target.value)}/>
                                 </label>
                             {/* <span></span> */}
                         </div>

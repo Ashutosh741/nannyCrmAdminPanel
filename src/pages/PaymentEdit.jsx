@@ -21,10 +21,7 @@ function PaymentEdit() {
   //   content: () => tableRef.current,
   // });
 
-  const handleInvoice = ()=>{
-    // console.log(id)
-    navigate(`/generateBill/${id}`)
-  }
+
   // const {id} = useParams();
 
 
@@ -50,9 +47,13 @@ function PaymentEdit() {
   const [totalRecieved, setTotalReceived] = useState("");
   const [generatedBill,setGeneratedBill] = useState('');
 
-  const [checkassign, setChcekAssign] = useState("");
+  const [checkassign, setCheckAssign] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [showGeneratedButton,setShowGeneratedButton] = useState(false)
+
+  const [customerCode, setCustomerCode] = useState('');
 
   const { id } = useParams();
 
@@ -65,12 +66,17 @@ function PaymentEdit() {
       setTech(techData);
       console.log("techdata" , techData)
       // isse customer ka bill latest generated bill se update ho rha 
-      setGeneratedBill(techData.generatedInvoice[techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)].generatedBill); 
+      const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
+      if(techData.generatedInvoice[generateInvoiceLength].generatedBill === null){
+        setShowGeneratedButton(true);
+      }
+      setGeneratedBill(techData.generatedInvoice[generateInvoiceLength].generatedBill); 
       console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
       // console.log(techData.generatedInvoice.generatedBill)
-      setChcekAssign(assigncheck);
+      setCheckAssign(assigncheck);
+      setCustomerCode(techData.customerCode);
       // console.log("checking assing check", assigncheck);
 
       if (assigncheck !== "Not Assign") {
@@ -82,6 +88,10 @@ function PaymentEdit() {
       console.log(error);
     }
   };
+  const handleInvoice = ()=>{
+    // console.log(id)
+    navigate(`/generateBill/`)
+  }
 
   const handleRowRemove = () => {
     setBorder(true);
@@ -146,6 +156,7 @@ function PaymentEdit() {
     // console.log(total);
     // console.log(securityAdjustment);
     setTotalCustomerBill(totalCustomerBill);
+    setGeneratedBill(total)
     setTotalReceived(totalRecieved);
     setTotalCustomerBill(parseInt(totalCustomerBill) + parseInt(customerbill));
     setTotalReceived(parseInt(totalRecieved) + parseInt(amountRec));
@@ -168,7 +179,7 @@ function PaymentEdit() {
   useEffect(() => {
     fetchCustomerData();
     fetchTotalBill();
-  }, [id]);
+  }, [id,showGeneratedButton]);
 
   // const pageNumbers = Math.ceil(customerpayment.length / itemsPerPage);
   // const pageNumbers = Array.from(
@@ -272,9 +283,14 @@ function PaymentEdit() {
             {showbox ? (
               <>
                 <Col md="9">
-                  <div className="invoice-button text-end">
-                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Download Invoice</button>
-                  </div>
+                  {
+                    showGeneratedButton && (
+                      <div className="invoice-button text-end">
+                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Go To Generate Bill</button>
+                      </div>
+                    )
+                  }
+
                   <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
                       <h6 className="border-bottom pb-2 mb-0 mb-3 ">
                         Personal Info
