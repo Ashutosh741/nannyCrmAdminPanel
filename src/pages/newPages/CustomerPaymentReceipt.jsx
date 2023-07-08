@@ -10,6 +10,14 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { Pagination } from "react-bootstrap";
 
+// --------SMALL CHANGES ---------
+
+// pagination
+// filter by month
+// leave days input 
+
+
+
 const CustomerPaymentReceipt = (props) => {
 
     const [name, setName] = useState('')
@@ -26,6 +34,7 @@ const CustomerPaymentReceipt = (props) => {
     const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
     const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
     const [generatedInvoice,setGeneratedInvoice] = useState([]);
+    const [showGeneratedButton,setShowGeneratedButton] = useState(true);
     // const [searchQuery, setSearchQuery] = useState("");
     // const [customerpayment, setCustomerPayment] = useState([]);
 
@@ -52,18 +61,20 @@ const CustomerPaymentReceipt = (props) => {
         }catch(err){
             console.log("error in fetching printing details",err);
         }
+        setShowGeneratedButton(false)
+
         handlePrint()
     }
 
     const fetchCustomerData = async()=>{
         try{
             const response = await axios.get(`${URL}/customerreg/${customerCode}`);
-            console.log(response.data.data);
+            console.log("Initial data",response.data.data);
             // console.log(response.data.data._id);
             setCustomerId(response.data.data._id)
             setCustomerData(response.data.data);
             const data = response.data.data
-            // console.log("generated Invoice",data)
+            // console.log("generated Invoice",data.generatedInvoice)
             setGeneratedInvoice(data.generatedInvoice);
             // setCustomerPayment(data.customerpayment);
             setPresentAddress(data.presentAddress); 
@@ -80,13 +91,13 @@ const CustomerPaymentReceipt = (props) => {
     }
 
 
-    for(let i=0;i<assignedAyaDetails;i++){
-        const ayaDetails = assignedAyaDetails[i];
-        // console.log(ayaDetails)
-        if(ayaDetails[1]<={toDate} && ayaDetails[2] >= {fromDate}){
-            assignedAyaInBetween+=ayaDetails[0];
-        }
-    }
+    // for(let i=0;i<assignedAyaDetails;i++){
+    //     const ayaDetails = assignedAyaDetails[i];
+    //     // console.log(ayaDetails)
+    //     if(ayaDetails[1]<={toDate} && ayaDetails[2] >= {fromDate}){
+    //         assignedAyaInBetween+=ayaDetails[0];
+    //     }
+    // }
 
     // const fetchTotalBill = async () => {
     //     try {
@@ -134,13 +145,15 @@ const CustomerPaymentReceipt = (props) => {
     // useEffect[()=>{
     //     customerData()
     // },[customerCode]]
+
+
     const get_diff_days  =  () => {
         if(toDate && fromDate){
             let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime());
             // console.log(Math.floor(diff/86400000) + 1);
             return diff/(1000*86400);
         }else{
-            console.log('not a number')
+            // console.log('not a number')
         }
      
     }
@@ -181,8 +194,8 @@ const CustomerPaymentReceipt = (props) => {
         //   await customerData();
     
           const data = await response.json();
-          console.log(data);
-        //   alert("data Submitted Succesfully");
+          console.log("updated data",data);
+          alert("data Submitted Succesfully");
             const newInvoice = {
                 generatedCustomerId: customerId,
                 generatedTime: new Date().toLocaleTimeString(),  
@@ -200,15 +213,17 @@ const CustomerPaymentReceipt = (props) => {
             setRate(0);
 
         } catch (err) {
-          console.log(customerId);
+          console.log("error in this customerCode",customerId);
 
           console.log("error in submitting generatedBill",err);
         }
+      setShowGeneratedButton(false)
       };
     
 
     const handlePrint = useReactToPrint({
     content: () => tableRef.current,
+    onAfterPrint: ()=>setShowGeneratedButton(true),
     });
 
     function convertNumberToWords(number) {
@@ -245,71 +260,32 @@ const CustomerPaymentReceipt = (props) => {
       
         return 'Number is too large to convert.';
       }
-    // const convertNumberToWords = (number) => {
-    //     // Define arrays for one-digit, two-digit, and tens multiples names
-    //     const units = [
-    //         "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-    //         "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-    //     ];
-    //     const tens = [
-    //         "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-    //     ];
-    //     const scales = ["", "Thousand", "Million", "Billion", "Trillion"];
-
-    //     // Split the number into groups of three digits
-    //     const digits = number.toString().split(/(?=(?:\d{3})+(?:\.|$))/g);
-
-    //     // Convert each group of three digits to words
-    //     const words = digits.map((group, index) => {
-    //         const [hundreds, tensUnits] = group.split(/(?=(?:\d{1})+(?:\.|$))/g);
-    //         let result = "";
-    //         if (hundreds > 0) {
-    //             result += `${units[hundreds]} Hundred `;
-    //         }
-    //         if (tensUnits > 0) {
-    //             if (tensUnits < 20) {
-    //                 result += `${units[parseInt(tensUnits)]} `;
-    //             } else {
-    //                 const [tensDigit, unitsDigit] = tensUnits.split(/(?=(?:\d{1})+(?:\.|$))/g);
-    //                 result += `${tens[parseInt(tensDigit)]} ${units[parseInt(unitsDigit)]} `;
-    //             }
-    //         }
-    //         if (group > 0) {
-    //             result += scales[index];
-    //         }
-    //         return result.trim();
-    //     });
-
-    //     // Join the groups of words together
-    //     return words.reverse().join(" ");
-    // };
-
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
   return (
     <>
-                        <div className="col-4 ms-3">
-                        <div className="">
-                        <label
-                            style={{
-                            display: "inline-block",
-                            fontSize: "16px",
-                            marginRight: "20px",
-                            }}
-                            className="fw-bold mb-1"
-                        >
-                            Customer Code :{" "}
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={customerCode}
-                            onChange={(e) => setCustomerCode(e.target.value)}
-                        />
-                    {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
-                    </div>
-                </div>
+      <div className="col-4 ms-3">
+            <div className="">
+              <label
+                  style={{
+                  display: "inline-block",
+                  fontSize: "16px",
+                  marginRight: "20px",
+                  }}
+                  className="fw-bold mb-1"
+              >
+                  Customer Code :{" "}
+              </label>
+              <input
+                  type="text"
+                  className="form-control"
+                  value={customerCode}
+                  onChange={(e) => setCustomerCode(e.target.value)}
+              />
+          {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
+          </div>
+      </div>
         
       <div className='container'  ref={tableRef}>
         <div className="row">
@@ -425,14 +401,16 @@ const CustomerPaymentReceipt = (props) => {
                 </div>
 
             </div>
+            {
+              showGeneratedButton &&(
+                <div className="print-btn text-center billButton">
+                <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
+                </div>
+              )
+            }
             </form>
-
         </div>
       </div>
-      <div className="print-btn text-center billButton">
-            <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
-            </div>
-
       <section>
             <Container>
               <Row>
@@ -453,6 +431,7 @@ const CustomerPaymentReceipt = (props) => {
                     <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                       <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
+                          <th>Sr. No</th>
                           <th className="">Customer Code</th>
                           <th className="">Time</th>
                           <th className="">Generated Bill</th>
@@ -470,6 +449,7 @@ const CustomerPaymentReceipt = (props) => {
                             {generatedInvoice && generatedInvoice.map((item,index) => {
                                 return (
                                 <tr key={item.generatedCustomerId}>
+                                    <td>{index+1}</td>
                                     <td>{customerCode}</td>
                                     <td>{item.generatedTime}</td>
                                     <td>{item.generatedBill}</td>
