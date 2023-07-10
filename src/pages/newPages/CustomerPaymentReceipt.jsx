@@ -11,13 +11,6 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { Pagination } from "react-bootstrap";
 
-// --------SMALL CHANGES ---------
-
-// on customer bill when no bill is generated then, on opening page customer payment
-// it should have a button of generated bill which redirect to generate, customer bill
-//
-
-// aya assigned --> not cleared some point
 
 
 const CustomerPaymentReceipt = (props) => {
@@ -103,8 +96,6 @@ const CustomerPaymentReceipt = (props) => {
             console.log("error in fetching customer data:",e)
         }
     }
-
-
     // for(let i=0;i<assignedAyaDetails;i++){
     //     const ayaDetails = assignedAyaDetails[i];
     //     // console.log(ayaDetails)
@@ -112,55 +103,6 @@ const CustomerPaymentReceipt = (props) => {
     //         assignedAyaInBetween+=ayaDetails[0];
     //     }
     // }
-
-    // const fetchTotalBill = async () => {
-    //     try {
-    //       const response = await axios.get(`${URL}/customerreg/${id}`);
-    //       const customerData = response.data.data;
-    
-    //       let totalCustomerBill = 0;
-    //       let totalReceivedAmount = 0;
-    
-    //       if (Array.isArray(customerData.customerpayment)) {
-    //         customerData.customerpayment.forEach((payment) => {
-    //           totalCustomerBill += parseInt(payment.customerbill + customerbill);
-    //           totalReceivedAmount += parseInt(payment.amount_received + amountRec);
-    //         });
-    
-    //         setTotalCustomerBill(totalCustomerBill);
-    //         setTotalReceived(totalReceivedAmount);
-    
-    //         // console.log("Total customer bill:", totalCustomerBill);
-    //         // console.log("Total received amount:", totalReceivedAmount);
-    //       } else {
-    //         console.error(
-    //           "Invalid customer payment data format:",
-    //           customerData.customerpayment
-    //         );
-    //       }
-    //     } catch (error) {
-    //       console.error("Error fetching customer data:", error);
-    //     }
-    //   };
-
-
-    // const filteredCustomerPayments = customerpayment.filter(
-    //     (item) =>
-    //       item.month.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    //       (item.customerbill || item.amount_received)
-    //   );
-    
-    //   const pageNumbers = Array.from(
-    //     { length: Math.ceil(filteredCustomerPayments.length / itemsPerPage) },
-    //     (_, index) => index + 1
-    //   );
-    
-
-    // useEffect[()=>{
-    //     customerData()
-    // },[customerCode]]
-
-
     const get_diff_days  =  () => {
         if(toDate && fromDate){
             let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);

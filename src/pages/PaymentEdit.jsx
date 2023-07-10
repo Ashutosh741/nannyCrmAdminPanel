@@ -47,11 +47,11 @@ function PaymentEdit() {
   const [totalRecieved, setTotalReceived] = useState("");
   const [generatedBill,setGeneratedBill] = useState('');
 
-  const [checkassign, setCheckAssign] = useState("");
+  const [checkassign, setChcekAssign] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [showGeneratedButton,setShowGeneratedButton] = useState(false)
+  const [showGeneratedButton,setShowGeneratedButton] = useState(true)
 
   const [customerCode, setCustomerCode] = useState('');
 
@@ -67,15 +67,19 @@ function PaymentEdit() {
       console.log("techdata" , techData)
       // isse customer ka bill latest generated bill se update ho rha 
       const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
-      if(techData.generatedInvoice[generateInvoiceLength].generatedBill === null){
-        setShowGeneratedButton(true);
+      if(techData.generateInvoiceLength > 0){
+          setGeneratedBill(techData.generatedInvoice[generateInvoiceLength].generatedBill); 
+          console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
+          console.log(techData.generatedInvoice.generatedBill)
       }
-      setGeneratedBill(techData.generatedInvoice[generateInvoiceLength].generatedBill); 
-      console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
+      console.log("length",techData.generatedInvoice[generateInvoiceLength])
+      if((techData.generatedInvoice[generateInvoiceLength] !== undefined)){
+        setShowGeneratedButton(false);
+      }
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
       // console.log(techData.generatedInvoice.generatedBill)
-      setCheckAssign(assigncheck);
+      setChcekAssign(assigncheck);
       setCustomerCode(techData.customerCode);
       // console.log("checking assing check", assigncheck);
 
