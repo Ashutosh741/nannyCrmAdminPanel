@@ -1,6 +1,12 @@
 # React Bootstrap admin starter template
 
-<!--- To do ---
+<!-- To do  --
+
+
+
+-->
+
+<!---Changes which I think to be implemented To do ---
 
 1. show all the transaction of aya and customer
     1.1 like which aya have been assigned from starting in the form table
@@ -13,12 +19,24 @@
     3.2 days left for the aya, add one more column
     3.3 location column one more
     3.4 change aya code like customer code  
+    3.5 name of customer assigned to aya
+    3.6 status of payment, due or paid 
 
 4 remove gender column from aya payment
     4.1 add remaiining column
 
-5 reomve  customer payment , column og guardian nae
-    5.1 add remaining money to take from customer add one clumn
+5 remove  customer payment , column of guardian name
+    5.1 add remaining money to take from customer add one column
+
+6 updTE THE Table with mui table to enable sorting and filter
+
+7 when going to edit the aya assign page, then it should show, which customer is assigned to them
+    7.1 also in front of customer their should be one button, name as change , which redirect to change ayaassigned to customer
+    7.2 also put one button which redirect to assigned customer and payment received
+
+8 give option to update image in both customer and aya
+
+9 PER MONTH PROFIT AND OVERALL PROFIT
 
 
 
@@ -46,6 +64,9 @@ are filled.
 
 2. entries are coming in reverse, correct it
  
+3. when aya are deleting then it should not show assigned to anyone
+    
+
  -->
 
 
@@ -101,3 +122,11 @@ I am using bootstrap and react js here. So if you got stuck anywhere, please loo
 ##### npm start
 
 And you can start making an awesome admin application now.
+
+
+<!-- changes to do -- 
+
+1 . Dashboard
+    1.1 in dashboard here we have to show the total customer with their payment status, 
+
+ -->

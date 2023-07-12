@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import Pagination from "../components/Pagination";
+import CustomerListContent from "./CustomerListContent";
 
 function CustomerList() {
   const [list, setList] = useState([]);
@@ -150,7 +151,7 @@ function CustomerList() {
               <div className="my-3 text-end">
                 <div className="d-flex align-items-center gap-5 w-100">
                   {/* Search Field */}
-                  <div className="w-100">
+                  {/* <div className="w-100">
                     <input
                       type="search"
                       className="form-control"
@@ -158,8 +159,14 @@ function CustomerList() {
                       value={searchTerm}
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                   <div className="w-100 text-end">
+                    <Button
+                      className="btn bg-primary text-white mx-2"
+                      onClick={handleDownloadExcel}
+                    >
+                      Print Table
+                    </Button>
                     <Button className="btn bg-primary text-white">
                       <Link className="" to={"/customer"}>
                         Add Customer
@@ -174,7 +181,7 @@ function CustomerList() {
                   </div>
                 </div>
               </div>
-              <div className="table-responsive rounded-3">
+              {/* <div className="table-responsive rounded-3">
                 <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
@@ -218,7 +225,7 @@ function CustomerList() {
                       <th className="d-none">Status for Customer</th>
                       <th className="d-none">Customer Remark</th>
                       <th className="d-none">Customer Can Speak</th>
-                      {/* <th className="">Action</th> */}
+                      <th className="">Action</th>
                       <th className="">Assign</th>
                       <th className="">Created At</th>
                     </tr>
@@ -308,14 +315,15 @@ function CustomerList() {
                     </tbody>
                   )}
                 </table>
-              </div>
+              </div> */}
               {/* Pagination */}
 
-              <Pagination
+              {/* <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 handlePageChange={handlePageChange}
-              />
+              /> */}
+              <CustomerListContent/>
             </Col>
           </Row>
         </Container>

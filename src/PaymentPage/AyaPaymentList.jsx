@@ -7,6 +7,7 @@ import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { Bars, Preloader } from "react-preloader-icon";
 import TotalProfit from "../navigationPage/TotalProfit";
+import AyaPaymentListContent from "./AyaPaymentListContent";
 
 function AyaPaymentList() {
   const navigate = useNavigate();
@@ -132,7 +133,7 @@ function AyaPaymentList() {
               <div className="my-3">
                 <div className="d-flex align-items-center gap-5 w-100">
                   {/* Search Field */}
-                  <div className="w-100">
+                  {/* <div className="w-100">
                     <input
                       type="search"
                       className="form-control"
@@ -140,9 +141,16 @@ function AyaPaymentList() {
                       value={searchTerm}
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
+
 
                   <div className="w-100 text-end">
+                    <Button
+                      className="btn bg-primary text-white mx-2"
+                      onClick={handleDownloadExcel}
+                    >
+                      PRINT TABLE
+                    </Button>
                     <Button className="btn bg-primary text-white ">
                       <Link className="" to={"/ayareg"}>
                         Add Aya
@@ -158,7 +166,7 @@ function AyaPaymentList() {
                   </div>
                 </div>
               </div>
-              <div className="table-responsive  rounded-3">
+              {/* <div className="table-responsive  rounded-3">
                 <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
@@ -168,19 +176,17 @@ function AyaPaymentList() {
                       <th>images</th>
                       <th>father Name</th>
                       <th className=""> gender</th>
-                      {/* <th className="">age</th> */}
+                      <th className="">age</th>
                       <th className="">Assign</th>
                       <th className="">Total Cusotmer bill</th>
                       <th className="">Total Aya Paid</th>
-                      {/* <th className="">Total Profit</th> */}
+                      <th className="">Total Profit</th>
 
-                      {/* <th className="">Payment Status</th> */}
+                      <th className="">Payment Status</th>
                     </tr>
                   </thead>
                   {loading ? (
-                    // <div className="text-center d-flex justify-content-center p-3">
-                    //   Loading...
-                    // </div>
+
                     <div className="d-flex align-item-center justify-cotnent-center w-100">
                       <Preloader
                         use={Bars}
@@ -239,7 +245,7 @@ function AyaPaymentList() {
                           assign,
                           totalAyapaid,
                           totalCustomerbill,
-                          // totalProfit,
+                          totalProfit,
                         } = item;
                         return (
                           <>
@@ -260,11 +266,11 @@ function AyaPaymentList() {
                               <td>{guardianName}</td>
 
                               <td className="">{gender}</td>
-                              {/* <td className="">{age}</td> */}
+                              <td className="">{age}</td>
                               <td>{assign}</td>
                               <td className="">{totalCustomerbill}</td>
                               <td className="">{totalAyapaid}</td>
-                              {/* <td>{totalProfit}</td> */}
+                              <td>{totalProfit}</td>
                             </tr>
                           </>
                         );
@@ -272,9 +278,9 @@ function AyaPaymentList() {
                     </tbody>
                   )}
                 </table>
-              </div>
+              </div> */}
               {/* Pagination */}
-              <div className="pagination-container">
+              {/* <div className="pagination-container">
                 <nav>
                   <ul className="pagination">
                     <li
@@ -318,7 +324,8 @@ function AyaPaymentList() {
                     </li>
                   </ul>
                 </nav>
-              </div>
+              </div> */}
+              <AyaPaymentListContent/>
             </Col>
           </Row>
         </Container>

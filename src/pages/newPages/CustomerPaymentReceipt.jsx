@@ -324,13 +324,13 @@ const CustomerPaymentReceipt = (props) => {
                             <input type="date" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="total col-2">
-                            <span>TOTAL DAYS: </span>{get_diff_days()}
-                        </div>
                         <div className="leave col-5">
                           <label>LEAVE: 
                             <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
                           </label>
+                        </div>
+                        <div className="total col-2">
+                            <span>TOTAL DAYS: </span>{get_diff_days()}
                         </div>
                     </div>
 

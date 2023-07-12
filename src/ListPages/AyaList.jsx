@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { Bars, Preloader } from "react-preloader-icon";
+import AyaListContent from "./AyaListContent";
 
 function AyaList() {
   const navigate = useNavigate();
@@ -111,7 +112,7 @@ function AyaList() {
               <div className="my-3">
                 <div className="d-flex align-items-center gap-5 w-100">
                   {/* Search Field */}
-                  <div className="w-100">
+                  {/* <div className="w-100">
                     <input
                       type="search"
                       className="form-control"
@@ -119,9 +120,16 @@ function AyaList() {
                       value={searchTerm}
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
+
 
                   <div className="w-100 text-end">
+                    {/* enable print table option here */}
+                  <Button className="btn bg-primary text-white mx-2">
+                      <Link className="" to={"/"}>
+                        Print Table
+                      </Link>
+                    </Button>
                     <Button className="btn bg-primary text-white ">
                       <Link className="" to={"/ayareg"}>
                         Add Aya
@@ -137,7 +145,7 @@ function AyaList() {
                   </div>
                 </div>
               </div>
-              <div className="table-responsive  rounded-3">
+              {/* <div className="table-responsive  rounded-3">
                 <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
@@ -179,15 +187,13 @@ function AyaList() {
                       <th className="d-none"> statusAya</th>
                       <th className="d-none">Aya Speciality </th>
                       <th className="d-none"> Aya Can Speak</th>
-                      {/* <th className="">Assign</th> */}
-                      {/* <th className="d-none">ayaRemark</th> */}
-                      {/* <th className="">Action</th> */}
+                      <th className="">Assign</th>
+                      <th className="d-none">ayaRemark</th>
+                      <th className="">Action</th>
                     </tr>
                   </thead>
                   {loading ? (
-                    // <div className="text-center d-flex justify-content-center p-3">
-                    //   Loading...
-                    // </div>
+
                     <div className="d-flex align-item-center justify-cotnent-center w-100">
                       <Preloader
                         use={Bars}
@@ -298,19 +304,7 @@ function AyaList() {
                               <td className="d-none">{ayaRemark}</td>
                               <td className="d-none">{ayaSpeciality}</td>
                               <td className="d-none">{ayaCanSpeak}</td>
-                              {/* <td className="">{assign}</td> */}
-
-                              {/* <td className="">
-                                <div className="">
-                                 
-                                  <button
-                                    className="btn ms-2 bg-danger text-white deletebtn"
-                                    onClick={() => handleDelete(item)}
-                                  >
-                                    <i class="fa-sharp fa-solid fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td> */}
+                              <td className="">{assign}</td>
                             </tr>
                           </>
                         );
@@ -318,9 +312,9 @@ function AyaList() {
                     </tbody>
                   )}
                 </table>
-              </div>
+              </div> */}
               {/* Pagination */}
-              <div className="pagination-container">
+              {/* <div className="pagination-container">
                 <nav>
                   <ul className="pagination">
                     <li
@@ -364,7 +358,8 @@ function AyaList() {
                     </li>
                   </ul>
                 </nav>
-              </div>
+              </div> */}
+              <AyaListContent/>
             </Col>
           </Row>
         </Container>

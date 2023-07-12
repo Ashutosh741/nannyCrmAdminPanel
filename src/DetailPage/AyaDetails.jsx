@@ -243,7 +243,8 @@ function AyaDetails() {
                     <img
                       src={`${URL}/${tech.file}`}
                       class="img-responsive profile-img-center"
-                      alt=""
+                      alt="Choose Image"
+                      textAlign = "center"
                     />
                   </div>
                   <div class="profile-usertitle">
@@ -282,6 +283,17 @@ function AyaDetails() {
                       Assign Customer
                     </button>
                   </div>
+                  <div>
+        <label htmlFor="image-upload" class="btn btn-primary btn-sm">
+          Change Image
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          style={{ display: "none" }}
+          // onChange={handleImageUpload}
+        />
+      </div>
                   <hr />
                   {/* <div>
                     <div class="bd-example">

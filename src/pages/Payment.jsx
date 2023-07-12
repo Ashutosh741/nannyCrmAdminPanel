@@ -5,6 +5,7 @@ import { URL } from "../Url";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import CustomerPaymentList from "./CustomerPaymentList";
 
 function Payment() {
   const [list, setList] = useState([]);
@@ -121,7 +122,7 @@ function Payment() {
               <div className="my-3 text-end">
                 <div className="d-flex align-items-center gap-5 w-100">
                   {/* Search Field */}
-                  <div className="w-100">
+                  {/* <div className="w-100">
                     <input
                       type="search"
                       className="form-control"
@@ -129,8 +130,14 @@ function Payment() {
                       value={searchTerm}
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                   <div className="w-100 text-end">
+                    <Button
+                      className="btn bg-primary text-white mx-2"
+                      onClick={handleDownloadExcel}
+                    >
+                      Print Table
+                    </Button>
                     <Button className="btn bg-primary text-white">
                       <Link className="" to={"/customer"}>
                         Add Customer
@@ -146,7 +153,7 @@ function Payment() {
                   </div>
                 </div>
               </div>
-              <div className="table-responsive rounded-3">
+              {/* <div className="table-responsive rounded-3">
                 <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
@@ -160,13 +167,13 @@ function Payment() {
                       <th className="">Assign</th>
                       <th className="">Total Customer Bill</th>
                       <th className="">Total Customer Pay</th>
-                      {/* <th>Customer bill</th>
+                      <th>Customer bill</th>
                       <th>Amount Recieved</th>
 
                       <th className="">Customer balance</th>
-                      <th className="">Status</th> */}
+                      <th className="">Status</th> 
 
-                      {/* <th className="">Action</th> */}
+                       <th className="">Action</th>
                     </tr>
                   </thead>
 
@@ -197,20 +204,20 @@ function Payment() {
                             <td className="">{item.totalCustomerBill}</td>
                             <td className="">{item.totalRecievedmoney}</td>
 
-                            {/* <td>{item.customerbill}</td>
+                             <td>{item.customerbill}</td>
                             <td>{item.amount_received}</td>
 
                             <td className="">{item.balance}</td>
-                            <td className="">{item.status}</td> */}
+                            <td className="">{item.status}</td> 
                           </tr>
                         );
                       })}
                     </tbody>
                   )}
                 </table>
-              </div>
+              </div> */}
               {/* Pagination */}
-              <div className="pagination-container">
+              {/* <div className="pagination-container">
                 <nav>
                   <ul className="pagination">
                     <li
@@ -254,7 +261,8 @@ function Payment() {
                     </li>
                   </ul>
                 </nav>
-              </div>
+              </div> */}
+              <CustomerPaymentList/>
             </Col>
           </Row>
         </Container>

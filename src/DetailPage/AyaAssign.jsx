@@ -164,11 +164,11 @@ function AyaAssign() {
       <section className="regList mt-5">
         <Container>
           <Row className="align-items-center">
-            <Col md="9" className="mt-4">
+            <Col md="12" className="mt-4">
               <div className="">
                 <Form onSubmit={handleFormSubmit}>
                   <Row>
-                    <Col md="6">
+                    <Col md="3">
                       <label className="mb-1">Assign:</label>
                       <select
                         className="form-control form-select"
@@ -198,7 +198,32 @@ function AyaAssign() {
                         })}
                       </select>
                     </Col>
-                    <Col md="6">
+                    <Col md = "2">
+                      <label className="mb-1">From Date</label>
+                      <input type = "date" className="form-control"></input>
+                    </Col>
+                    <Col md = "2">
+                      <label className="mb-1">To Date</label>
+                      <input type = "date" className="form-control"></input>
+                    </Col>
+                    <Col md = "2">
+                      <label className="mb-1">Reason</label>
+                      <select className="form-select">
+                        <option value = "1">Hold</option>
+                        <option value = "2">Replace</option>
+                      </select>
+                      {/* <input type = "date" className="form-control"></input> */}
+                    </Col>
+                    <Col md = "2">
+                      <label className="mb-1">Shift</label>
+                      <select className="form-select">
+                        <option value = "1">Day</option>
+                        <option value = "2">Night</option>
+                        <option value = "3">Day and Night</option>
+                      </select>
+                      {/* <input type = "date" className="form-control"></input> */}
+                    </Col>
+                    <Col md="1">
                       <div className="mt-4">
                         <button
                           type="submit"
@@ -267,3 +292,202 @@ function AyaAssign() {
 }
 
 export default adminLayout(AyaAssign);
+
+
+
+
+// import React, { useEffect, useRef, useState } from "react";
+// import { Col, Container, Form, FormGroup, NavLink, Row } from "react-bootstrap";
+// import Box from "@mui/material/Box";
+// import { DataGrid } from "@mui/x-data-grid";
+// import { useReactToPrint } from "react-to-print";
+
+// import { DatePicker, IconButton } from "rsuite";
+// import { Link } from "react-router-dom";
+// import axios from "axios";
+// import { BaseURL } from "../Common/URL";
+// import { token } from "../utils/Token";
+// import { srRS } from "@mui/material/locale";
+
+// function Staff() {
+//   const [staff, setStaff] = useState([]);
+
+//   const headers = {
+//     Authorization: `Bearer ${token}`,
+//   };
+
+//   const fetchStaffApi = async () => {
+//     try {
+//       const response = await axios.get(`${BaseURL}/user`, {
+//         headers,
+//       });
+//       setStaff(response.data.data);
+//       console.log(staff);
+//     } catch (error) {
+//       console.error("Error fetching category data:", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchStaffApi();
+//   }, []);
+
+//   const getRowId = (staff) => staff._id;
+
+//   const handleEditClick = (id) => {
+//     alert(`Edit button clicked for row with ID: ${id}`);
+//   };
+
+//   const columns = [
+//     {
+//       field: "id",
+//       headerName: "Sr. No.",
+//       width: 90,
+//       renderCell: (params) => {
+//         return parseInt(params.rowIndex + 1);
+//       },
+//     },
+
+//     {
+//       field: "name",
+//       headerName: "Name",
+//       width: 200,
+//     },
+
+//     {
+//       field: "employee_code",
+//       headerName: "employee_code",
+//       width: 200,
+//     },
+//     {
+//       field: "mobile_no",
+//       headerName: "Mobile Number",
+//       width: 150,
+//     },
+//     {
+//       field: "appointmentdate",
+//       headerName: "Appointment Date",
+//       width: 150,
+//     },
+//     {
+//       field: "email_address",
+//       headerName: "Email ID",
+//       width: 150,
+//     },
+//     {
+//       field: "edit",
+//       headerName: "Edit",
+//       width: 100,
+//       renderCell: (params) => {
+//         const id = params.row.employee_code;
+//         return (
+//           <Link to={`/user/${id}`}>
+//             <button
+//               color="primary"
+//               aria-label="edit"
+//               className="btn"
+//               onClick={() => handleEditClick(id)}
+//             >
+//               <i class="fa-regular fa-pen-to-square"></i>
+//             </button>
+//           </Link>
+//         );
+//       },
+//     },
+//     {
+//       field: "view",
+//       headerName: "View",
+//       width: 100,
+//       renderCell: (params) => {
+//         const id = params.row.employee_code;
+//         return (
+//           <Link to={`/user/${id}`}>
+//             <button
+//               color="primary"
+//               aria-label="edit"
+//               className="btn"
+//               onClick={() => handleEditClick(id)}
+//             >
+//               <i class="fa-regular fa-eye"></i>
+//             </button>
+//           </Link>
+//         );
+//       },
+//     },
+//     {
+//       field: "delete",
+//       headerName: "Delete",
+//       width: 100,
+//       renderCell: (params) => {
+//         const id = params.row.employee_code;
+//         return (
+//           <Link to={`/user/${id}`}>
+//             <button
+//               color="primary"
+//               aria-label="edit"
+//               className="btn"
+//               onClick={() => handleEditClick(id)}
+//             >
+//               <i class="fa-solid fa-trash"></i>
+//             </button>
+//           </Link>
+//         );
+//       },
+//     },
+//   ];
+
+//   // this is showing NaN
+
+//   const tableRef = useRef();
+
+//   const handlePrint = useReactToPrint({
+//     content: () => tableRef.current,
+//   });
+
+//   return (
+//     <>
+//       <section className="space">
+//         <Container fluid>
+//           <Row className="">
+//             <Col md="12">
+//               <div className="bg-white content_box">
+//                 <div className="d-flex align-items-center justify-content-between appointmentheader align-items-center flex-wrap">
+//                   <h5 className="border-0 pb-0 m-0">Staff Details</h5>
+//                   <div className="d-flex align-items-center gap-3 flex-wrap">
+//                     <button className="print_btn btn" onClick={handlePrint}>
+//                       Print
+//                     </button>
+//                     <Link to={"/stafform"} className="print_btn btn">
+//                       Add Staff
+//                     </Link>
+//                   </div>
+//                 </div>
+//                 <div className="content_boxForm">
+//                   <Box sx={{ height: 500, width: "100%" }}>
+//                     <DataGrid
+//                       ref={tableRef}
+//                       rows={staff}
+//                       columns={columns}
+//                       getRowId={getRowId}
+//                       initialState={{
+//                         pagination: {
+//                           paginationModel: {
+//                             pageSize: 10,
+//                           },
+//                         },
+//                       }}
+//                       pageSizeOptions={[10]}
+//                       disableRowSelectionOnClick
+//                     />
+//                   </Box>
+//                 </div>
+//               </div>
+//             </Col>
+//           </Row>
+//         </Container>
+//       </section>
+//     </>
+//   );
+// }
+
+// export default Staff;
