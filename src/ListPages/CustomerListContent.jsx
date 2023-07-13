@@ -58,12 +58,12 @@ const CustomerListContent = () => {
   
       const columns = [
           { field: 'sr.no',
-           headerName: 'SR.NO', 
-           flex: 0,
-           editable: false,
-           renderCell: (params) =>
-             params.api.getRowIndexRelativeToVisibleRows(params.row._id) + 1,
-           width: 60 ,
+          headerName: 'SR.NO', 
+          flex: 0,
+          editable: false,
+          renderCell: (params) =>
+            params.api.getRowIndexRelativeToVisibleRows(params.row._id) + 1,
+          width: 60 ,
           //   renderCell:(params) =>{
           //     const id = params;
           //     console.log("what's paramas",id);

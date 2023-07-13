@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import { Bars, Preloader } from "react-preloader-icon";
 import TotalProfit from "../navigationPage/TotalProfit";
 import AyaPaymentListContent from "./AyaPaymentListContent";
+import { useReactToPrint } from "react-to-print";
 
 function AyaPaymentList() {
   const navigate = useNavigate();
@@ -101,26 +102,12 @@ function AyaPaymentList() {
     setCurrentPage(1);
   }, [list, searchTerm]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const tableRef = useRef();
 
-  // Sorting logic
-  const sortedData = filteredData.sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
+  const handlePrintTable = useReactToPrint({
+    content : ()=>tableRef.current,
 
-  // Pagination logic
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const currentItems = sortedData.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  })
 
   console.log(list.file);
 
@@ -147,7 +134,7 @@ function AyaPaymentList() {
                   <div className="w-100 text-end">
                     <Button
                       className="btn bg-primary text-white mx-2"
-                      onClick={handleDownloadExcel}
+                      onClick={handlePrintTable}
                     >
                       PRINT TABLE
                     </Button>
@@ -166,166 +153,13 @@ function AyaPaymentList() {
                   </div>
                 </div>
               </div>
-              {/* <div className="table-responsive  rounded-3">
-                <table className="table table-responsive table-sm table-stripped table-bordered p-0">
-                  <thead className="bg-blue text-white">
-                    <tr className="text-uppercase">
-                      <th>Sr.No.</th>
-                      <th>Aya Code</th>
-                      <th>name</th>
-                      <th>images</th>
-                      <th>father Name</th>
-                      <th className=""> gender</th>
-                      <th className="">age</th>
-                      <th className="">Assign</th>
-                      <th className="">Total Cusotmer bill</th>
-                      <th className="">Total Aya Paid</th>
-                      <th className="">Total Profit</th>
-
-                      <th className="">Payment Status</th>
-                    </tr>
-                  </thead>
-                  {loading ? (
-
-                    <div className="d-flex align-item-center justify-cotnent-center w-100">
-                      <Preloader
-                        use={Bars}
-                        size={60}
-                        strokeWidth={100}
-                        strokeColor="#f7b085"
-                        duration={2000}
-                      />
-                    </div>
-                  ) : (
-                    <tbody>
-                      {currentItems.map((item, index) => {
-                        const newIndex = index + 1;
-                        const {
-                          ayaCode,
-                          name,
-                          guardianName,
-                          workShift,
-                          workinglocation,
-                          joining,
-                          closingDate,
-                          presentAddress,
-                          vill,
-                          street,
-                          landmark,
-                          post,
-                          district,
-                          state,
-                          pin,
-                          permanentAddress,
-                          permanentVill,
-                          permanentStreet,
-                          permanentLandmark,
-                          permanentPost,
-                          permanentDistrict,
-                          permanentState,
-                          permanentPin,
-                          dateOfBirth,
-                          gender,
-                          age,
-                          nationality,
-                          contactNumber,
-                          alternativeNumber,
-                          religion,
-                          marriageStatus,
-                          idCardType,
-                          idCardNumber,
-                          statusAya,
-                          ayaRemark,
-                          ayaSpeciality,
-                          file,
-                          month,
-                          paymentstatus,
-                          ayaearn,
-                          ayaCanSpeak,
-                          assign,
-                          totalAyapaid,
-                          totalCustomerbill,
-                          totalProfit,
-                        } = item;
-                        return (
-                          <>
-                            <tr
-                              key={item._id}
-                              onClick={() => handleRowClick(item)}
-                            >
-                              <td>{newIndex}</td>
-                              <td>{ayaCode}</td>
-                              <td>{name}</td>
-                              <td>
-                                <img
-                                  src={`${URL}/${file}`}
-                                  className="img-fluid listimages"
-                                  alt=""
-                                />
-                              </td>
-                              <td>{guardianName}</td>
-
-                              <td className="">{gender}</td>
-                              <td className="">{age}</td>
-                              <td>{assign}</td>
-                              <td className="">{totalCustomerbill}</td>
-                              <td className="">{totalAyapaid}</td>
-                              <td>{totalProfit}</td>
-                            </tr>
-                          </>
-                        );
-                      })}
-                    </tbody>
-                  )}
-                </table>
-              </div> */}
-              {/* Pagination */}
-              {/* <div className="pagination-container">
-                <nav>
-                  <ul className="pagination">
-                    <li
-                      className={`page-item ${
-                        currentPage === 1 ? "disabled" : ""
-                      }`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                      <li
-                        className={`page-item ${
-                          currentPage === index + 1 ? "active" : ""
-                        }`}
-                        key={index}
-                      >
-                        <button
-                          className="page-link"
-                          onClick={() => handlePageChange(index + 1)}
-                        >
-                          {index + 1}
-                        </button>
-                      </li>
-                    ))}
-                    <li
-                      className={`page-item ${
-                        currentPage === totalPages ? "disabled" : ""
-                      }`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div> */}
-              <AyaPaymentListContent/>
+              <div className="container" ref = {tableRef}>
+                <div className="row">
+                  <form onSubmit = {handlePrintTable}>
+                    <AyaPaymentListContent/>
+                  </form>
+                </div>
+              </div>
             </Col>
           </Row>
         </Container>

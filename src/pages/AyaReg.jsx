@@ -50,7 +50,7 @@ function AyaReg() {
   const [workinglocation, setWorkingLocation] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [file, setFile] = useState(null);
-  const [sameAddress, setSameAddress] = useState(false);
+  const [sameAddress, setSameAddress] = useState(true);
 
   // const handleFileChange = (event) => {
   //   const selectedFile = event.target.files[0];
@@ -168,7 +168,7 @@ function AyaReg() {
   console.log(" ayamdkfds", file);
 
   const handleCheckAddress = () => {
-    setSameAddress(true);
+    setSameAddress(!sameAddress);
     console.log("same Address", sameAddress);
     if (sameAddress) {
       setPermanentAddress(presentAddress);
@@ -210,6 +210,8 @@ function AyaReg() {
                       className="form-control"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -223,6 +225,8 @@ function AyaReg() {
                       value={fatherName}
                       className="form-control"
                       onChange={(e) => setFatherName(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -234,6 +238,8 @@ function AyaReg() {
                       value={workShift}
                       name="workShift"
                       onChange={(e) => setWorkShift(e.target.value)}
+                      required
+
                     >
                       <option value="">Select</option>
                       <option value="Day">Day</option>
@@ -251,6 +257,8 @@ function AyaReg() {
                       className="form-control"
                       value={joining}
                       onChange={(e) => setJoining(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -279,6 +287,8 @@ function AyaReg() {
                       type="text"
                       value={presentAddress}
                       onChange={(e) => setPresentAddress(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -342,6 +352,8 @@ function AyaReg() {
                       name="district"
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -355,6 +367,8 @@ function AyaReg() {
                       name="state"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -368,6 +382,8 @@ function AyaReg() {
                       name="pin"
                       value={pin}
                       onChange={(e) => setPin(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -408,6 +424,8 @@ function AyaReg() {
                       id="permanentAddress"
                       value={permanentAddress}
                       onChange={(e) => setPermanentAddress(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -514,6 +532,8 @@ function AyaReg() {
                       className="form-control"
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -527,6 +547,8 @@ function AyaReg() {
                       name="gender"
                       onChange={(e) => setGender(e.target.value)}
                       id="gender"
+                      required
+
                     >
                       <option value="">Select</option>
                       <option value="Male">Male</option>
@@ -556,6 +578,8 @@ function AyaReg() {
                       id="nationality"
                       className="form-control"
                       value={nationality}
+                      required
+
                       onChange={(e) => setNationality(e.target.value)}
                     />
                   </FormGroup>
@@ -570,6 +594,8 @@ function AyaReg() {
                       className="form-control"
                       value={contactNumber}
                       onChange={(e) => setContactNumber(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -610,6 +636,8 @@ function AyaReg() {
                       className="form-control form-select"
                       value={marriageStatus}
                       onChange={(e) => setMarriageStatus(e.target.value)}
+                      required
+
                     >
                       <option value="">Select</option>
                       <option value="Single">Single</option>
@@ -633,6 +661,8 @@ function AyaReg() {
                       <option value="voter-idcard">Voter IdCard</option>
                       <option value="pan-card">Pan Card</option>
                       <option value="driving-license">Driving License</option>
+                      required
+
                     </select>
                   </FormGroup>
                 </Col>
@@ -645,6 +675,8 @@ function AyaReg() {
                       type="text"
                       value={idCardNumber}
                       onChange={(e) => setIdCardNumber(e.target.value)}
+                      required
+
                     />
                   </FormGroup>
                 </Col>
@@ -697,6 +729,8 @@ function AyaReg() {
                       className="form-control form-select"
                       value={workinglocation}
                       onChange={(e) => setWorkingLocation(e.target.value)}
+                      required
+                      
                     >
                       <option value="">Select</option>
                       <option value="Local">Local</option>
@@ -728,7 +762,7 @@ function AyaReg() {
                     </select>
                   </FormGroup>
                 </Col> */}
-                <Col md="4">
+                {/* <Col md="4">
                   <FormGroup>
                     <label for="ayaRemark">Aya Speciality:</label>
                     <select
@@ -737,6 +771,8 @@ function AyaReg() {
                       value={ayaSpeciality}
                       name="ayaSpeciality"
                       onChange={(e) => setAyaSpeciality(e.target.value)}
+                      required
+
                     >
                       <option value="">Select</option>
                       <option value="Cooking">Cooking</option>
@@ -750,7 +786,7 @@ function AyaReg() {
                       <option value="Take-care-baby">Take care baby</option>
                     </select>
                   </FormGroup>
-                </Col>
+                </Col> */}
                 <Col md="4">
                   <FormGroup>
                     <label for="canspeak">aya Can Speak:</label>

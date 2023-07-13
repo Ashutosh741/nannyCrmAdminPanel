@@ -49,7 +49,7 @@ function CustomerRegister() {
   const [customerSpeak, setCustomerSpeak] = useState([]);
   const [forService, setForService] = useState("");
   const [file, setFile] = useState(null);
-  const [sameAddress, setSameAddress] = useState(false);
+  const [sameAddress, setSameAddress] = useState(true);
 
   const navigate = useNavigate();
 
@@ -220,7 +220,7 @@ function CustomerRegister() {
   };
 
   const handleCheckAddress = () => {
-    setSameAddress(true);
+    setSameAddress(!sameAddress);
     console.log("same Address", sameAddress);
     if (sameAddress) {
       setPermanentAddress(presentAddress);

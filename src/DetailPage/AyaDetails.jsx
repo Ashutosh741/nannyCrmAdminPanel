@@ -284,9 +284,6 @@ function AyaDetails() {
                     </button>
                   </div>
                   <div>
-        <label htmlFor="image-upload" class="btn btn-primary btn-sm">
-          Change Image
-        </label>
         <input
           id="image-upload"
           type="file"

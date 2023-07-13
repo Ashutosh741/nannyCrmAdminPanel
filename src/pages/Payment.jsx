@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import CustomerPaymentList from "./CustomerPaymentList";
+import { useReactToPrint } from "react-to-print";
 
 function Payment() {
   const [list, setList] = useState([]);
@@ -79,39 +80,11 @@ function Payment() {
     setCurrentPage(1);
   }, [list, searchTerm]);
 
-  const handleSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
+  const tableRef = useRef();
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reset pagination to the first page when searching
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Sorting logic
-  const sortedData = filteredData.sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  // Pagination logic
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const currentItems = sortedData.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const handlePrintTable = useReactToPrint({
+    content : ()=>tableRef.current,
+  })
 
   return (
     <>
@@ -134,7 +107,7 @@ function Payment() {
                   <div className="w-100 text-end">
                     <Button
                       className="btn bg-primary text-white mx-2"
-                      onClick={handleDownloadExcel}
+                      onClick={handlePrintTable}
                     >
                       Print Table
                     </Button>
@@ -153,116 +126,13 @@ function Payment() {
                   </div>
                 </div>
               </div>
-              {/* <div className="table-responsive rounded-3">
-                <table className="table table-responsive table-sm table-stripped table-bordered p-0">
-                  <thead className="bg-blue text-white">
-                    <tr className="text-uppercase">
-                      <th>Sr. No.</th>
-                      <th>Customer Code</th>
-                      <th>Name</th>
-
-                      <th>Image</th>
-                      <th className="">Security Amount</th>
-                      <th className="">GuardianName</th>
-                      <th className="">Assign</th>
-                      <th className="">Total Customer Bill</th>
-                      <th className="">Total Customer Pay</th>
-                      <th>Customer bill</th>
-                      <th>Amount Recieved</th>
-
-                      <th className="">Customer balance</th>
-                      <th className="">Status</th> 
-
-                       <th className="">Action</th>
-                    </tr>
-                  </thead>
-
-                  {loading ? (
-                    <div className="text-center d-flex justify-content-center p-3">
-                      Loading...
-                    </div>
-                  ) : (
-                    <tbody>
-                      {currentItems.map((item, index) => {
-                        const newIndex = index + 1;
-
-                        return (
-                          <tr key={index} onClick={() => handleRowClick(item)}>
-                            <td>{newIndex}</td>
-                            <td>{item.customerCode}</td>
-                            <td>{item.name}</td>
-                            <td>
-                              <img
-                                src={`${URL}/${item.file}`}
-                                class="img-fluid listimages"
-                                alt=""
-                              ></img>
-                            </td>
-                            <td className="">{item.securityAmount}</td>
-                            <td className="">{item.guardianName}</td>
-                            <td className="">{item.assign}</td>
-                            <td className="">{item.totalCustomerBill}</td>
-                            <td className="">{item.totalRecievedmoney}</td>
-
-                             <td>{item.customerbill}</td>
-                            <td>{item.amount_received}</td>
-
-                            <td className="">{item.balance}</td>
-                            <td className="">{item.status}</td> 
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  )}
-                </table>
-              </div> */}
-              {/* Pagination */}
-              {/* <div className="pagination-container">
-                <nav>
-                  <ul className="pagination">
-                    <li
-                      className={`page-item ${
-                        currentPage === 1 ? "disabled" : ""
-                      }`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                      <li
-                        className={`page-item ${
-                          currentPage === index + 1 ? "active" : ""
-                        }`}
-                        key={index}
-                      >
-                        <button
-                          className="page-link"
-                          onClick={() => handlePageChange(index + 1)}
-                        >
-                          {index + 1}
-                        </button>
-                      </li>
-                    ))}
-                    <li
-                      className={`page-item ${
-                        currentPage === totalPages ? "disabled" : ""
-                      }`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div> */}
-              <CustomerPaymentList/>
+              <div className="container" ref = {tableRef}>
+                <div className="row">
+                  <form onSubmit={handlePrintTable}>
+                  <CustomerPaymentList/>
+                  </form>
+                </div>
+              </div>
             </Col>
           </Row>
         </Container>

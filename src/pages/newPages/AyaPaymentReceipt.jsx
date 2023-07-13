@@ -8,42 +8,79 @@ import axios from "axios";
 import { Form, Navigate, useParams } from "react-router-dom";
 import { URL } from "../../Url";
 import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
-import AyaPaymentReceipt from "./AyaPaymentReceipt";
 
 
 
-const CustomerPaymentReceipt = (props) => {
+const AyaPaymentReceipt = () => {
 
-    const [name, setName] = useState('')  
+    const [name, setName] = useState('')
     const [presentAddress,setPresentAddress] = useState('')
     const [contactNumber,setContactNumber] = useState('')
     const [srNo,setSrNo] = useState('1')
-    const [customerCode, setCustomerCode] = useState('')
-    const [customerData, setCustomerData] = useState(null)
+    const [ayaCode, setAyaCode] = useState('')
+    const [ayaData, setAyaData] = useState(null)
     const [fromDate,setFromDate] = useState('')
     const [toDate,setToDate] = useState('')
     const [rate,setRate] = useState(0)
-    const [customerId,setCustomerId] = useState('');
+    const [ayaId,setAyaId] = useState('');
     const [generatedBill, setgeneratedBill] = useState(0);
-    const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
-    const [assignedAyaInBetween,setAssignedAyaInBetween] = useState([]);
+    const [assignedCustomerDetails,setAssignedCustomerDetails] = useState([]);
+    const [assignedCustomerInBetween,setAssignedCustomerInBetween] = useState([]);
     const [generatedInvoice, setGeneratedInvoice] = useState([]);
     const [showGeneratedButton,setShowGeneratedButton] = useState(true);
     const [leaveTaken,setLeaveTaken] = useState(0);
     const [billFor,setBillFor] = useState('');
-    const [showCustomerCode,setShowCustomerCode] = useState(false);
-    const [showCustomerBill,setShowCustomerBill] = useState(false);
-    const[showAyaBill,setShowAyaBill] = useState(false);
+    // const [showCuCode,setShowCustomerCode] = useState(false);
     const [showAyaCode,setShowAyaCode] = useState(false);
-    const [ayaCode, setAyaCode] = useState('')
+    // const [ayaCode, setAyaCode] = useState('')
 
     const {id} = useParams();
+
+
+    // console.log(props.ayaCode)
+    const fetchAyaData = async()=>{
+        try{
+            const response = await axios.get(`${URL}/ayareg/${ayaCode}`);
+            console.log("Initial data",response.data);
+            // console.log(response.data.data._id);
+            setAyaId(response.data.data._id)
+            setAyaData(response.data.data);
+            const data = response.data.data
+            
+            // console.log("generated Invoice",data.generatedInvoice)
+            // setGeneratedInvoice(data.generatedInvoice);
+            setGeneratedInvoice(data.generatedInvoice || []); 
+            // setCustomerPayment(data.customerpayment);
+            setPresentAddress(data.presentAddress); 
+            // setCustomerCode(data.customerCode)
+            setContactNumber(data.contactNumber);
+            setName(data.name);
+            setAssignedCustomerDetails(data.assignedAyaDetails)
+            // console.log(presentAddress)
+            // console.log(assignedAyaDetails)
+        }
+        catch(e){
+            console.log("error in fetching customer data:",e)
+        }
+    }
+
+    const get_diff_days  =  () => {
+        if(toDate && fromDate){
+            let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
+            // console.log(Math.floor(diff/86400000) + 1);
+            // diff -= leaveTaken
+            return  Math.ceil(diff/(1000*86400));
+        }else{
+            // console.log('not a number')
+        }
+     
+    }
 
     const fetchPrintDetails = async(index)=>{
         // alert(index)
 
         try{
-            const response = await axios.get(`${URL}/customerreg/${customerCode}`)
+            const response = await axios.get(`${URL}/ayareg/${ayaCode}`)
             // console.log("what data is",response.data.data.generatedInvoice[index]);
             const data = response.data.data.generatedInvoice[index];
 
@@ -64,98 +101,21 @@ const CustomerPaymentReceipt = (props) => {
         handlePrint()
     }
 
-    const fetchCustomerData = async()=>{
-        try{
-            const response = await axios.get(`${URL}/customerreg/${customerCode}`);
-            console.log("Initial data",response.data.data);
-            // console.log(response.data.data._id);
-            setCustomerId(response.data.data._id)
-            setCustomerData(response.data.data);
-            const data = response.data.data
-            // console.log("generated Invoice",data.generatedInvoice)
-            // setGeneratedInvoice(data.generatedInvoice);
-            setGeneratedInvoice(data.generatedInvoice || []); 
-            // setCustomerPayment(data.customerpayment);
-            setPresentAddress(data.presentAddress); 
-            // setCustomerCode(data.customerCode)
-            setContactNumber(data.contactNumber);
-            setName(data.name);
-            setAssignedAyaDetails(data.assignedAyaDetails)
-            // console.log(presentAddress)
-            // console.log(assignedAyaDetails)
-        }
-        catch(e){
-            console.log("error in fetching customer data:",e)
-        }
-    }
-    const get_diff_days  =  () => {
-        if(toDate && fromDate){
-            let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
-            // console.log(Math.floor(diff/86400000) + 1);
-            // diff -= leaveTaken
-            return  Math.ceil(diff/(1000*86400));
-        }else{
-            // console.log('not a number')
-        }
-     
-    }
-    // const generatedBill = get_diff_days()*{rate};
-
-    const checkBillFor = ()=>{
-      if(billFor === "Customer"){
-        setShowCustomerCode(true);
-        setShowAyaCode(false);
-        setShowCustomerBill(true);
-        setShowAyaBill(false);
-      }
-      else if(billFor === "Aya"){
-        setShowAyaCode(true);
-        setShowCustomerCode(false);
-        setShowCustomerBill(false);
-        setShowAyaBill(true);
-      }
-      else{
-        setShowAyaCode(false);
-        setShowCustomerCode(false);
-        setShowCustomerBill(false);
-        setShowAyaBill(false);
-      }
-    }
     
-    useEffect(()=>{
-        // rate
-        let calculatedgeneratedBill = (get_diff_days()-leaveTaken) * rate;
-        if(calculatedgeneratedBill < 0)calculatedgeneratedBill = 0;
-        setgeneratedBill(calculatedgeneratedBill);
-        fetchCustomerData();
-        // checkBillFor();
-
-        // currentTime();
-        
-    },[fromDate, toDate,rate,customerCode,leaveTaken])
-
-    useEffect(()=>{
-      checkBillFor()
-    },[billFor])
-
-    const tableRef = useRef();
-
-    // console.log(id)
-
     const handleGenerateBill = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch(`${URL}/customerreg/${customerId}`, {
+          const response = await fetch(`${URL}/ayareg/${ayaId}`, {
             method: "PUT",
             body: JSON.stringify({
 
-              generatedCustomerId : customerId,
+              generatedAyaId : ayaId,
               generatedTime : new Date().toLocaleTimeString(),  
               generatedBill: generatedBill,
               generatedToDate : toDate,
               generatedFromDate : fromDate,
               generatedRate : rate,
-              generatedAyaAssigned : "shakuntala"  
+              generatedCustomerAssigned : "Chandan"  
             }),
             headers: {
               "Content-Type": "application/json",
@@ -167,13 +127,13 @@ const CustomerPaymentReceipt = (props) => {
           console.log("updated data",data);
           alert("data Submitted Succesfully");
             const newInvoice = {
-                generatedCustomerId: customerId,
+                generatedAyaId: ayaId,
                 generatedTime: new Date().toLocaleTimeString(),  
                 generatedBill: generatedBill,
                 generatedToDate: toDate,
                 generatedFromDate: fromDate,
                 generatedRate: rate,
-                generatedAyaAssigned: "shakuntala"
+                generatedCustomerAssigned: "Chandan"
             };
             
             setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
@@ -183,7 +143,7 @@ const CustomerPaymentReceipt = (props) => {
             setRate(0);
 
         } catch (err) {
-          console.log("error in this customerCode",customerId);
+          console.log("error in this customerCode",ayaId);
 
           console.log("error in submitting generatedBill",err);
         }
@@ -191,11 +151,13 @@ const CustomerPaymentReceipt = (props) => {
       };
     
 
-    const handlePrint = useReactToPrint({
-    content: () => tableRef.current,
-    onAfterPrint: ()=>setShowGeneratedButton(true),
-    });
 
+    const tableRef = useRef();
+
+    const handlePrint = useReactToPrint({
+        content: () => tableRef.current,
+        onAfterPrint: ()=>setShowGeneratedButton(true),
+        });
     function convertNumberToWords(number) {
         const units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
         const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -230,42 +192,18 @@ const CustomerPaymentReceipt = (props) => {
       
         return 'Number is too large to convert.';
       }
-    const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
-    console.log("aya ka cde",ayaCode)
+      const current = new Date();
+      const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+
+
+      useEffect(()=>{
+        
+        fetchAyaData()
+      },[ayaCode])
 
   return (
     <>
-    <div className="container">
-      <div className="row">
-        <div className="col-4">
-        <FormGroup>
-            <label
-              style={{
-                display: "inline-block",
-                fontSize: "16px",
-                }}
-                className="fw-bold mb-1"
-            
-            >Generate Bill For</label>
-
-            <select
-              className="form-control form-select"
-              value={billFor}
-              // name="gender"
-              onChange={(e) => setBillFor(e.target.value)}
-              required
-
-            >
-              <option value="">Select</option>
-              <option value="Aya">Aya</option>
-              <option value="Customer">Customer</option>
-            </select>
-        </FormGroup>
-        </div>
-        {
-          showCustomerCode && 
-          <div className="col-4 ">
+          <div className="col-4">
           <div className="">
             <label
                 style={{
@@ -275,30 +213,18 @@ const CustomerPaymentReceipt = (props) => {
                 }}
                 className="fw-bold mb-1"
             >
-                Customer Code :{" "}
+                Aya Code :{" "}
             </label>
             <input
                 type="text"
                 className="form-control"
-                value={customerCode}
-                onChange={(e) => setCustomerCode(e.target.value)}
+                value={ayaCode}
+                onChange={(e) => setAyaCode(e.target.value)}
             />
         {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
             </div>
           </div>
-        }
-        {
-          showAyaCode && (
-            <AyaPaymentReceipt/>
-          )
-        }
-      </div>
-    </div>
-
-
-      { showCustomerBill && 
-      <>
-      <div className='container'  ref={tableRef}>
+        <div className='container'  ref={tableRef}>
         <div className="row">
 
             <form onSubmit={handleGenerateBill}>
@@ -322,7 +248,7 @@ const CustomerPaymentReceipt = (props) => {
                         
                         <div className="serial col-5 ms-0">
                         
-                            <span>SL NO. {customerCode}</span>
+                            <span>SL NO. {ayaCode}</span>
                         </div>
                         <div className="prop col-2 me-5">
                             <span> MR. ABHIJIT PODDAR</span>
@@ -333,7 +259,7 @@ const CustomerPaymentReceipt = (props) => {
                     </div>
                     <div className="col-12 row-2 mb-2">
                         <div className="partyName">
-                            <span>PARTY NAME: {name}</span>
+                            <span>AYA NAME: {name}</span>
                         </div>
                     </div>
                     <div className="col-12 row-3 mb-2">
@@ -343,7 +269,7 @@ const CustomerPaymentReceipt = (props) => {
                     </div>
                     <div className="col-8 row-4  d-flex gap-3">
                         <div className="purpose">
-                            <span>PURPOSE OF :</span>
+                            <span>ASSIGNED FOR :</span>
                         </div>
                         {/* <div className="options"> */}
                         <select className="form-select options" aria-label="Default select example">
@@ -408,7 +334,7 @@ const CustomerPaymentReceipt = (props) => {
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>CUSTOMER SIGNATURE</span>
+                        <span>AYA SIGNATURE</span>
                     </div>
                     <div className="col-6 text-center mb-2">
                         <div className="line">
@@ -422,13 +348,14 @@ const CustomerPaymentReceipt = (props) => {
             {
               showGeneratedButton &&(
                 <div className="print-btn text-center billButton">
-                <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
+                <button className='btn bg-primary text-white' onClick = {()=>fetchAyaData()} >Generate Bill</button>
                 </div>
               )
             }
             </form>
         </div>
       </div>
+      {generatedInvoice.length > 0 && (
       <section>
             <Container>
               <Row>
@@ -439,13 +366,13 @@ const CustomerPaymentReceipt = (props) => {
                       <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
                           <th>Sr. No</th>
-                          <th className="">Customer Code</th>
+                          <th className="">Aya Code</th>
                           <th className="">Time</th>
                           <th className="">Generated Bill</th>
                           <th className="">To Data</th>
                           <th className="">From Date</th>
                           <th className="">Rate</th>
-                          <th className="">Aya Assigned</th>
+                          <th className="">Customer Assigned</th>
                           <th className="">Download Bill</th>
                           {/* <th className="">Invoice</th> */}
                         </tr>
@@ -454,15 +381,15 @@ const CustomerPaymentReceipt = (props) => {
                       {generatedInvoice.map((item, index) => {
                         if (item) {
                           return (
-                            <tr key={item.generatedCustomerId}>
+                            <tr key={item.generatedAyaId}>
                               <td>{index + 1}</td>
-                              <td>{customerCode}</td>
+                              <td>{ayaCode}</td>
                               <td>{item.generatedTime}</td>
                               <td>{item.generatedBill}</td>
                               <td>{item.generatedToDate}</td>
                               <td>{item.generatedFromDate}</td>
                               <td>{item.generatedRate}</td>
-                              <td>{item.generatedAyaAssigned}</td>
+                              <td>{item.generatedCustomerAssigned}</td>
                               <td>
                                 <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
                               </td>
@@ -478,11 +405,9 @@ const CustomerPaymentReceipt = (props) => {
             </Container>
 
       </section>
-      </>
-      }
+      )}
     </>
   )
 }
-    
 
-export default adminLayout(CustomerPaymentReceipt)
+export default AyaPaymentReceipt

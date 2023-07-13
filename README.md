@@ -130,3 +130,16 @@ And you can start making an awesome admin application now.
     1.1 in dashboard here we have to show the total customer with their payment status, 
 
  -->
+
+ <!-- changes completed
+ 
+ 1. tabel updated with filter
+ 2. required filled in add customer and add aya , correect present check address
+
+ 3. delete confirmation is remaining
+ 4. update profile is remaining
+
+ 5. print table button completed 
+
+
+  -->
