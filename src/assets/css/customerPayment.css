@@ -1,3 +1,6 @@
+*{
+    font-size: 14px;;
+}
 .receipt{
     border: 1px solid black;
     margin: 20px;
@@ -10,9 +13,9 @@
 .companyLogo{
     height : 100px;
     width : 100px;
-    border: 4px solid #343a40b3;
-    box-shadow: 0px 0px #343a40b3;
-    border-radius: 20px;;
+    /* border: 4px solid #343a40b3; */
+    /* box-shadow: 0px 0px #343a40b3; */
+    /* border-radius: 20px;; */
 }
 
 .contactNumber{
@@ -157,7 +160,7 @@ input[type="date"]{
 
 .total{
     position: relative;
-    left : -85px;
+    left : -125px;
 }
 
 .leave{
@@ -178,4 +181,19 @@ input[type="date"]{
 .css-t89xny-MuiDataGrid-columnHeaderTitle{
     /* display: block; */
     font-weight: 600 !important;
+}
+
+
+.securityMoney{
+    position: relative;
+    left : -150px;
+}
+
+.rate{
+    position: relative;
+    left : -10px;
+}
+
+.rate input{
+    width : 20%;
 }

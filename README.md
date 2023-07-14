@@ -141,5 +141,9 @@ And you can start making an awesome admin application now.
 
  5. print table button completed 
 
+ 6 . fetching of ayaassign and customerassign is done
+
+ 7. exchange of ayaassignedDetails and assignedCustomerDetails is remaining
+
 
   -->

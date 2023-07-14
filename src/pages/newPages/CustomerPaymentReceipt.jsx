@@ -36,6 +36,8 @@ const CustomerPaymentReceipt = (props) => {
     const[showAyaBill,setShowAyaBill] = useState(false);
     const [showAyaCode,setShowAyaCode] = useState(false);
     const [ayaCode, setAyaCode] = useState('')
+    const [assignedAyaName, setAssignedAyaName] = useState("");
+    const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
 
     const {id} = useParams();
 
@@ -82,7 +84,15 @@ const CustomerPaymentReceipt = (props) => {
             setName(data.name);
             setAssignedAyaDetails(data.assignedAyaDetails)
             // console.log(presentAddress)
-            // console.log(assignedAyaDetails)
+            // console.log("in which format",data.assignedAyaDetails[0])
+            if(data.assignedAyaDetails){
+              const reverseData = data.assignedAyaDetails.reverse();
+              console.log("reversed data",reverseData)
+              setAssignedAyaName(reverseData[0].assignedAyaName)
+              setAssignedAyaPurpose(reverseData[0].assignedAyaPurpose)
+              console.log("are you there",reverseData[0].assignedAyaName);
+            }
+           
         }
         catch(e){
             console.log("error in fetching customer data:",e)
@@ -155,7 +165,8 @@ const CustomerPaymentReceipt = (props) => {
               generatedToDate : toDate,
               generatedFromDate : fromDate,
               generatedRate : rate,
-              generatedAyaAssigned : "shakuntala"  
+              generatedAyaAssigned : assignedAyaName,
+              generatedAyaPurpose : assignedAyaPurpose
             }),
             headers: {
               "Content-Type": "application/json",
@@ -166,21 +177,24 @@ const CustomerPaymentReceipt = (props) => {
           const data = await response.json();
           console.log("updated data",data);
           alert("data Submitted Succesfully");
-            const newInvoice = {
-                generatedCustomerId: customerId,
-                generatedTime: new Date().toLocaleTimeString(),  
-                generatedBill: generatedBill,
-                generatedToDate: toDate,
-                generatedFromDate: fromDate,
-                generatedRate: rate,
-                generatedAyaAssigned: "shakuntala"
-            };
-            
-            setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
-            
-            setFromDate("");
-            setToDate("");
-            setRate(0);
+          const newInvoice = {
+              generatedCustomerId: customerId,
+              generatedTime: new Date().toLocaleTimeString(),  
+              generatedBill: generatedBill,
+              generatedToDate: toDate,
+              generatedFromDate: fromDate,
+              generatedRate: rate,
+              generatedAyaAssigned : assignedAyaName,
+              generatedAyaPurpose : assignedAyaPurpose
+          };
+          
+          setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
+          
+          setFromDate("");
+          setToDate("");
+          setRate(0);
+          setAssignedAyaName("");
+          setAssignedAyaPurpose("");
 
         } catch (err) {
           console.log("error in this customerCode",customerId);
@@ -318,13 +332,13 @@ const CustomerPaymentReceipt = (props) => {
                     <div className="col-12 companyAddress">
                         <span>SARBAMANGALA PALLY, M.K ROAD, ENGLISH BAZAR, MALDA - 732101</span>
                     </div>
-                    <div className="row-1 mb-2">
+                    <div className="col-12 row-1 mb-2">
                         
                         <div className="serial col-5 ms-0">
                         
                             <span>SL NO. {customerCode}</span>
                         </div>
-                        <div className="prop col-2 me-5">
+                        <div className="prop col-3 me-5">
                             <span> MR. ABHIJIT PODDAR</span>
                         </div>
                         <div className="date col-4 me-5">
@@ -341,48 +355,60 @@ const CustomerPaymentReceipt = (props) => {
                             <span>ADDRESS: {presentAddress}</span>
                         </div>
                     </div>
-                    <div className="col-8 row-4  d-flex gap-3">
+                    <div className="col-12 row-4  d-flex gap-3">
+                      <div className="div col-6 d-flex">
                         <div className="purpose">
-                            <span>PURPOSE OF :</span>
+                            <span>ASSIGNED TO: {assignedAyaName}</span>
                         </div>
-                        {/* <div className="options"> */}
-                        <select className="form-select options" aria-label="Default select example">
-                            <option selected>Open this select menu</option>
+                        {/* <select className="form-select options" aria-label="Default select example" required>
+                            <option selected>select</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
-                            </select>
-                            {/* </div> */}
+                        </select> */}
+                        </div>
+                        <div className="col-6 d-flex">
+                        <div className="purpose">
+                            <span>PURPOSE OF : {assignedAyaPurpose}</span>
+                        </div>
+                        </div>
                     </div>
                     <div className="col-12 row-5 mb-2">
-                        <div className="mobile col-6">
+                        <div className="mobile col-4">
                             <span>MOBILE NO: {contactNumber}</span>
                         </div>
-                        <div className="rate col-6">
-                                <label>PER DAY RATE : 
+                        <div className="rate col-5">
+                                <span>RATE:</span>
                                     <input type="number" min="0" value={rate} onChange={(e)=>setRate(e.target.value)}/>
-                                </label>
                             {/* <span></span> */}
+                        </div>
+                        <div className="securityMoney col-4 d-flex">
+                        <span>SECURITY MONEY:</span>
+                        <select className="form-select options" aria-label="Default select example">
+                            <option selected>select</option>
+                            <option value="1">Paid</option>
+                            <option value="2">Not Paid</option>
+                            </select>
                         </div>
                     </div>
                     <div className="col-12 row-6 mb-2">
-                        <div className="duration col-5">
-                            <label>DURATION DATE FROM:
+                        <div className="duration col-4">
+                            <label required>FROM DATE:
                             <input type="date" value = {fromDate} onChange={(e)=>setFromDate(e.target.value)}/>
                             </label>
                         </div>
                         <div className="to col-4">
-                            <label>TO DATE:
+                            <label required>TO DATE:
                             <input type="date" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="leave col-5">
-                          <label>LEAVE: 
+                        <div className="leave col-3">
+                          <label>LEAVE :  
                             <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
                           </label>
                         </div>
-                        <div className="total col-2">
-                            <span>TOTAL DAYS: </span>{get_diff_days()}
+                        <div className="total col-4">
+                            <span>WORKING DAYS: </span>{get_diff_days()-leaveTaken}
                         </div>
                     </div>
 
@@ -393,7 +419,7 @@ const CustomerPaymentReceipt = (props) => {
                             <span>TOTAL AMOUNT (IN WORDS): {convertNumberToWords(generatedBill)}</span>
                         </div>
                     </div>
-                    <div className="row text-center mt-3 mb-5">
+                    <div className="col-12 row text-center mt-3 mb-5">
                         <div className="col-3"></div>
                         <div className="col-6">
                             <div className="display text-start">

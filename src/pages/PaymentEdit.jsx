@@ -66,16 +66,19 @@ function PaymentEdit() {
       setTech(techData);
       console.log("techdata" , techData)
       // isse customer ka bill latest generated bill se update ho rha 
-      const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
-      if(techData.generateInvoiceLength > 0){
-          setGeneratedBill(techData.generatedInvoice[generateInvoiceLength].generatedBill); 
-          console.log("generated bill" , techData.generatedInvoice[0].generatedBill)
-          console.log(techData.generatedInvoice.generatedBill)
+      // const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
+      if(techData.generateInvoice){
+          const reverseData = techData.generateInvoice.reverse();
+          console.log("generated bill" , reverseData[0].generatedBill)
+          
+          setGeneratedBill(reverseData[0].generatedBill); 
+          setShowGeneratedButton(false);
+
+          // console.log(techData.generatedInvoice.generatedBill)
       }
-      console.log("length",techData.generatedInvoice[generateInvoiceLength])
-      if((techData.generatedInvoice[generateInvoiceLength] !== undefined)){
-        setShowGeneratedButton(false);
-      }
+      // console.log("length",techData.generatedInvoice[generateInvoiceLength])
+      // if((techData.generatedInvoice[generateInvoiceLength] !== undefined)){
+      // }
       setCustomerPayment(techData.customerpayment);
       const assigncheck = techData.assign;
       // console.log(techData.generatedInvoice.generatedBill)
@@ -184,6 +187,10 @@ function PaymentEdit() {
     fetchCustomerData();
     fetchTotalBill();
   }, [id,showGeneratedButton]);
+  useEffect(() => {
+    fetchCustomerData();
+    // fetchTotalBill();
+  }, []);
 
   // const pageNumbers = Math.ceil(customerpayment.length / itemsPerPage);
   // const pageNumbers = Array.from(

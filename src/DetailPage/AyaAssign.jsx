@@ -3,8 +3,6 @@ import { Button, Col, Container, Row, Form, FormGroup } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
 import axios from "axios";
-
-import * as XLSX from "xlsx";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 import "../assets/css/profile.css";
@@ -12,15 +10,20 @@ import "../assets/css/profile.css";
 function AyaAssign() {
   const [tech, setTech] = useState([]);
   const [list, setList] = useState([]);
-  const [customer, setCustomer] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [customerList, setCustomerList] = useState([]);
+  const [customerSelect, setCustomerSelect] = useState(false);
 
-  const [border, setBorder] = useState(false);
-  const [assign, setAssign] = useState("");
-  const [assignCustomer, setAssginCustomer] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [assignData, setAssignData] = useState([]);
-  const [assingname, setAssignName] = useState("");
-  const [assignid, setAssignid] = useState("");
+  const [assignedCustomerCode, setAssignedCustomerCode] = useState("");
+  const [assignedCustomerName, setAssignedCustomerName] = useState("");
+  const [assignedCustomerFromDate, setAssignedCustomerFromDate] = useState("");
+  const [assignedCustomerToDate, setAssignedCustomerToDate] = useState("");
+  const [assignedCustomerReason, setAssignedCustomerReason] = useState("");
+  const [assignedCustomerRate, setAssignedCustomerRate] = useState("");
+  const [assignedCustomerShift, setAssignedCustomerShift] = useState("");
+  const [assignedCustomerPurpose, setAssignedCustomerPurpose] = useState("");
+  const [assignedCustomerDetails,setAssignedCustomerDetails] = useState([]);
 
   const { id } = useParams();
 
@@ -31,7 +34,11 @@ function AyaAssign() {
       const response = await axios.get(`${URL}/ayareg/${id}`);
       const techData = response.data.data;
       setTech(techData);
-      setAssignid(tech.assign);
+      // setAssignid(techData.assign);
+      // console.log("assigne custome code",techData.assign)
+      setAssignedCustomerDetails(techData.assignedCustomerDetails)
+      
+      console.log("what's techDAata",techData)
     } catch (error) {
       console.log(error);
     }
@@ -39,76 +46,231 @@ function AyaAssign() {
 
   const fetchassignData = async () => {
     try {
-      const response = await axios.get(`${URL}/customerreg/${assignid}`);
+      const response = await axios.get(`${URL}/customerreg/${assignedCustomerCode}`);
       const techData = response.data.data;
-      setAssignData(techData);
-      setAssignName(techData.name);
-      console.log(assingname);
+      console.log("where are you",techData)
 
-      console.log("assign data", assignData);
+      setAssignData(techData);
+      setAssignedCustomerName(techData.name);
+      console.log("it's me ",techData.name);
+
+      // console.log("assign data", assignData);
     } catch (error) {
       console.log(error);
     }
   };
-
   const apiCustomerid = () => {
-    axios.get(`${URL}/customerreg/`).then((res) => setCustomer(res.data.data));
-    console.log("customer", customer);
+      axios.get(`${URL}/customerreg/`).then((res) => {
+        setCustomerList(res.data.data);
+        // console.log("customerList", res.data.data);
+      }).catch((error) => {
+        console.log(error);
+      });
   };
-
-  const assignChecked = () => {
-    axios
-      .get(`${URL}/customerreg/${assign}`)
-      .then((res) => setAssginCustomer(res.data.data));
-
-    console.log(assignCustomer);
-  };
-
+  
   useEffect(() => {
     fetchaayaData();
     apiCustomerid();
-    assignChecked();
     fetchassignData();
-  }, [id]);
+  }, [id, assignedCustomerPurpose, customerSelect]);
+  
 
   console.log("id", id);
 
-  // const handleFormSubmit = (event) => {
-  //   event.preventDefault();
-
-  //   axios
-  //     .put(`${URL}/ayareg/${id}`, tech)
-  //     .then((res) => {
-  //       alert("Data updated successfully");
-  //       navigate("/ayalist");
-  //       // You can perform any additional actions after the update is successful
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error updating data:", error);
-  //       // Handle any errors that occurred during the update
+  // const handleFormSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch(`${URL}/ayareg/${id}`, {
+  //       method: "PUT",
+  //       body: JSON.stringify({
+  //         assignedCustomerCode : assignedCustomerCode,
+  //         assignedCustomerName : assignedCustomerName,
+  //         assignedCustomerFromDate : assignedCustomerFromDate,
+  //         assignedCustomerToDate : assignedCustomerToDate,
+  //         assignedCustomerReason : assignedCustomerReason,
+  //         assignedCustomerRate : assignedCustomerRate,
+  //         assignedCustomerShift : assignedCustomerShift,
+  //         assignedCustomerPurpose : assignedCustomerPurpose,
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
   //     });
+  //     await fetchaayaData();
+  //     const data = await response.json();
+  //     console.log(data);
+  //     const newAssignedCustomerDetails = {
+  //       assignedCustomerCode : assignedCustomerCode,
+  //       assignedCustomerName : assignedCustomerName,
+  //       assignedCustomerFromDate : assignedCustomerFromDate,
+  //       assignedCustomerToDate : assignedCustomerToDate,
+  //       assignedCustomerReason : assignedCustomerReason,
+  //       assignedCustomerRate : assignedCustomerRate,
+  //       assignedCustomerShift : assignedCustomerShift,
+  //       assignedCustomerPurpose : assignedCustomerPurpose,
+  //     }
+  //     setAssignedCustomerDetails(previousassignedCustomerDetails => [...previousassignedCustomerDetails,newAssignedCustomerDetails])
+  //     setAssignedCustomerFromDate("");
+  //     setAssignedCustomerToDate("");
+  //     setAssignedCustomerReason("select");
+  //     setAssignedCustomerRate("0");
+  //     setAssignedCustomerShift("select");
+  //     setAssignedCustomerPurpose("select");
+  //     setAssignedCustomerCode("");
+  //     setCustomerSelect(false);
+  //     setCustomerList([])
+  //     // console.log("setAssignedCustomerDetails is this",assignedCustomerDetails)
+  //     alert("data Submitted Succesfully");
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   // fetchaayaData();
   // };
 
+  // const handleFormSubmitCustomer = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch(`${URL}/customerreg/${assignedCustomerCode}`, {
+  //       method: "PUT",
+  //       body: JSON.stringify({
+  //         assignedAyaCode : tech.ayaCode,
+  //         assignedAyaName : tech.name,
+  //         assignedAyaFromDate : assignedCustomerFromDate,
+  //         assignedAyaToDate : assignedCustomerToDate,
+  //         assignedAyaReason : assignedCustomerReason,
+  //         assignedAyaRate : assignedCustomerRate,
+  //         assignedAyaShift : assignedCustomerShift,
+  //         assignedAyaPurpose : assignedCustomerPurpose,
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("it's show time ",data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   fetchassignData();
+  // };
+
+
+  // const handleFormSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.put(`${URL}/ayareg/${id}`, {
+  //       assignedCustomerCode: assignedCustomerCode,
+  //       assignedCustomerName: assignedCustomerName,
+  //       assignedCustomerFromDate: assignedCustomerFromDate,
+  //       assignedCustomerToDate: assignedCustomerToDate,
+  //       assignedCustomerReason: assignedCustomerReason,
+  //       assignedCustomerRate: assignedCustomerRate,
+  //       assignedCustomerShift: assignedCustomerShift,
+  //       assignedCustomerPurpose: assignedCustomerPurpose,
+  //     });
+  //     await fetchaayaData();
+  //     const data = response.data;
+  //     console.log(data);
+  //     const newAssignedCustomerDetails = {
+  //       assignedCustomerCode: assignedCustomerCode,
+  //       assignedCustomerName: assignedCustomerName,
+  //       assignedCustomerFromDate: assignedCustomerFromDate,
+  //       assignedCustomerToDate: assignedCustomerToDate,
+  //       assignedCustomerReason: assignedCustomerReason,
+  //       assignedCustomerRate: assignedCustomerRate,
+  //       assignedCustomerShift: assignedCustomerShift,
+  //       assignedCustomerPurpose: assignedCustomerPurpose,
+  //     };
+  //     setAssignedCustomerDetails((previousassignedCustomerDetails) => [
+  //       ...previousassignedCustomerDetails,
+  //       newAssignedCustomerDetails,
+  //     ]);
+  //     setAssignedCustomerFromDate("");
+  //     setAssignedCustomerToDate("");
+  //     setAssignedCustomerReason("select");
+  //     setAssignedCustomerRate("0");
+  //     setAssignedCustomerShift("select");
+  //     setAssignedCustomerPurpose("select");
+  //     setAssignedCustomerCode("");
+  //     setCustomerSelect(false);
+  //     setCustomerList([]);
+  //     alert("Data Submitted Successfully");
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  
+  // const handleFormSubmitCustomer = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.put(`${URL}/customerreg/${assignedCustomerCode}`, {
+  //       assignedAyaCode: tech.ayaCode,
+  //       assignedAyaName: tech.name,
+  //       assignedAyaFromDate: assignedCustomerFromDate,
+  //       assignedAyaToDate: assignedCustomerToDate,
+  //       assignedAyaReason: assignedCustomerReason,
+  //       assignedAyaRate: assignedCustomerRate,
+  //       assignedAyaShift: assignedCustomerShift,
+  //       assignedAyaPurpose: assignedCustomerPurpose,
+  //     });
+  //     const data = response.data;
+  //     console.log("it's show time ", data);
+  //     await fetchassignData();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${URL}/ayareg/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          assign: assign,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.put(`${URL}/ayareg/${id}`, {
+        assignedCustomerCode: assignedCustomerCode,
+        assignedCustomerName: assignedCustomerName,
+        assignedCustomerFromDate: assignedCustomerFromDate,
+        assignedCustomerToDate: assignedCustomerToDate,
+        assignedCustomerReason: assignedCustomerReason,
+        assignedCustomerRate: assignedCustomerRate,
+        assignedCustomerShift: assignedCustomerShift,
+        assignedCustomerPurpose: assignedCustomerPurpose,
       });
-      await fetchaayaData();
-      const data = await response.json();
+      const data = response.data;
       console.log(data);
-      alert("data Submitted Succesfully");
+  
+      const newAssignedCustomerDetails = {
+        assignedCustomerCode: assignedCustomerCode,
+        assignedCustomerName: assignedCustomerName,
+        assignedCustomerFromDate: assignedCustomerFromDate,
+        assignedCustomerToDate: assignedCustomerToDate,
+        assignedCustomerReason: assignedCustomerReason,
+        assignedCustomerRate: assignedCustomerRate,
+        assignedCustomerShift: assignedCustomerShift,
+        assignedCustomerPurpose: assignedCustomerPurpose,
+      };
+  
+      const updatedTech = {
+        ...tech,
+        assignedCustomerDetails: [
+          ...tech.assignedCustomerDetails,
+          newAssignedCustomerDetails,
+        ],
+      };
+  
+      setTech(updatedTech);
+      setAssignedCustomerFromDate("");
+      setAssignedCustomerToDate("");
+      setAssignedCustomerReason("select");
+      setAssignedCustomerRate("0");
+      setAssignedCustomerShift("select");
+      setAssignedCustomerPurpose("select");
+      setAssignedCustomerCode("");
+      setCustomerSelect(false);
+      setCustomerList([]);
+      alert("Data Submitted Successfully");
     } catch (err) {
       console.log(err);
     }
   };
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -138,23 +300,6 @@ function AyaAssign() {
       });
   };
 
-  // useEffect(() => {
-  //   apiCategory();
-  //   apiTechid();
-  // }, []);
-
-  // const apiTechid = () => {
-  //   const name = tech.assign;
-  //   setAssginName(name);
-  //   axios
-  //     .get(`${URL}/customerreg/${assignName}`)
-  //     .then((res) => setAssignData(res.data.data));
-  //   console.log("assignData", assignData);
-
-  //   console.log("assingdata name", assignData.name);
-  // };
-  // name comes undefinded
-
   useEffect(() => {
     apiCategory();
   }, []);
@@ -166,68 +311,83 @@ function AyaAssign() {
           <Row className="align-items-center">
             <Col md="12" className="mt-4">
               <div className="">
-                <Form onSubmit={handleFormSubmit}>
+                <Form onSubmit={(e)=>{handleFormSubmit(e); }}>
                   <Row>
-                    <Col md="3">
+                    <Col md="4">
                       <label className="mb-1">Assign:</label>
                       <select
                         className="form-control form-select"
-                        value={assign || ""}
+                        value={assignedCustomerCode}
                         name="assign"
-                        onChange={(e) => setAssign(e.target.value)}
+                        onChange={(e) => setAssignedCustomerCode(e.target.value)}
+                        onClick={() => setCustomerSelect(true)}
                       >
-                        {/* {customer.map((item) => {
-                          return (
-                            <>
-                              <option value={item.name}>
-                                {item.customerCode} {item.name}{" "}
+                        {!customerList ? (
+                          <option value="">Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">Select</option>
+                            {customerList.map((item) => (
+                              <option key={item._id} value={item.customerCode}>
+                                {item.customerCode} {item.name}
                               </option>
-                            </>
-                          );
-                        })} */}
-
-                        {customer.map((item) => {
-                          return (
-                            <>
-                              {/* <option value={item._id}> */}
-                              <option value={item.customerCode}>
-                                {item.customerCode} {item.name}{" "}
-                              </option>
-                            </>
-                          );
-                        })}
+                            ))}
+                          </>
+                        )}
                       </select>
+
                     </Col>
                     <Col md = "2">
                       <label className="mb-1">From Date</label>
-                      <input type = "date" className="form-control"></input>
+                      <input type = "date" className="form-control" onChange={(e)=>setAssignedCustomerFromDate(e.target.value)} value = {assignedCustomerFromDate} required></input>
                     </Col>
                     <Col md = "2">
-                      <label className="mb-1">To Date</label>
-                      <input type = "date" className="form-control"></input>
+                      <label className="mb-1" >To Date</label>
+                      <input type = "date" className="form-control"  onChange={(e)=>setAssignedCustomerToDate(e.target.value)} value={assignedCustomerToDate}></input>
                     </Col>
                     <Col md = "2">
                       <label className="mb-1">Reason</label>
-                      <select className="form-select">
-                        <option value = "1">Hold</option>
-                        <option value = "2">Replace</option>
+                      <select className="form-select" onChange={(e)=>setAssignedCustomerReason(e.target.value)} value={assignedCustomerReason} required>
+                        <option value = "select">Select</option>
+                        <option value = "hold">Hold</option>
+                        <option value = "replace">Replace</option>
                       </select>
                       {/* <input type = "date" className="form-control"></input> */}
                     </Col>
                     <Col md = "2">
+                      <label className="mb-1">Rate</label>
+                      <input type = "number" className="form-control" onChange={(e)=>setAssignedCustomerRate(e.target.value)} value={assignedCustomerRate} required></input>
+                    </Col>
+                    <Col md = "2 mt-3">
                       <label className="mb-1">Shift</label>
-                      <select className="form-select">
-                        <option value = "1">Day</option>
-                        <option value = "2">Night</option>
-                        <option value = "3">Day and Night</option>
+                      <select className="form-select" onChange={(e)=>setAssignedCustomerShift(e.target.value)} value={assignedCustomerShift} required>
+                        <option value = "select">Select</option>
+                        <option value = "day">Day</option>
+                        <option value = "night">Night</option>
+                        <option value = "dayNight">Day and Night</option>
                       </select>
                       {/* <input type = "date" className="form-control"></input> */}
                     </Col>
-                    <Col md="1">
+                    <Col md = "2 mt-3">
+                      <label className="mb-1">Purpose</label>
+                      <select className="form-select" onChange={(e)=>setAssignedCustomerPurpose(e.target.value)} value={assignedCustomerPurpose} required>
+                        <option value = "select">Select</option>
+                        <option value = "cooking">Cooking</option>
+                        <option value = "cookingHouseKeeping">Cooking and HouseKeeping</option>
+                        <option value = "houseKeeping">HouseKeeping</option>
+                        <option value = "newBornbaby">New Born Baby</option>
+                        <option value = "oldMan">Old man</option>
+                        <option value = "oldWomen">Old Women</option>
+                        <option value = "takeCareBaby">Take Care Baby</option>
+                      </select>
+                      {/* <input type = "date" className="form-control"></input> */}
+                    </Col>
+                    <Col md="1 mt-3">
                       <div className="mt-4">
                         <button
                           type="submit"
                           className="btn bg-primary text-white"
+                          onClick={fetchaayaData}
                         >
                           Save
                         </button>
@@ -244,10 +404,16 @@ function AyaAssign() {
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
                       <th>Aya Code</th>
-                      <th>Name</th>
-                      <th className="">Date Of Joinin</th>
-                      <th className="">Closing Date</th>
-                      <th className="">Assign</th>
+                      <th>Aya Name</th>
+                      <th>Customer Code</th>
+                      <th>Customer Name</th>
+                      <th>From Date</th>
+                      <th>To Date</th>
+                      <th>Reason</th>
+                      <th>Rate</th>
+                      <th className="">Shift</th>
+                      <th className="">Purpose</th>
+                      {/* <th className="">Assign</th> */}
                     </tr>
                   </thead>
 
@@ -257,28 +423,27 @@ function AyaAssign() {
                     </div>
                   ) : (
                     <tbody>
-                      <tr key={tech.id} onClick={() => handleRowClick()}>
-                        <td>{tech.ayaCode}</td>
-                        <td>{tech.name}</td>
-
-                        <td className="">
-                          {tech.joining ? tech.joining.substring(0, 10) : ""}
-                        </td>
-                        <td className="">
-                          {tech.closingDate
-                            ? tech.closingDate.substring(0, 10)
-                            : ""}
-                        </td>
-                        <td className="">
-                          {tech.assign}
-                          {/* {" "}
-                          {assignid ? (
-                            <p>{assignData.name}</p>
-                          ) : (
-                            <p className="">{tech.assign}</p>
-                          )}{" "} */}
-                        </td>
-                      </tr>
+                        {assignedCustomerDetails.map((item, index) => {
+                        if (item) {
+                          return (
+                            <tr key={tech.id} onClick={() => handleRowClick()}>
+                              <td>{tech.ayaCode}</td>
+                              <td>{tech.name}</td>
+                              <td>{item.assignedCustomerCode}</td>
+                              <td>{item.assignedCustomerName}</td>
+                              <td>{item.assignedCustomerFromDate}</td>
+                              <td>{item.assignedCustomerToDate}</td>
+                              <td>{item.assignedCustomerReason}</td>
+                              <td>{item.assignedCustomerRate}</td>
+                              <td>{item.assignedCustomerShift}</td>
+                              <td>{item.assignedCustomerPurpose}</td>
+                              {/* <td>
+                                <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
+                              </td> */}
+                            </tr>
+                          );
+                        }
+                      }).reverse()}
                     </tbody>
                   )}
                 </table>
@@ -293,201 +458,3 @@ function AyaAssign() {
 
 export default adminLayout(AyaAssign);
 
-
-
-
-// import React, { useEffect, useRef, useState } from "react";
-// import { Col, Container, Form, FormGroup, NavLink, Row } from "react-bootstrap";
-// import Box from "@mui/material/Box";
-// import { DataGrid } from "@mui/x-data-grid";
-// import { useReactToPrint } from "react-to-print";
-
-// import { DatePicker, IconButton } from "rsuite";
-// import { Link } from "react-router-dom";
-// import axios from "axios";
-// import { BaseURL } from "../Common/URL";
-// import { token } from "../utils/Token";
-// import { srRS } from "@mui/material/locale";
-
-// function Staff() {
-//   const [staff, setStaff] = useState([]);
-
-//   const headers = {
-//     Authorization: `Bearer ${token}`,
-//   };
-
-//   const fetchStaffApi = async () => {
-//     try {
-//       const response = await axios.get(`${BaseURL}/user`, {
-//         headers,
-//       });
-//       setStaff(response.data.data);
-//       console.log(staff);
-//     } catch (error) {
-//       console.error("Error fetching category data:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchStaffApi();
-//   }, []);
-
-//   const getRowId = (staff) => staff._id;
-
-//   const handleEditClick = (id) => {
-//     alert(`Edit button clicked for row with ID: ${id}`);
-//   };
-
-//   const columns = [
-//     {
-//       field: "id",
-//       headerName: "Sr. No.",
-//       width: 90,
-//       renderCell: (params) => {
-//         return parseInt(params.rowIndex + 1);
-//       },
-//     },
-
-//     {
-//       field: "name",
-//       headerName: "Name",
-//       width: 200,
-//     },
-
-//     {
-//       field: "employee_code",
-//       headerName: "employee_code",
-//       width: 200,
-//     },
-//     {
-//       field: "mobile_no",
-//       headerName: "Mobile Number",
-//       width: 150,
-//     },
-//     {
-//       field: "appointmentdate",
-//       headerName: "Appointment Date",
-//       width: 150,
-//     },
-//     {
-//       field: "email_address",
-//       headerName: "Email ID",
-//       width: 150,
-//     },
-//     {
-//       field: "edit",
-//       headerName: "Edit",
-//       width: 100,
-//       renderCell: (params) => {
-//         const id = params.row.employee_code;
-//         return (
-//           <Link to={`/user/${id}`}>
-//             <button
-//               color="primary"
-//               aria-label="edit"
-//               className="btn"
-//               onClick={() => handleEditClick(id)}
-//             >
-//               <i class="fa-regular fa-pen-to-square"></i>
-//             </button>
-//           </Link>
-//         );
-//       },
-//     },
-//     {
-//       field: "view",
-//       headerName: "View",
-//       width: 100,
-//       renderCell: (params) => {
-//         const id = params.row.employee_code;
-//         return (
-//           <Link to={`/user/${id}`}>
-//             <button
-//               color="primary"
-//               aria-label="edit"
-//               className="btn"
-//               onClick={() => handleEditClick(id)}
-//             >
-//               <i class="fa-regular fa-eye"></i>
-//             </button>
-//           </Link>
-//         );
-//       },
-//     },
-//     {
-//       field: "delete",
-//       headerName: "Delete",
-//       width: 100,
-//       renderCell: (params) => {
-//         const id = params.row.employee_code;
-//         return (
-//           <Link to={`/user/${id}`}>
-//             <button
-//               color="primary"
-//               aria-label="edit"
-//               className="btn"
-//               onClick={() => handleEditClick(id)}
-//             >
-//               <i class="fa-solid fa-trash"></i>
-//             </button>
-//           </Link>
-//         );
-//       },
-//     },
-//   ];
-
-//   // this is showing NaN
-
-//   const tableRef = useRef();
-
-//   const handlePrint = useReactToPrint({
-//     content: () => tableRef.current,
-//   });
-
-//   return (
-//     <>
-//       <section className="space">
-//         <Container fluid>
-//           <Row className="">
-//             <Col md="12">
-//               <div className="bg-white content_box">
-//                 <div className="d-flex align-items-center justify-content-between appointmentheader align-items-center flex-wrap">
-//                   <h5 className="border-0 pb-0 m-0">Staff Details</h5>
-//                   <div className="d-flex align-items-center gap-3 flex-wrap">
-//                     <button className="print_btn btn" onClick={handlePrint}>
-//                       Print
-//                     </button>
-//                     <Link to={"/stafform"} className="print_btn btn">
-//                       Add Staff
-//                     </Link>
-//                   </div>
-//                 </div>
-//                 <div className="content_boxForm">
-//                   <Box sx={{ height: 500, width: "100%" }}>
-//                     <DataGrid
-//                       ref={tableRef}
-//                       rows={staff}
-//                       columns={columns}
-//                       getRowId={getRowId}
-//                       initialState={{
-//                         pagination: {
-//                           paginationModel: {
-//                             pageSize: 10,
-//                           },
-//                         },
-//                       }}
-//                       pageSizeOptions={[10]}
-//                       disableRowSelectionOnClick
-//                     />
-//                   </Box>
-//                 </div>
-//               </div>
-//             </Col>
-//           </Row>
-//         </Container>
-//       </section>
-//     </>
-//   );
-// }
-
-// export default Staff;

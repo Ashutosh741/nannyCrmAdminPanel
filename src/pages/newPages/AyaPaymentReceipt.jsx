@@ -273,10 +273,14 @@ const AyaPaymentReceipt = () => {
                         </div>
                         {/* <div className="options"> */}
                         <select className="form-select options" aria-label="Default select example">
-                            <option selected>Open this select menu</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option value = "select">Select</option>
+                        <option value = "cooking">Cooking</option>
+                        <option value = "cookingHouseKeeping">Cooking and HouseKeeping</option>
+                        <option value = "houseKeeping">HouseKeeping</option>
+                        <option value = "newBornbaby">New Born Baby</option>
+                        <option value = "oldMan">Old man</option>
+                        <option value = "oldWomen">Old Women</option>
+                        <option value = "takeCareBaby">Take Care Baby</option>
                             </select>
                             {/* </div> */}
                     </div>
