@@ -5,33 +5,30 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { URL } from "../Url";
 import assignCustomer from "../assets/images/assignCustomer.png";
-import { Pagination } from "react-bootstrap";
 
 function AyaPayment() {
   const [tech, setTech] = useState([]);
   const [customer, setCustomer] = useState([]);
-  const [aayapayment, setaayaPayment] = useState([]);
-  const [border, setBorder] = useState(false);
 
-  const [showbox, setShowbox] = useState(false);
+  const [showbox, setShowbox] = useState(true);
   const [customerbill, setCustomerbill] = useState("");
   const [aayaPaid, setAayaPaid] = useState("");
   const [profit, setProfit] = useState("");
-  const [month, setMonth] = useState("");
   const [date, setDate] = useState("");
   const [assigncheck, setAssignCheck] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
-
-  const [totalCustomerBill, setTotalCustomerBill] = useState("");
-  const [totalAyaReceived, setAyaTotalReceived] = useState("");
   const [assigndata, setAssignData] = useState([]);
+  const [generatedBill,setGeneratedBill] = useState('');
+  const [amountPaid, setAmountPaid] = useState("");
+  const [fromDate,setFromDate] = useState('')
+  const [toDate,setToDate] = useState('')
+  const [rate,setRate] = useState(0);
+  const [assignedCustomerName, setAssignedCustomerName] = useState("");
+  const [assignedCustomerPurpose, setAssignedCustomerPurpose] = useState("");
+  const [leaveTaken,setLeaveTaken] = useState(0);
+  const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
+  const [ayaPaymentDetails,setAyaPaymentDetails] = useState([]);
+  // const [customerPaymentDetails,setCustomerPaymentDetails] = useState([]);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [firstCustomerbill, setFirstCustomerBill] = useState("");
-  const [lastCustomerBill, setLastCustomerBill] = useState("");
-  const [totalProfit, setTotalProfit] = useState("");
 
   const { id } = useParams();
 
@@ -47,16 +44,38 @@ function AyaPayment() {
       const response = await axios.get(`${URL}/ayareg/${id}`);
       const techData = response.data.data;
       setTech(techData);
-      setaayaPayment(techData.ayapayment);
       const assignCustomer = techData.assign;
       // const assignCustomer = techData.assign;
       setAssignCheck(assignCustomer);
+
+      const reversePaymentData = techData.ayaPaymentDetails.reverse();
+      setAyaPaymentDetails(reversePaymentData);
+
+      console.log("her payment details",techData)
+
+      const reverseBillData = techData.ayaGeneratedInvoice.reverse();
+      setGeneratedBill(reverseBillData[0].generatedBill)
+      setFromDate(reverseBillData[0].generatedFromDate);
+      setToDate(reverseBillData[0].generatedToDate);
+      setRate(reverseBillData[0].generatedRate);
+      setAssignedCustomerName(reverseBillData[0].generatedCustomerAssigned);
+      setAssignedCustomerPurpose(reverseBillData[0].generatedCustomerPurpose);
+      setLeaveTaken(reverseBillData[0].generatedLeaveTaken);
+      setGeneratedWorkingDays(reverseBillData[0].generatedWorkingDays);
+
+      
+
+
+      console.log("reveresal data",reverseBillData[0])
+
+
+
       console.log("assign check to the customer  ", assignCustomer);
-      if (assignCustomer !== "Not Assign") {
-        setShowbox(true);
-      } else {
-        setShowbox(false);
-      }
+      // if (assignCustomer !== "Not Assign") {
+      //   setShowbox(true);
+      // } else {
+      //   setShowbox(false);
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +89,7 @@ function AyaPayment() {
   const resetForm = () => {
     setCustomerbill("");
     setAayaPaid("");
-    setMonth("");
+    // setMonth("");
     setDate("");
     setProfit("");
   };
@@ -80,14 +99,15 @@ function AyaPayment() {
       const response = await fetch(`${URL}/ayareg/${id}`, {
         method: "PUT",
         body: JSON.stringify({
-          customerbill: customerbill,
-          ayapaid: aayaPaid,
-          month: month,
-          currentdate: date,
-          profit: profit,
-          totalAyapaid: totalAyaReceived,
-          totalCustomerbill: totalCustomerBill,
-          totalProfit: totalProfit,
+          paymentBill: generatedBill,
+          paymentAmountReceived: amountPaid,
+          paymentFromDate: fromDate,
+          paymentToDate: toDate,
+          paymentRate: rate,
+          paymentCustomerAssigned: assignedCustomerName,
+          paymentCustomerPurpose: assignedCustomerPurpose,
+          paymentWorkingDays : generatedWorkingDays,
+          paymentLeaveTaken : leaveTaken,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +115,7 @@ function AyaPayment() {
       });
       await fetchCustomerData();
       const data = await response.json();
-      console.log(data);
+      console.log("check out the updatd data",data);
       alert("data Submitted Succesfully");
       resetForm();
     } catch (err) {
@@ -104,7 +124,7 @@ function AyaPayment() {
   };
 
   const handleRowRemove = () => {
-    setBorder(true);
+    // setBorder(true);
   };
 
   useEffect(() => {
@@ -112,36 +132,24 @@ function AyaPayment() {
     apiCustomerid();
     fetchTotalBill();
     assigndataget();
-  }, [id, assigncheck]);
+  }, [id, assigncheck,amountPaid]);
+
+  useEffect(() => {
+    fetchCustomerData();
+    // console.log("yeah running 2nd useeffect")
+    // fetchTotalBill();
+  }, []);
+
 
   console.log("id", id);
-
-  const calculate = () => {
-    const AdminProfit = customerbill - aayaPaid;
-    console.log(AdminProfit);
-    setProfit(AdminProfit);
-    setBorder(true);
-
-    setTotalCustomerBill(totalCustomerBill);
-    setAyaTotalReceived(totalAyaReceived);
-    setTotalProfit(totalProfit);
-
-    setTotalCustomerBill(parseInt(totalCustomerBill) + parseInt(customerbill));
-    setAyaTotalReceived(parseInt(totalAyaReceived) + parseInt(aayaPaid));
-    setTotalProfit(parseInt(totalProfit) + parseInt(profit));
-  };
 
   // const handlebox = (e) => {
   //   e.preventDefault();
   //   setShowbox(true);
   // };
 
-  console.log("totalProfit", totalProfit);
+  // console.log("totalProfit", totalProfit);
 
-  const pageNumbers = Array.from(
-    { length: Math.ceil(aayapayment.length / itemsPerPage) },
-    (_, index) => index + 1
-  );
 
   const handleCustomer = () => {
     console.log("assign Customer screen");
@@ -164,9 +172,9 @@ function AyaPayment() {
           totalProfitAmount += parseInt(payment.profit + profit);
         });
 
-        setTotalCustomerBill(totalCustomerBill);
-        setAyaTotalReceived(totalReceivedAmount);
-        setTotalProfit(totalProfitAmount);
+        // setTotalCustomerBill(totalCustomerBill);
+        // setAyaTotalReceived(totalReceivedAmount);
+        // setTotalProfit(totalProfitAmount);
 
         // console.log("Total customer bill:", totalCustomerBill);
         // console.log("Total received amount:", totalReceivedAmount);
@@ -181,40 +189,6 @@ function AyaPayment() {
     }
   };
 
-  // console.log("check assign to know", assigncheck);
-
-  // const assigndataget = () => {
-  //   axios
-  //     .get(`${URL}/customerreg/${assigncheck}`)
-  //     .then((res) => setAssignData(res.data.data));
-  //   const firstBill = assigndata.customerpayment[0].customerbill;
-  //   setFirstCustomerBill(firstBill);
-  //   console.log("firstCusomer", firstCustomerbill);
-  //   setCustomerbill(firstBill);
-  // };
-
-  // const assigndataget = () => {
-  //   axios
-  //     .get(`${URL}/customerreg/${assigncheck}`)
-  //     .then((res) => {
-  //       setAssignData(res.data.data);
-
-  //       if (
-  //         res.data.data.customerpayment &&
-  //         res.data.data.customerpayment.length > 0
-  //       ) {
-  //         const firstBill = res.data.data.customerpayment[].customerbill;
-  //         setFirstCustomerBill(firstBill);
-  //         console.log("firstCustomer", firstCustomerbill);
-  //         setCustomerbill(firstBill);
-  //       } else {
-  //         console.log("No customer payment data found.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
   const assigndataget = () => {
     axios
       .get(`${URL}/customerreg/${assigncheck}`)
@@ -230,7 +204,7 @@ function AyaPayment() {
               res.data.data.customerpayment.length - 1
             ];
           const lastCustomerBill = lastPayment.amount_received;
-          setLastCustomerBill(lastCustomerBill);
+          // setLastCustomerBill(lastCustomerBill);
           console.log("Last Customer Bill:", lastCustomerBill);
           setCustomerbill(lastCustomerBill);
         } else {
@@ -241,12 +215,6 @@ function AyaPayment() {
         console.error("Error fetching data:", error);
       });
   };
-
-  // pagination
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = aayapayment.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <>
@@ -289,114 +257,122 @@ function AyaPayment() {
             {showbox ? (
               <>
                 <Col md="9">
-                  <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
-                    <h6 className="border-bottom pb-2 mb-0 mb-3 ">
-                      Personal Info
-                    </h6>
+                  {/* {
+                    showGeneratedButton && (
+                      <div className="invoice-button text-end">
+                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Go To Generate Bill</button>
+                      </div>
+                    )
+                  } */}
 
+                  <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
+                      <h6 className="border-bottom pb-2 mb-0 mb-3 ">
+                        Personal Info
+                      </h6>
                     <Form onSubmit={handleFormSubmit}>
                       <Row>
-                        {/* <Col md="6">
-                      <FormGroup>
-                        <label>Name:</label>
-                        <input
-                          type="text"
-                          className={`form-control ${
-                            border
-                              ? ""
-                              : "  border-0 bg-secondary text-white event-none"
-                          }`}
-                          // className="form-control border-0 "
-
-                          name="name"
-                          value={tech.name || ""}
-                          onChange={handleInputChange}
-                        />
-                      </FormGroup>
-                    </Col> */}
-                        <Col md="6">
-                          <label>Customer Paid:</label>
+                        <Col md="3">
+                          <label>Aya bill:</label>
                           <input
                             type="text"
                             name="customerbill"
-                            value={customerbill}
-                            // className="form-control"
+                            value={generatedBill}
+                            readOnly
                             className={`form-control `}
-                            onChange={(e) => setCustomerbill(e.target.value)}
+                            // onChange={(e) => setCustomerbill(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Amount Recieved:</label>
+                          <input
+                            type="text"
+                            name="amount_received"
+                            value={amountPaid}
+                            className={`form-control `}
+                            onChange={(e) => setAmountPaid(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>From Data:</label>
+                          <input
+                            type="text"
+                            name="fromDate"
+                            value={fromDate}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>To Date</label>
+                          <input
+                            type="text"
+                            name="toDate"
+                            value={toDate}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Assigned Customer</label>
+                          <input
+                            type="text"
+                            value={assignedCustomerName}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Rate</label>
+                          <input
+                            type="text"
+                            value={rate}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        {/* <Col md="3">
+                          <label>Security Amount</label>
+                          <input
+                            type="text"
+                            // value={amountRec}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col> */}
+                        <Col md="3">
+                          <label>Purpose</label>
+                          <input
+                            type="text"
+                            value={assignedCustomerPurpose}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Leave</label>
+                          <input
+                            type="text"
+                            value={leaveTaken}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Working Days</label>
+                          <input
+                            type="text"
+                            value={generatedWorkingDays}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
                           />
                         </Col>
 
-                        <Col md="6">
-                          <label>Aaya Payment:</label>
-                          <input
-                            type="text"
-                            name="ayapaid"
-                            value={aayaPaid}
-                            // className="form-control"
-                            required
-                            className={`form-control `}
-                            onChange={(e) => setAayaPaid(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="6">
-                          <label>Current Date:</label>
-                          <input
-                            type="date"
-                            name="currentdate"
-                            value={date}
-                            // className="form-control"
-                            className={`form-control `}
-                            required
-                            onChange={(e) => setDate(e.target.value)}
-                          />
-                        </Col>
-
-                        <Col md="6">
-                          <label htmlFor="">Month</label>
-                          <select
-                            className={`form-control  form-select`}
-                            aria-label="Default select example"
-                            name="month"
-                            value={month}
-                            required
-                            onChange={(e) => setMonth(e.target.value)}
-                          >
-                            <option selected>Open this select menu</option>
-                            <option value="Jan">Jan</option>
-                            <option value="Feb">Feb</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="Aug">Aug</option>
-                            <option value="Sep">Sep</option>
-                            <option value="Oct">Oct</option>
-                            <option value="Nov">Nov</option>
-                            <option value="Dec">Dec</option>
-                          </select>
-                        </Col>
-                        {/* {border ? (
-                      <>
-                        <Col md="6">
-                          <label>Profit:</label>
-                          <input
-                            type="text"
-                            name="profit"
-                            value={profit}
-                            // className="form-control"
-                            className={`form-control `}
-                            onChange={(e) => setProfit(e.target.value)}
-                          />
-                        </Col>
-                      </>
-                    ) : null} */}
                         <Col md="12">
                           <div className="mt-3">
                             <button
                               type="submit"
                               className="btn bg-primary text-white"
-                              onClick={calculate}
+                              // onClick={calculate}
                             >
                               Save
                             </button>
@@ -437,85 +413,53 @@ function AyaPayment() {
       </section>
 
       {showbox ? (
-        <>
           <section>
             <Container>
               <Row>
-                <Col md="4">
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      placeholder="Search by month"
-                      value={searchQuery}
-                      className="form-control"
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </Col>
                 <Col md="12" className="mt-2">
                   <div className="my-3 text-end"></div>
                   <div className="table-responsive rounded-3">
                     <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                       <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
-                          <th className="">Customer Bill</th>
-                          <th className="">Aaya Payment</th>
-                          <th className="">Month</th>
-                          <th className="">Profit</th>
-                          {/* <th className="">Status</th> */}
-                          <th className="">Payment Date</th>
+                          <th className="">Aya Bill</th>
+                          <th className="">Aya Paid</th>
+                          <th className="">From Data</th>
+                          <th className="">To Date</th>
+                          <th className="">Assigned Customer</th>
+                          <th className="">Rate</th>
+                          <th className="">Purpose</th>
+                          <th className="">Leave</th>
+                          <th className="">Working Days</th>
+
+                          {/* <th className="">Invoice</th> */}
                         </tr>
                       </thead>
-
                       <tbody>
-                        {
-                          // aayapayment
-                          currentItems
-                            .filter(
-                              (item) =>
-                                item.month
-                                  .toLowerCase()
-                                  .includes(searchQuery.toLowerCase())
-                              // &&
-                              // (item.customerbill != 0 || item.ayapaid != 0)
-                            )
-                            .map((item) => {
-                              return (
-                                <tr key={item.id}>
-                                  <td>{item.customerbill}</td>
-                                  <td>{item.ayapaid}</td>
-                                  <td>{item.month}</td>
-                                  <td>{item.profit}</td>
-                                  {/* <td>{item.paymentstatus}</td> */}
-                                  <td className="">
-                                    {item.currentdate
-                                      ? item.currentdate.substring(0, 10)
-                                      : ""}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                            .reverse()
+                      {(ayaPaymentDetails[0]) && ayaPaymentDetails.map((item, index) => {
+                        if (item) {
+                          return (
+                            <tr key={item.generatedAyaId}>
+                              <td>{item.paymentBill}</td>
+                              <td>{item.paymentAmountReceived}</td>
+                              <td>{item.paymentFromDate}</td>
+                              <td>{item.paymentToDate}</td>
+                              <td>{item.paymentCustomerAssigned}</td>
+                              <td>{item.paymentRate}</td>
+                              <td>{item.paymentCustomerPurpose}</td>
+                              <td>{item.paymentLeaveTaken}</td>
+                              <td>{item.paymentWorkingDays}</td>
+                            </tr>
+                          );
                         }
+                      })}
                       </tbody>
                     </table>
                   </div>
-                  <Pagination>
-                    {pageNumbers.map((number) => (
-                      <Pagination.Item
-                        key={number}
-                        active={number === currentPage}
-                        onClick={() => setCurrentPage(number)}
-                      >
-                        {number}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
                 </Col>
               </Row>
             </Container>
           </section>
-        </>
       ) : null}
     </>
   );

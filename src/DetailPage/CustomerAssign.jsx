@@ -109,6 +109,20 @@ function CustomerAssign() {
       });
       await fetchCustomerData();
 
+      // const response2 = await axios.put(`${URL}/ayareg/${assignedAyaCode}`, {
+      //   assignedCustomerCode: tech.customerCode,
+      //   assignedCustomerName: tech.name,
+      //   assignedCustomerFromDate: assignedAyaFromDate,
+      //   assignedCustomerToDate: assignedAyaToDate,
+      //   assignedCustomerReason: assignedAyaReason,
+      //   assignedCustomerRate: assignedAyaRate,
+      //   assignedCustomerShift: assignedAyaShift,
+      //   assignedCustomerPurpose: assignedAyaPurpose,
+      // });
+
+      // const data2 = await response2.json();
+      // console.log("ho ja bhai yrr",data2);
+
       const data = await response.json();
       console.log(data);
       const newAssignedAyaDetails = {

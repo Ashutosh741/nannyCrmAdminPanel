@@ -38,6 +38,7 @@ const CustomerPaymentReceipt = (props) => {
     const [ayaCode, setAyaCode] = useState('')
     const [assignedAyaName, setAssignedAyaName] = useState("");
     const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
+    const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
 
     const {id} = useParams();
 
@@ -47,17 +48,20 @@ const CustomerPaymentReceipt = (props) => {
         try{
             const response = await axios.get(`${URL}/customerreg/${customerCode}`)
             // console.log("what data is",response.data.data.generatedInvoice[index]);
-            const data = response.data.data.generatedInvoice[index];
+            const data = response.data.data.customerGeneratedInvoice[index];
 
             // const data = response.data.data;
             setRate(data.generatedRate);
             setFromDate(data.generatedFromDate);
             setToDate(data.generatedToDate);
-            setgeneratedBill(data.generatedBill);
-            
+            // setgeneratedBill(data.generatedBill);
+            // setGeneratedWorkingDays(data.generatedWorkingDays);
+            setAssignedAyaPurpose(data.generatedAyaAssigned);
+            setAssignedAyaName(data.generatedAyaAssigned);
+            setLeaveTaken(data.generatedLeaveTaken)
+            setGeneratedWorkingDays(data.generatedWorkingDays)
+            setAssignedAyaPurpose(data.generatedAyaPurpose)
             // handleGenerateBill();
-
-
         }catch(err){
             console.log("error in fetching printing details",err);
         }
@@ -76,7 +80,7 @@ const CustomerPaymentReceipt = (props) => {
             const data = response.data.data
             // console.log("generated Invoice",data.generatedInvoice)
             // setGeneratedInvoice(data.generatedInvoice);
-            setGeneratedInvoice(data.generatedInvoice || []); 
+            setGeneratedInvoice(data.customerGeneratedInvoice || []); 
             // setCustomerPayment(data.customerpayment);
             setPresentAddress(data.presentAddress); 
             // setCustomerCode(data.customerCode)
@@ -138,6 +142,7 @@ const CustomerPaymentReceipt = (props) => {
         if(calculatedgeneratedBill < 0)calculatedgeneratedBill = 0;
         setgeneratedBill(calculatedgeneratedBill);
         fetchCustomerData();
+        setGeneratedWorkingDays(get_diff_days()-leaveTaken);
         // checkBillFor();
 
         // currentTime();
@@ -166,7 +171,10 @@ const CustomerPaymentReceipt = (props) => {
               generatedFromDate : fromDate,
               generatedRate : rate,
               generatedAyaAssigned : assignedAyaName,
-              generatedAyaPurpose : assignedAyaPurpose
+              generatedAyaPurpose : assignedAyaPurpose,
+              generatedWorkingDays : generatedWorkingDays,
+              generatedLeaveTaken : leaveTaken,
+
             }),
             headers: {
               "Content-Type": "application/json",
@@ -185,7 +193,9 @@ const CustomerPaymentReceipt = (props) => {
               generatedFromDate: fromDate,
               generatedRate: rate,
               generatedAyaAssigned : assignedAyaName,
-              generatedAyaPurpose : assignedAyaPurpose
+              generatedAyaPurpose : assignedAyaPurpose,
+              generatedWorkingDays : generatedWorkingDays,
+              generatedLeaveTaken : leaveTaken,
           };
           
           setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
@@ -455,6 +465,7 @@ const CustomerPaymentReceipt = (props) => {
             </form>
         </div>
       </div>
+      {generatedInvoice.length > 0 && (
       <section>
             <Container>
               <Row>
@@ -504,6 +515,7 @@ const CustomerPaymentReceipt = (props) => {
             </Container>
 
       </section>
+      )}
       </>
       }
     </>

@@ -8,11 +8,6 @@ import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 
 
-
-import { DataGridPro } from '@mui/x-data-grid-pro';
-
-
-
 const AyaListContent = () => {
 
 
@@ -27,13 +22,32 @@ const AyaListContent = () => {
   const [loading, setLoading] = useState(false);
 
 
+  // const apiCategory = () => {
+  //   setLoading(true);
+  //   axios
+  //     .get(`${URL}/ayareg`)
+  //     .then((res) => {
+  //       setList(res.data.data);
+
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //     });
+  // };
+
+
   const apiCategory = () => {
     setLoading(true);
     axios
       .get(`${URL}/ayareg`)
       .then((res) => {
-        setList(res.data.data);
-
+        const data = res.data.data.map((item) => {
+          const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
+          return { ...item, assignedCustomerDetails };
+        });
+        setList(data);
         setLoading(false);
       })
       .catch((error) => {
@@ -41,16 +55,30 @@ const AyaListContent = () => {
         setLoading(false);
       });
   };
+  
 
   const handleRowClick = (params) => {
-    console.log(`/ayareg/${params.row._id}`);
+    const field = params.field;
+    console.log("aisa kya hai isme",field)
+    if (field === "assign") {
+      console.log("bhai tu chaal bhi rha hai ?", params.row.assign)
+      const customerId = params.row.assign;
+      navigate(`/customerreg/${customerId}`);
+    }
+    // console.log(`/ayareg/${params.row._id}`);
 
-    navigate(`/ayareg/${params.row._id}`);
+    else navigate(`/ayareg/${params.row._id}`);
+    // }
+
   };
 
   useEffect(() => {
     apiCategory();
   }, [setLoading])
+
+  useEffect(() => {
+    apiCategory();
+  }, [])
 
   console.log(list.file);
 
@@ -149,20 +177,46 @@ const AyaListContent = () => {
             width: 110,
             editable: true,
           },
-          {
-            field: 'assign',
-            headerName: 'ASSIGNED',
-            type: 'string',
-            width: 100,
-            editable: true,
+          // {
+          //   field: 'assign',
+          //   headerName: 'ASSIGNED',
+          //   type: 'string',
+          //   width: 100,
+          //   editable: true,
+          // },
+          // {
+          //   field: 'rate',
+          //   headerName: 'RATE',
+          //   type: 'string',
+          //   width: 50,
+          //   editable: true,
+          // },
+        {
+          field: 'assignedCustomerName',
+          headerName: 'ASSIGNED',
+          type: 'string',
+          width: 130,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            return (
+              <>
+                {data[0].assignedCustomerName}
+              </>
+            );
           },
-          {
-            field: 'rate',
-            headerName: 'RATE',
-            type: 'string',
-            width: 50,
-            editable: true,
+        },
+        {
+          field: 'rate',
+          headerName: 'RATE',
+          type: 'string',
+          width: 80,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            return <>{data[0].assignedCustomerRate}</>;
           },
+        },
         //   {
         //     field: 'daysLeft',
         //     headerName: 'DAYS LEFT',
@@ -191,8 +245,8 @@ const AyaListContent = () => {
             rows={list}
             columns={columns}
             getRowId={getRowId}
-            // onCellClick={handleRowClick()}
-            onRowClick={handleRowClick}
+            onCellClick={handleRowClick}
+            // onRowClick={handleRowClick}
 
             initialState={{
               pagination: {

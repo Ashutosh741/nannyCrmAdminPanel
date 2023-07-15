@@ -32,29 +32,30 @@ function PaymentEdit() {
   const [amountRec, setAmountRec] = useState("");
   const [currentbal, setCurrentBal] = useState(0);
   const [paymentstatus, setPaymentStatus] = useState("");
-  const [customerbill, setCustomerbill] = useState("");
   const [securityAdjustment, setSecurityAdjustment] = useState("");
   const [month, setMonth] = useState("");
   const [securityAmount, setSecurityAmount] = useState("");
   const [date, setDate] = useState("");
   const [customerpayment, setCustomerPayment] = useState([]);
-  const [showbox, setShowbox] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(9);
-
-  const [border, setBorder] = useState(false);
+  const [showbox, setShowbox] = useState(true);
   const [totalCustomerBill, setTotalCustomerBill] = useState("");
-  const [totalRecieved, setTotalReceived] = useState("");
   const [generatedBill,setGeneratedBill] = useState('');
-
   const [checkassign, setChcekAssign] = useState("");
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const [showGeneratedButton,setShowGeneratedButton] = useState(true)
-
   const [customerCode, setCustomerCode] = useState('');
-
+  const [generatedInvoice, setGeneratedInvoice] = useState([]);
+  const [customerbill, setCustomerbill] = useState("");
+  const [amountReceived, setAmountReceived] = useState("");
+  const [fromDate,setFromDate] = useState('')
+  const [toDate,setToDate] = useState('')
+  const [rate,setRate] = useState(0);
+  const [assignedAyaName, setAssignedAyaName] = useState("");
+  const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
+  const [leaveTaken,setLeaveTaken] = useState(0);
+  const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
+  const [customerPaymentDetails,setCustomerPaymentDetails] = useState([]);
+  // const [mountReceived,setGeneratedAmountReceived] = useState('');
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -65,17 +66,39 @@ function PaymentEdit() {
       const techData = response.data.data;
       setTech(techData);
       console.log("techdata" , techData)
+      const reversePaymentData = techData.customerPaymentDetails.reverse();
+      setCustomerPaymentDetails(reversePaymentData);
+      const reverseBillData = techData.customerGeneratedInvoice.reverse();
+      // const reversalData = reverseBillData.reverse();
+      console.log("reversal data",reverseBillData[0])
+      setGeneratedInvoice(reverseBillData);
+
+      setCustomerbill(reverseBillData[0].generatedBill)
+      // console.log("mic chcek check check",generatedInvoice)
+
+      setFromDate(reverseBillData[0].generatedFromDate);
+      // console.log("mic chcek check check",reverseBillData[0].generatedFromDate);
+
+      setToDate(reverseBillData[0].generatedToDate);
+      setRate(reverseBillData[0].generatedRate);
+      setAssignedAyaName(reverseBillData[0].generatedAyaAssigned);
+      setAssignedAyaPurpose(reverseBillData[0].generatedAyaPurpose);
+      setLeaveTaken(reverseBillData[0].generatedLeaveTaken);
+      setGeneratedWorkingDays(reverseBillData[0].generatedWorkingDays);
+
+      // console.log("generated bill" , reverseBillData[0].generatedBill)
+      
+      setGeneratedBill(reverseBillData[0].generatedBill); 
+      setShowGeneratedButton(false);
+      // setGeneratedInvoice(reverseData[0]);
       // isse customer ka bill latest generated bill se update ho rha 
       // const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
-      if(techData.generateInvoice){
-          const reverseData = techData.generateInvoice.reverse();
-          console.log("generated bill" , reverseData[0].generatedBill)
-          
-          setGeneratedBill(reverseData[0].generatedBill); 
-          setShowGeneratedButton(false);
+      if(techData.generateInvoice == null){
+
 
           // console.log(techData.generatedInvoice.generatedBill)
       }
+      console.log("hello")
       // console.log("length",techData.generatedInvoice[generateInvoiceLength])
       // if((techData.generatedInvoice[generateInvoiceLength] !== undefined)){
       // }
@@ -86,11 +109,11 @@ function PaymentEdit() {
       setCustomerCode(techData.customerCode);
       // console.log("checking assing check", assigncheck);
 
-      if (assigncheck !== "Not Assign") {
-        setShowbox(true);
-      } else {
-        setShowbox(false);
-      }
+      // if (assigncheck !== "Not Assign") {
+      //   setShowbox(true);
+      // } else {
+      //   setShowbox(false);
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +124,7 @@ function PaymentEdit() {
   }
 
   const handleRowRemove = () => {
-    setBorder(true);
+    // setBorder(true);
   };
 
   console.log("id", id);
@@ -120,14 +143,18 @@ function PaymentEdit() {
       const response = await fetch(`${URL}/customerreg/${id}`, {
         method: "PUT",
         body: JSON.stringify({
-          customerbill: generatedBill,
-          paymentstatus: paymentstatus,
-          amount_received: amountRec,
-          month: month,
-          currentdate: date,
-          balance: currentbal,
-          totalCustomerBill: totalCustomerBill,
-          totalRecievedmoney: totalRecieved,
+          paymentBill: generatedBill,
+          paymentAmountReceived: amountReceived,
+          paymentFromDate: fromDate,
+          paymentToDate: toDate,
+          paymentRate: rate,
+          paymentAyaAssigned: assignedAyaName,
+          paymentAyaPurpose: assignedAyaPurpose,
+          paymentWorkingDays : generatedWorkingDays,
+          paymentLeaveTaken : leaveTaken,
+          // paymentstatus : amountReceived,
+          // paymentalance : amountReceived,
+          // totalRecievedmoney: totalRecieved,
         }),
 
         headers: {
@@ -138,7 +165,19 @@ function PaymentEdit() {
 
       const data = await response.json();
       // console.log(data);
-
+    //   const newPaymentDetails = {
+    //     paymentBill: generatedBill,
+    //     paymentAmountReceived: amountReceived,  
+    //     paymentFromDate: fromDate,
+    //     paymentToDate: toDate,
+    //     paymentRate: rate,
+    //     paymentAyaAssigned: assignedAyaName,
+    //     paymentAyaPurpose : assignedAyaPurpose,
+    //     paymentWorkingDays : generatedWorkingDays,
+    //     paymentLeaveTaken : leaveTaken,
+    // };
+    
+    // setCustomerPaymentDetails (prevPaymentDetails => [...prevPaymentDetails, newPaymentDetails]);
       // console.log("Total customer bill:", totalCustomerBill);
       // console.log("Total received amount:", totalRecieved);
 
@@ -152,105 +191,23 @@ function PaymentEdit() {
   console.log(ayaCost);
   console.log(amountRec);
 
-  const calculate = () => {
-    // console.log(customerbill);
-    // console.log(securityAmount);
-    // console.log(securityAdjustment);
-    // console.log(amountRec);
-
-    // console.log(month);
-    const total = amountRec - customerbill;
-    // console.log(total);
-    // console.log(securityAdjustment);
-    setTotalCustomerBill(totalCustomerBill);
-    setGeneratedBill(total)
-    setTotalReceived(totalRecieved);
-    setTotalCustomerBill(parseInt(totalCustomerBill) + parseInt(customerbill));
-    setTotalReceived(parseInt(totalRecieved) + parseInt(amountRec));
-    if (total > 0) {
-      // alert("zero se upr h");
-      setPaymentStatus("Advance");
-      setCurrentBal(total);
-    } else if (total == 0) {
-      setPaymentStatus("Amount Clear");
-      setCurrentBal(total);
-    } else {
-      // alert("zeroo se niche hai");
-      setPaymentStatus("Pending");
-      setCurrentBal(total);
-    }
-    // console.log(paymentstatus);
-    setBorder(true);
-  };
-
-  useEffect(() => {
-    fetchCustomerData();
-    fetchTotalBill();
-  }, [id,showGeneratedButton]);
   useEffect(() => {
     fetchCustomerData();
     // fetchTotalBill();
+  }, [id,showGeneratedButton,amountReceived]);
+
+
+  
+  useEffect(() => {
+    fetchCustomerData();
+    // console.log("yeah running 2nd useeffect")
+    // fetchTotalBill();
   }, []);
-
-  // const pageNumbers = Math.ceil(customerpayment.length / itemsPerPage);
-  // const pageNumbers = Array.from(
-  //   { length: Math.ceil(customerpayment.length / itemsPerPage) },
-  //   (_, index) => index + 1
-  // );
-
-  const filteredCustomerPayments = customerpayment.filter(
-    (item) =>
-      item.month.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (item.customerbill || item.amount_received)
-  );
-
-  const pageNumbers = Array.from(
-    { length: Math.ceil(filteredCustomerPayments.length / itemsPerPage) },
-    (_, index) => index + 1
-  );
 
   const handleAssign = () => {
     // console.log("Payement Assign");
     navigate(`/customerassign/${id}`);
   };
-
-  const fetchTotalBill = async () => {
-    try {
-      const response = await axios.get(`${URL}/customerreg/${id}`);
-      const customerData = response.data.data;
-
-      let totalCustomerBill = 0;
-      let totalReceivedAmount = 0;
-
-      if (Array.isArray(customerData.customerpayment)) {
-        customerData.customerpayment.forEach((payment) => {
-          totalCustomerBill += parseInt(payment.customerbill + customerbill);
-          totalReceivedAmount += parseInt(payment.amount_received + amountRec);
-        });
-
-        setTotalCustomerBill(totalCustomerBill);
-        setTotalReceived(totalReceivedAmount);
-
-        // console.log("Total customer bill:", totalCustomerBill);
-        // console.log("Total received amount:", totalReceivedAmount);
-      } else {
-        console.error(
-          "Invalid customer payment data format:",
-          customerData.customerpayment
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching customer data:", error);
-    }
-  };
-
-  // pagination
-
-
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = customerpayment.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <>
@@ -308,7 +265,7 @@ function PaymentEdit() {
                       </h6>
                     <Form onSubmit={handleFormSubmit}>
                       <Row>
-                        <Col md="6">
+                        <Col md="3">
                           <label>Customer bill:</label>
                           <input
                             type="text"
@@ -319,115 +276,97 @@ function PaymentEdit() {
                             // onChange={(e) => setCustomerbill(e.target.value)}
                           />
                         </Col>
-                        {/* <Col md="6">
-                      <label>Security Deposit Amount:</label>
-                      <input
-                        type="text"
-                        name="securityAmount"
-                        value={tech.securityAmount || ""}
-                        className={`form-control `}
-                        onChange={(e) => setSecurityAmount(e.target.value)}
-                      />
-                    </Col> */}
-
-                        {/* <Col md="6">
-                      <FormGroup>
-                        <label>Security Deposit Adjustment:</label>
-                        <select
-                          className={`form-control  form-select `}
-                          name="securityAdjustment"
-                          value={securityAdjustment || ""}
-                          onChange={(e) =>
-                            setSecurityAdjustment(e.target.value)
-                          }
-                        >
-                          <option value="">Select</option>
-                          <option value="Adjustment">Adjustment</option>
-                          <option value="payment">Payment</option>
-                        </select>
-                      </FormGroup>
-                    </Col> */}
-
-                        <Col md="6">
+                        <Col md="3">
                           <label>Amount Recieved:</label>
                           <input
                             type="text"
                             name="amount_received"
-                            value={amountRec}
+                            value={amountReceived}
                             className={`form-control `}
-                            onChange={(e) => setAmountRec(e.target.value)}
+                            onChange={(e) => setAmountReceived(e.target.value)}
                           />
                         </Col>
-
-                        <Col md="6">
-                          <label>Current Date</label>
-                          <input
-                            type="date"
-                            name="currentdate"
-                            required
-                            value={date || ""}
-                            className={`form-control `}
-                            onChange={(e) => setDate(e.target.value)}
-                          />
-                        </Col>
-
-                        <Col md="6">
-                          <label htmlFor="">Month</label>
-                          <select
-                            className={`form-control   form-select`}
-                            aria-label="Default select example"
-                            name="month"
-                            value={month || ""}
-                            onChange={(e) => setMonth(e.target.value)}
-                            required
-                          >
-                            <option selected>Open this select menu</option>
-                            <option value="Jan">Jan</option>
-                            <option value="Feb">Feb</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="Aug">Aug</option>
-                            <option value="Sep">Sep</option>
-                            <option value="Oct">Oct</option>
-                            <option value="Nov">Nov</option>
-                            <option value="Dec">Dec</option>
-                          </select>
-                        </Col>
-
-                        {/* {border ? (
-                      <>
-                        <Col md="6">
-                          <label>Status:</label>
+                        <Col md="3">
+                          <label>From Data:</label>
                           <input
                             type="text"
-                            name="status"
-                            value={paymentstatus || ""}
+                            name="fromDate"
+                            value={fromDate}
                             className={`form-control `}
-                            onChange={(e) => setPaymentStatus(e.target.value)}
+                            // onChange={(e) => setAmountRec(e.target.value)}
                           />
                         </Col>
-                        <Col md="6">
-                          <label>Current balance:</label>
+                        <Col md="3">
+                          <label>To Date</label>
                           <input
                             type="text"
-                            name="balance"
-                            value={currentbal || ""}
+                            name="toDate"
+                            value={toDate}
                             className={`form-control `}
-                            onChange={(e) => setCurrentBal(e.target.value)}
+                            // onChange={(e) => setAmountRec(e.target.value)}
                           />
                         </Col>
-                      </>
-                    ) : null} */}
+                        <Col md="3">
+                          <label>Assigned Aya</label>
+                          <input
+                            type="text"
+                            value={assignedAyaName}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Rate</label>
+                          <input
+                            type="text"
+                            value={rate}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Security Amount</label>
+                          <input
+                            type="text"
+                            // value={amountRec}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Purpose</label>
+                          <input
+                            type="text"
+                            value={assignedAyaPurpose}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Leave</label>
+                          <input
+                            type="text"
+                            value={leaveTaken}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Working Days</label>
+                          <input
+                            type="text"
+                            value={generatedWorkingDays}
+                            className={`form-control `}
+                            // onChange={(e) => setAmountRec(e.target.value)}
+                          />
+                        </Col>
 
                         <Col md="12">
                           <div className="mt-3">
                             <button
                               type="submit"
                               className="btn bg-primary text-white"
-                              onClick={calculate}
+                              // onClick={calculate}
                             >
                               Save
                             </button>
@@ -466,21 +405,9 @@ function PaymentEdit() {
         </Container>
       </section>
       {showbox ? (
-        <>
           <section>
             <Container>
               <Row>
-                <Col md="4">
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      placeholder="Search by month"
-                      value={searchQuery}
-                      className="form-control"
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </Col>
                 <Col md="12" className="mt-2">
                   <div className="my-3 text-end"></div>
                   <div className="table-responsive rounded-3">
@@ -489,90 +416,42 @@ function PaymentEdit() {
                         <tr className="text-uppercase">
                           <th className="">Customer Bill</th>
                           <th className="">Amount Recieved</th>
-                          <th className="">Month</th>
-                          <th className="">Balance</th>
-                          <th className="">Status</th>
-                          <th className="">Payment Date</th>
-                          {/* <th className="">Invoice</th> */}
+                          <th className="">From Data</th>
+                          <th className="">To Date</th>
+                          <th className="">Assigned Aya</th>
+                          <th className="">Rate</th>
+                          <th className="">Purpose</th>
+                          <th className="">Leave</th>
+                          <th className="">Working Days</th>
 
+                          {/* <th className="">Invoice</th> */}
                         </tr>
                       </thead>
-
-                      {/* <tbody>
-                    {customerpayment
-                      .filter((item) =>
-                        item.month
-                          .toLowerCase()
-                          .includes(searchQuery.toLowerCase())
-                      )
-                      .map((item) => {
-                        return (
-                          <tr key={item.id}>
-                            <td>{item.customerbill}</td>
-                            <td>{item.amount_received}</td>
-                            <td>{item.month}</td>
-                            <td>{item.balance}</td>
-                            <td>{item.paymentstatus}</td>
-                            <td className="">
-                              {item.currentdate
-                                ? item.currentdate.substring(0, 10)
-                                : ""}
-                            </td>
-                          </tr>
-                        );
-                      })
-                      .reverse()}
-                  </tbody> */}
                       <tbody>
-                        {
-                          // customerpayment
-                          currentItems
-                            .filter((item) =>
-                              item.month
-                                .toLowerCase()
-                                .includes(searchQuery.toLowerCase())
-                            )
-                            .map((item) => {
-                              return (
-                                <tr key={item.id}>
-                                  <td>{item.customerbill}</td>
-                                  <td>{item.amount_received}</td>
-                                  <td>{item.month}</td>
-                                  <td>{item.balance}</td>
-                                  <td>{item.paymentstatus}</td>
-                                  <td className="">
-                                    {item.currentdate
-                                      ? item.currentdate.substring(0, 10)
-                                      : ""}
-                                  </td>
-                                  <td>
-                                    {/* <button className="bg-primary btn text-white" onClick={handlePrint}>PRINT</button> */}
-                                    {/* <CustomerPaymentReceipt className="container d-none" customerPrint={tableRef}/> */}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                            .reverse()
+                      {(customerPaymentDetails[0] !== undefined) && customerPaymentDetails.map((item, index) => {
+                        if (item) {
+                          return (
+                            <tr key={item.generatedCustomerId}>
+                              <td>{item.paymentBill}</td>
+                              <td>{item.paymentAmountReceived}</td>
+                              <td>{item.paymentFromDate}</td>
+                              <td>{item.paymentToDate}</td>
+                              <td>{item.paymentAyaAssigned}</td>
+                              <td>{item.paymentRate}</td>
+                              <td>{item.paymentAyaPurpose}</td>
+                              <td>{item.paymentLeaveTaken}</td>
+                              <td>{item.paymentWorkingDays}</td>
+                            </tr>
+                          );
                         }
+                      })}
                       </tbody>
                     </table>
                   </div>
-                  <Pagination>
-                    {pageNumbers.map((number) => (
-                      <Pagination.Item
-                        key={number}
-                        active={number === currentPage}
-                        onClick={() => setCurrentPage(number)}
-                      >
-                        {number}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
                 </Col>
               </Row>
             </Container>
           </section>
-        </>
       ) : null}
     </>
   );

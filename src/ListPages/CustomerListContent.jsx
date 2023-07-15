@@ -9,40 +9,44 @@ import * as XLSX from "xlsx";
 
 
 const CustomerListContent = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    const [assigncheck, setAssignCheck] = useState("");
-  
-  
-    const [list, setList] = useState([]);
-  
-    const [loading, setLoading] = useState(false);
-  
-  
-    const apiCategory = () => {
-      setLoading(true);
-      axios
-        .get(`${URL}/customerreg`)
-        .then((res) => {
-          setList(res.data.data);
-  
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          setLoading(false);
+  const apiCategory = () => {
+    setLoading(true);
+    axios
+      .get(`${URL}/customerreg`)
+      .then((res) => {
+        const data = res.data.data.map((item) => {
+          const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
+          return { ...item, assignedAyaDetails };
         });
-    };
+        setList(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
+  };
   
     const handleRowClick = (params) => {
-      console.log(`/customerreg/${params.row._id}`);
+      const field  = params.field;
+      console.log("let's see again",field)
+      if(field === "assignedAyaName"){
+        const ayaName = params.row.assignedAyaDetails
+        console.log("what's in this",ayaName[0].assignedAyaCode)
+          navigate(`/ayareg/${ayaName[0].assignedAyaCode}`)
+      }
+      // console.log(`/customerreg/${params.row._id}`);
   
-      navigate(`/customerreg/${params.row._id}`);
+      else navigate(`/customerreg/${params.row._id}`);
     };
   
     useEffect(() => {
       apiCategory();
-    }, [setLoading])
+    },[])
   
     console.log(list.file);
   
@@ -112,20 +116,61 @@ const CustomerListContent = () => {
             width: 120,
             editable: true,
           },
+          // {
+          //   field: 'assignedAyaName',
+          //   headerName: 'ASSIGNED',
+          //   type: 'string',
+          //   width: 130,
+          //   editable: true,
+          //   renderCell: (params) => {
+          //     const data = params.row.assignedAyaDetails.reverse();
+          //     console.log("yes got it",data[0].assignedAyaName)
+          //     return <div className="rowitem">
+          //       {data[0].assignedAyaName}
+          //       </div>;
+          //   }
+          // },
+          
+          // {
+          //   field: 'rate',
+          //   headerName: 'RATE',
+          //   type: 'string',
+          //   width: 80,
+          //   editable: true,
+          //   renderCell: (params) => {
+          //     const data = params.row.assignedAyaDetails.reverse();
+          //     console.log("yes got it",data[0].assignedAyaRate)
+          //     return<> {data[0].assignedAyaRate}</>
+          //     // return <div className="rowitem">
+          //     //   {data[0].assignedAyaRate}
+          //     //   </div>;
+          //   }
+          // },
           {
-            field: 'assign',
+            field: 'assignedAyaName',
             headerName: 'ASSIGNED',
             type: 'string',
             width: 130,
             editable: true,
+            renderCell: (params) => {
+              const data = params.row.assignedAyaDetails;
+              return (
+                <>
+                  {data[0].assignedAyaName}
+                </>
+              );
+            },
           },
-          
           {
             field: 'rate',
             headerName: 'RATE',
             type: 'string',
             width: 80,
             editable: true,
+            renderCell: (params) => {
+              const data = params.row.assignedAyaDetails;
+              return <>{data[0].assignedAyaRate}</>;
+            },
           },
           {
             field: 'paymentstatus',
@@ -190,8 +235,8 @@ const CustomerListContent = () => {
               rows={list}
               columns={columns}
               getRowId={getRowId}
-              // onCellClick={handleRowClick()}
-              onRowClick={handleRowClick}
+              onCellClick={handleRowClick}
+              // onRowClick={handleRowClick}
   
               initialState={{
                 pagination: {

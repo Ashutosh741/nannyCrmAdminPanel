@@ -24,6 +24,8 @@ function AyaAssign() {
   const [assignedCustomerShift, setAssignedCustomerShift] = useState("");
   const [assignedCustomerPurpose, setAssignedCustomerPurpose] = useState("");
   const [assignedCustomerDetails,setAssignedCustomerDetails] = useState([]);
+  const [assignedCustomerId,setAssignedCustomerId] = useState([]);
+
 
   const { id } = useParams();
 
@@ -49,7 +51,8 @@ function AyaAssign() {
       const response = await axios.get(`${URL}/customerreg/${assignedCustomerCode}`);
       const techData = response.data.data;
       console.log("where are you",techData)
-
+      setAssignedCustomerId(techData[0]._id);
+      console.log("yhi kr skta hai",techData[0]._id)
       setAssignData(techData);
       setAssignedCustomerName(techData.name);
       console.log("it's me ",techData.name);
@@ -222,6 +225,7 @@ function AyaAssign() {
   // };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    console.log("helo hello ")
     try {
       const response = await axios.put(`${URL}/ayareg/${id}`, {
         assignedCustomerCode: assignedCustomerCode,
@@ -254,8 +258,22 @@ function AyaAssign() {
           newAssignedCustomerDetails,
         ],
       };
-  
       setTech(updatedTech);
+
+
+      // const response2 = await axios.put(`${URL}/customerreg/${assignedCustomerId}`, {
+      //   assignedAyaCode: tech.ayaCode,
+      //   assignedAyaName: tech.name,
+      //   assignedAyaFromDate: assignedCustomerFromDate,
+      //   assignedAyaToDate: assignedCustomerToDate,
+      //   assignedAyaReason: assignedCustomerReason,
+      //   assignedAyaRate: assignedCustomerRate,
+      //   assignedAyaShift: assignedCustomerShift,
+      //   assignedAyaPurpose: assignedCustomerPurpose,
+      // });
+      // const data2 = response2.data;
+      // console.log("dekhte hai hota ha yeh nih",data2);
+  
       setAssignedCustomerFromDate("");
       setAssignedCustomerToDate("");
       setAssignedCustomerReason("select");
@@ -266,6 +284,7 @@ function AyaAssign() {
       setCustomerSelect(false);
       setCustomerList([]);
       alert("Data Submitted Successfully");
+      
     } catch (err) {
       console.log(err);
     }

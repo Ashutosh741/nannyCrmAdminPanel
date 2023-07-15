@@ -30,6 +30,10 @@ const AyaPaymentReceipt = () => {
     const [showGeneratedButton,setShowGeneratedButton] = useState(true);
     const [leaveTaken,setLeaveTaken] = useState(0);
     const [billFor,setBillFor] = useState('');
+    const [assignedCustomerName,setAssignedCustomerName] = useState('');
+    const [assignedCustomerPurpose,setAssignedCustomerPurpose] = useState('');
+    const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
+
     // const [showCuCode,setShowCustomerCode] = useState(false);
     const [showAyaCode,setShowAyaCode] = useState(false);
     // const [ayaCode, setAyaCode] = useState('')
@@ -49,13 +53,21 @@ const AyaPaymentReceipt = () => {
             
             // console.log("generated Invoice",data.generatedInvoice)
             // setGeneratedInvoice(data.generatedInvoice);
-            setGeneratedInvoice(data.generatedInvoice || []); 
+            setGeneratedInvoice(data.ayaGeneratedInvoice); 
             // setCustomerPayment(data.customerpayment);
             setPresentAddress(data.presentAddress); 
             // setCustomerCode(data.customerCode)
             setContactNumber(data.contactNumber);
             setName(data.name);
-            setAssignedCustomerDetails(data.assignedAyaDetails)
+            if(data.assignedCustomerDetails){
+              const reverseData = data.assignedCustomerDetails.reverse();
+              console.log("reversed data",reverseData)
+              setAssignedCustomerDetails(reverseData)
+              setAssignedCustomerName(reverseData[0].assignedCustomerName)
+              setAssignedCustomerPurpose(reverseData[0].assignedCustomerPurpose)
+
+              console.log("Here I'm",reverseData[0].assignedCustomerName);
+            }
             // console.log(presentAddress)
             // console.log(assignedAyaDetails)
         }
@@ -76,32 +88,6 @@ const AyaPaymentReceipt = () => {
      
     }
 
-    const fetchPrintDetails = async(index)=>{
-        // alert(index)
-
-        try{
-            const response = await axios.get(`${URL}/ayareg/${ayaCode}`)
-            // console.log("what data is",response.data.data.generatedInvoice[index]);
-            const data = response.data.data.generatedInvoice[index];
-
-            // const data = response.data.data;
-            setRate(data.generatedRate);
-            setFromDate(data.generatedFromDate);
-            setToDate(data.generatedToDate);
-            setgeneratedBill(data.generatedBill);
-            
-            // handleGenerateBill();
-
-
-        }catch(err){
-            console.log("error in fetching printing details",err);
-        }
-        setShowGeneratedButton(false)
-
-        handlePrint()
-    }
-
-    
     const handleGenerateBill = async (e) => {
         e.preventDefault();
         try {
@@ -115,7 +101,11 @@ const AyaPaymentReceipt = () => {
               generatedToDate : toDate,
               generatedFromDate : fromDate,
               generatedRate : rate,
-              generatedCustomerAssigned : "Chandan"  
+              generatedCustomerAssigned : assignedCustomerName,
+              generatedLeaveTaken : leaveTaken,
+              generatedWorkingDays : generatedWorkingDays,
+              generatedCustomerPurpose : assignedCustomerPurpose,
+              // generatedWorkingDays : 
             }),
             headers: {
               "Content-Type": "application/json",
@@ -126,22 +116,22 @@ const AyaPaymentReceipt = () => {
           const data = await response.json();
           console.log("updated data",data);
           alert("data Submitted Succesfully");
-            const newInvoice = {
-                generatedAyaId: ayaId,
-                generatedTime: new Date().toLocaleTimeString(),  
-                generatedBill: generatedBill,
-                generatedToDate: toDate,
-                generatedFromDate: fromDate,
-                generatedRate: rate,
-                generatedCustomerAssigned: "Chandan"
-            };
+            // const newInvoice = {
+            //     generatedAyaId: ayaId,
+            //     generatedTime: new Date().toLocaleTimeString(),  
+            //     generatedBill: generatedBill,
+            //     generatedToDate: toDate,
+            //     generatedFromDate: fromDate,
+            //     generatedRate: rate,
+            //     generatedCustomerAssigned: "Chandan"
+            // };
             
-            setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
+            // setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
             
             setFromDate("");
             setToDate("");
-            setRate(0);
-
+            setRate('');
+            setLeaveTaken('');
         } catch (err) {
           console.log("error in this customerCode",ayaId);
 
@@ -157,7 +147,9 @@ const AyaPaymentReceipt = () => {
     const handlePrint = useReactToPrint({
         content: () => tableRef.current,
         onAfterPrint: ()=>setShowGeneratedButton(true),
-        });
+    });
+
+      
     function convertNumberToWords(number) {
         const units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
         const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -197,9 +189,44 @@ const AyaPaymentReceipt = () => {
 
 
       useEffect(()=>{
-        
+        let calculatedgeneratedBill = (get_diff_days()-leaveTaken) * rate;
+        if(calculatedgeneratedBill < 0)calculatedgeneratedBill = 0;
+        setgeneratedBill(calculatedgeneratedBill);
+        setGeneratedWorkingDays(get_diff_days()-leaveTaken);
         fetchAyaData()
-      },[ayaCode])
+      },[fromDate, toDate,rate,ayaCode,leaveTaken,ayaCode])
+
+
+      const fetchPrintDetails = async(index)=>{
+        // alert(index)
+
+        try{
+            const response = await axios.get(`${URL}/ayareg/${ayaCode}`)
+            // console.log("what data is",response.data.data.generatedInvoice[index]);
+            const data = response.data.data.ayaGeneratedInvoice[index];
+
+            // const data = response.data.data;
+            setRate(data.generatedRate);
+            setFromDate(data.generatedFromDate);
+            setToDate(data.generatedToDate);
+            // setgeneratedBill(data.generatedBill);
+            // setGeneratedWorkingDays(data.generatedWorkingDays);
+            setAssignedCustomerPurpose(data.generatedCustomerAssigned);
+            setAssignedCustomerName(data.generatedCustomerAssigned);
+            setLeaveTaken(data.generatedLeaveTaken)
+            setGeneratedWorkingDays(data.generatedWorkingDays)
+            setAssignedCustomerPurpose(data.generatedCustomerPurpose)
+            // handleGenerateBill();
+
+
+        }catch(err){
+            console.log("error in fetching printing details",err);
+        }
+        setShowGeneratedButton(false)
+
+        handlePrint()
+    }
+
 
   return (
     <>
@@ -224,7 +251,7 @@ const AyaPaymentReceipt = () => {
         {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
             </div>
           </div>
-        <div className='container'  ref={tableRef}>
+          <div className='container'  ref={tableRef}>
         <div className="row">
 
             <form onSubmit={handleGenerateBill}>
@@ -244,13 +271,13 @@ const AyaPaymentReceipt = () => {
                     <div className="col-12 companyAddress">
                         <span>SARBAMANGALA PALLY, M.K ROAD, ENGLISH BAZAR, MALDA - 732101</span>
                     </div>
-                    <div className="row-1 mb-2">
+                    <div className="col-12 row-1 mb-2">
                         
                         <div className="serial col-5 ms-0">
                         
                             <span>SL NO. {ayaCode}</span>
                         </div>
-                        <div className="prop col-2 me-5">
+                        <div className="prop col-3 me-5">
                             <span> MR. ABHIJIT PODDAR</span>
                         </div>
                         <div className="date col-4 me-5">
@@ -259,7 +286,7 @@ const AyaPaymentReceipt = () => {
                     </div>
                     <div className="col-12 row-2 mb-2">
                         <div className="partyName">
-                            <span>AYA NAME: {name}</span>
+                            <span>PARTY NAME: {name}</span>
                         </div>
                     </div>
                     <div className="col-12 row-3 mb-2">
@@ -267,52 +294,60 @@ const AyaPaymentReceipt = () => {
                             <span>ADDRESS: {presentAddress}</span>
                         </div>
                     </div>
-                    <div className="col-8 row-4  d-flex gap-3">
+                    <div className="col-12 row-4  d-flex gap-3">
+                      <div className="div col-6 d-flex">
                         <div className="purpose">
-                            <span>ASSIGNED FOR :</span>
+                            <span>ASSIGNED TO: {assignedCustomerName}</span>
                         </div>
-                        {/* <div className="options"> */}
-                        <select className="form-select options" aria-label="Default select example">
-                            <option value = "select">Select</option>
-                        <option value = "cooking">Cooking</option>
-                        <option value = "cookingHouseKeeping">Cooking and HouseKeeping</option>
-                        <option value = "houseKeeping">HouseKeeping</option>
-                        <option value = "newBornbaby">New Born Baby</option>
-                        <option value = "oldMan">Old man</option>
-                        <option value = "oldWomen">Old Women</option>
-                        <option value = "takeCareBaby">Take Care Baby</option>
-                            </select>
-                            {/* </div> */}
+                        {/* <select className="form-select options" aria-label="Default select example" required>
+                            <option selected>select</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select> */}
+                        </div>
+                        <div className="col-6 d-flex">
+                        <div className="purpose">
+                            <span>PURPOSE OF : {assignedCustomerPurpose}</span>
+                        </div>
+                        </div>
                     </div>
                     <div className="col-12 row-5 mb-2">
-                        <div className="mobile col-6">
+                        <div className="mobile col-4">
                             <span>MOBILE NO: {contactNumber}</span>
                         </div>
-                        <div className="rate col-6">
-                                <label>PER DAY RATE : 
+                        <div className="rate col-4">
+                                <span>RATE:</span>
                                     <input type="number" min="0" value={rate} onChange={(e)=>setRate(e.target.value)}/>
-                                </label>
                             {/* <span></span> */}
                         </div>
+                        {/* <div className="securityMoney col-4 d-flex">
+                        <span>SECURITY MONEY:</span>
+                        <select className="form-select options" aria-label="Default select example">
+                            <option selected>select</option>
+                            <option value="1">Paid</option>
+                            <option value="2">Not Paid</option>
+                            </select>
+                        </div> */}
                     </div>
                     <div className="col-12 row-6 mb-2">
-                        <div className="duration col-5">
-                            <label>DURATION DATE FROM:
+                        <div className="duration col-4">
+                            <label required>FROM DATE:
                             <input type="date" value = {fromDate} onChange={(e)=>setFromDate(e.target.value)}/>
                             </label>
                         </div>
                         <div className="to col-4">
-                            <label>TO DATE:
+                            <label required>TO DATE:
                             <input type="date" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="leave col-5">
-                          <label>LEAVE: 
+                        <div className="leave col-3">
+                          <label>LEAVE :  
                             <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
                           </label>
                         </div>
-                        <div className="total col-2">
-                            <span>TOTAL DAYS: </span>{get_diff_days()}
+                        <div className="total col-4">
+                            <span>WORKING DAYS: </span>{generatedWorkingDays}
                         </div>
                     </div>
 
@@ -323,7 +358,7 @@ const AyaPaymentReceipt = () => {
                             <span>TOTAL AMOUNT (IN WORDS): {convertNumberToWords(generatedBill)}</span>
                         </div>
                     </div>
-                    <div className="row text-center mt-3 mb-5">
+                    <div className="col-12 row text-center mt-3 mb-5">
                         <div className="col-3"></div>
                         <div className="col-6">
                             <div className="display text-start">
@@ -338,7 +373,7 @@ const AyaPaymentReceipt = () => {
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>AYA SIGNATURE</span>
+                        <span>CUSTOMER SIGNATURE</span>
                     </div>
                     <div className="col-6 text-center mb-2">
                         <div className="line">
@@ -358,8 +393,8 @@ const AyaPaymentReceipt = () => {
             }
             </form>
         </div>
-      </div>
-      {generatedInvoice.length > 0 && (
+          </div>
+      {generatedInvoice && (
       <section>
             <Container>
               <Row>
@@ -373,10 +408,12 @@ const AyaPaymentReceipt = () => {
                           <th className="">Aya Code</th>
                           <th className="">Time</th>
                           <th className="">Generated Bill</th>
-                          <th className="">To Data</th>
                           <th className="">From Date</th>
+                          <th className="">To Data</th>
                           <th className="">Rate</th>
                           <th className="">Customer Assigned</th>
+                          <th>Leave</th>
+                          <th>Working Days</th>
                           <th className="">Download Bill</th>
                           {/* <th className="">Invoice</th> */}
                         </tr>
@@ -390,10 +427,12 @@ const AyaPaymentReceipt = () => {
                               <td>{ayaCode}</td>
                               <td>{item.generatedTime}</td>
                               <td>{item.generatedBill}</td>
-                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedFromDate}</td>
+                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedRate}</td>
                               <td>{item.generatedCustomerAssigned}</td>
+                              <td>{item.generatedLeaveTaken}</td>
+                              <td>{item.generatedWorkingDays}</td>
                               <td>
                                 <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
                               </td>
