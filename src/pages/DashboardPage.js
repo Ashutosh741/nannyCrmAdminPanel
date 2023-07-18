@@ -410,7 +410,7 @@ const DashboardPage = () => {
                   {/* <i class="fa-solid fa-user"></i> */}
                   <img src={babysitter} alt="" className="img-fluid boximg" />
                 </div>
-                <h4>Number of Nanny</h4>
+                <h4>Number of Aya</h4>
                 <h5 className="fw-bold ">{aya.count}</h5>
               </div>
             </div>
@@ -449,7 +449,7 @@ const DashboardPage = () => {
                   <img src={ayawork} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
                 </div>
                 <h4>
-                  Total Available Nanny for work
+                  Total Available Aya for work
                 </h4>
                 <h5 className="fw-bold">{assign}</h5>
               </div>

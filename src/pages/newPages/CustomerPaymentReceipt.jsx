@@ -285,6 +285,8 @@ const CustomerPaymentReceipt = (props) => {
               <option value="">Select</option>
               <option value="Aya">Aya</option>
               <option value="Customer">Customer</option>
+              {/* <option value="security">Security Money</option> */}
+              
             </select>
         </FormGroup>
         </div>

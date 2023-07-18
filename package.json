@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "font-awesome": "^4.7.0",
+    "highcharts": "^11.1.0",
     "jspdf": "^2.5.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
