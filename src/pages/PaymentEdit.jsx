@@ -57,6 +57,9 @@ function PaymentEdit() {
   const [securityAmount, setSecurityAmount] = useState("");
   const [status, setStatus] = useState("");
   const[pendingAmount,setPendingAmount] = useState('');
+  const[totalPendingAmount,setTotalPendingAmount] = useState('');
+  const[totalBill,setTotalBill] = useState('');
+  const [paymentDone, setPaymentDone] = useState(0);
 
   // const [mountReceived,setGeneratedAmountReceived] = useState('');
   const { id } = useParams();
@@ -70,14 +73,13 @@ function PaymentEdit() {
       setTech(techData);
       console.log("techdata" , techData)
       setSecurityAmount(techData.securityAmount);
-      const reversePaymentData = techData.customerPaymentDetails.reverse();
-      setCustomerPaymentDetails(reversePaymentData);
+
       const reverseBillData = techData.customerGeneratedInvoice.reverse();
       // const reversalData = reverseBillData.reverse();
       console.log("reversal data",reverseBillData[0])
       setGeneratedInvoice(reverseBillData);
-      setPendingAmount(techData.pendingAmount);
-      console.log("are yha to dekha hi nhi", techData.pendingAmount)
+      // console.log("payment recivesdnjvsdi" , response.data.data.customerPaymentDetails[0].paymentAmountReceived)
+      // console.log("are yha to dekha hi nhi", techData.totalPendingAmount)
       setCustomerbill(reverseBillData[0].generatedBill)
       // console.log("mic chcek check check",generatedInvoice)
 
@@ -94,9 +96,32 @@ function PaymentEdit() {
       
       setGeneratedBill(reverseBillData[0].generatedBill); 
       setShowGeneratedButton(false);
+
       // setGeneratedInvoice(reverseData[0]);
       // isse customer ka bill latest generated bill se update ho rha 
       // const generateInvoiceLength = techData.generatedInvoice.length-(techData.generatedInvoice.length>0 ? 1 : 0)
+      
+      const reversePaymentData = techData.customerPaymentDetails.reverse();
+      setCustomerPaymentDetails(reversePaymentData);
+      console.log("ismein payment ka kya hai",reversePaymentData)
+
+      if(reversePaymentData){
+        // const done = reversePaymentData[0].paymentAmountReceived
+        console.log("kitna pyament ho gya",reversePaymentData )
+        // setPaymentDone(done);
+      }else{
+        console.log("nhi chala bhai")
+        setPaymentDone(0);
+      }
+      setTotalPendingAmount(techData.totalPendingAmount);
+      const value = techData.totalPendingAmount + reverseBillData[0].generatedBill
+      setTotalBill(value)
+
+      // setPendingAmount(pendingBill());
+      // setTotalPendingAmount(prevTotalPendingAmount => prevTotalPendingAmount + pendingAmount);
+
+
+
       if(techData.generateInvoice == null){
 
 
@@ -133,25 +158,104 @@ function PaymentEdit() {
 
   console.log("id", id);
   const resetForm = () => {
-    setCustomerbill("");
-    setPaymentStatus("");
-    setAmountRec("");
-    setMonth("");
-    setDate("");
-    setCurrentBal("");
+    setGeneratedBill("");
+    setFromDate("");
+    setToDate("");
+    setRate("");
+    setLeaveTaken("");
+    setGeneratedWorkingDays("");
+    setAmountReceived('');
   };
+
+
+//   const handlePayment = async(e) =>{
+//     e.preventDefault();
+//     try{
+//       const response = await fetch(`${URL}/customerreg/${id}`, {
+//         method: "PUT",
+//         body: JSON.stringify({
+//           generatedBill: 0,
+//           generatedToDate: "",
+//           generatedFromDate: "",
+//           generatedRate: 0,
+//           generatedAyaAssigned : assignedAyaName,
+//           generatedAyaPurpose : assignedAyaPurpose,
+//           generatedWorkingDays : "",
+//           generatedLeaveTaken : "",
+//         }),
+        
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       )
+//     }
+//   }catch(error){
+//     console.log("err",e)
+//   }
+// }
+
+
+const handlePayment = async (e) => {
+  // e.preventDefault();
+  try {
+    const response = await fetch(`${URL}/customerreg/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+
+        generatedCustomerId : id,
+          generatedBill: 0,
+          generatedToDate: "",
+          generatedTime : new Date().toLocaleTimeString(),  
+          generatedFromDate: "",
+          generatedRate: 0,
+          generatedAyaAssigned : assignedAyaName,
+          generatedAyaPurpose : assignedAyaPurpose,
+          generatedWorkingDays : "",
+          generatedLeaveTaken : "",
+
+
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  //   await customerData();
+
+    // const data = await response.json();
+    // console.log("updated data",data);
+    // alert("data Submitted Succesfully");
+
+  } catch (err) {
+    console.log("error in this customerCode",id);
+
+    console.log("error in submitting generatedBill",err);
+  }
+// setShowGeneratedButton(true)
+};
+
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     // pendingBill();
-    console.log("let' see, kitna ban gya",pendingAmount)
+    // let value = totalPendingAmount + pendingAmount;
+    // setTotalPendingAmount(value);
+    // console.log("total pending amount", totalPendingAmount + pendingAmount);
+    // setTotalBill(totalPendingAmount + generatedBill);
+    // console.log("total customer bill", totalPendingAmount + generatedBill);
+    // setPendingAmount(pendingBill());
+    // console.log("let' see, kitna ban gya",pendingAmount)
+
+      // value = totalPendingAmount - amountReceived;
+      // setTotalPendingAmount(value);
+      // console.log("what's value",value)
+    
     try {
       const response = await fetch(`${URL}/customerreg/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           paymentBill: generatedBill,
           paymentAmountReceived: amountReceived,
-          pendingAmount : pendingAmount,
+          paymentPendingAmount : pendingAmount,
           paymentFromDate: fromDate,
           paymentToDate: toDate,
           paymentRate: rate,
@@ -162,20 +266,21 @@ function PaymentEdit() {
           // paymentstatus : amountReceived,
           // paymentalance : amountReceived,
           // totalRecievedmoney: totalRecieved,
-        }),
+          totalPendingAmount : totalPendingAmount,
 
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      await fetchCustomerData();
+      // await fetchCustomerData();
 
       const data = await response.json();
       // console.log(data);
       const newPaymentDetails = {
         paymentBill: generatedBill,
         paymentAmountReceived: amountReceived,  
-        pendingAmount : pendingAmount,
+        paymentPendingAmount : pendingAmount,
         paymentFromDate: fromDate,
         paymentToDate: toDate,
         paymentRate: rate,
@@ -184,10 +289,12 @@ function PaymentEdit() {
         paymentWorkingDays : generatedWorkingDays,
         paymentLeaveTaken : leaveTaken,
     };
-    
-    setCustomerPaymentDetails (prevPaymentDetails => [...prevPaymentDetails, newPaymentDetails]);
+    // setGeneratedBill(pendingAmount);
+    // fetchCustomerData();
+    setCustomerPaymentDetails (prevPaymentDetails => [ newPaymentDetails,...prevPaymentDetails,]);
       // console.log("Total customer bill:", totalCustomerBill);
       // console.log("Total received amount:", totalRecieved);
+      handlePayment();
 
       alert("data Submitted Succesfully");
       resetForm();
@@ -199,19 +306,27 @@ function PaymentEdit() {
   console.log(ayaCost);
   console.log(amountRec);
 
-  useEffect(() => {
-    fetchCustomerData();
-    setPendingAmount(pendingBill());
-    // fetchTotalBill();
-  }, [id,showGeneratedButton,amountReceived,generatedBill]);
 
+useEffect(() => {
+  fetchCustomerData();
+
+}, [id, showGeneratedButton]);
+
+  
 
   
   useEffect(() => {
-    fetchCustomerData();
-    // console.log("yeah running 2nd useeffect")
-    // fetchTotalBill();
-  }, []);
+    // let value = totalPendingAmount + pendingAmount
+    let value = totalPendingAmount - amountReceived;
+    setTotalPendingAmount(value);
+    // setTotalPendingAmount(tech.totalPendingAmount);
+    value = value + generatedBill
+    setTotalBill(value);
+    // if(generatedBill === ''){
+    //   value = totalPendingAmount - amountReceived;
+    //   setTotalPendingAmount(value);
+    // }
+  }, [amountReceived]);
 
   const handleAssign = () => {
     // console.log("Payement Assign");
@@ -219,7 +334,12 @@ function PaymentEdit() {
   };
 
   const pendingBill = () => {
-    const calc = parseFloat(generatedBill) + parseFloat(pendingAmount) - parseFloat(amountReceived);
+    const calc = parseFloat(generatedBill) - parseFloat(amountReceived);
+    // setPendingAmount(calc + )
+    // setTotalPendingAmount(pendingAmount + totalPendingAmount)
+    // console.log("total pending amount",calc + totalPendingAmount)
+    // setTotalBill(totalPendingAmount + generatedBill);
+    // console.log("total csutmer bill",totalPendingAmount+generatedBill);
     console.log("Calculated pending amount:", calc);
     return isNaN(calc) ? 0 : calc;
   };
@@ -288,6 +408,28 @@ function PaymentEdit() {
                             type="text"
                             name="customerbill"
                             value={generatedBill}
+                            readOnly
+                            className={`form-control `}
+                            // onChange={(e) => setCustomerbill(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Total Pending Amount:</label>
+                          <input
+                            type="text"
+                            name="totalpendingbill"
+                            value={totalPendingAmount}
+                            readOnly
+                            className={`form-control `}
+                            // onChange={(e) => setCustomerbill(e.target.value)}
+                          />
+                        </Col>
+                        <Col md="3">
+                          <label>Total Customer bill:</label>
+                          <input
+                            type="text"
+                            name="customerbill"
+                            value={totalBill}
                             readOnly
                             className={`form-control `}
                             // onChange={(e) => setCustomerbill(e.target.value)}
@@ -442,6 +584,7 @@ function PaymentEdit() {
                           <th className="">Amount Recieved</th>
                           <th className="">Status</th>
                           <th className="">Pending Amount</th>
+
                           <th className="">From Data</th>
                           <th className="">To Date</th>
                           <th className="">Assigned Aya</th>
@@ -490,7 +633,7 @@ function PaymentEdit() {
                                   </button>
                                 )}
                               </td>
-                              <td>{tech.pendingAmount}</td>
+                              <td>{item.paymentPendingAmount}</td>
                               <td>{item.paymentFromDate}</td>
                               <td>{item.paymentToDate}</td>
                               <td>{item.paymentAyaAssigned}</td>
