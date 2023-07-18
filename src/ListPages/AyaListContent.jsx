@@ -59,18 +59,17 @@ const AyaListContent = () => {
 
   const handleRowClick = (params) => {
     const field = params.field;
-    console.log("aisa kya hai isme",field)
-    if (field === "assign") {
-      console.log("bhai tu chaal bhi rha hai ?", params.row.assign)
-      const customerId = params.row.assign;
-      navigate(`/customerreg/${customerId}`);
+    console.log("aisa kya hai isme", field);
+    if (field === "assignedCustomerName") {
+      return;
+      // console.log("bhai tu chaal bhi rha hai ?", params.row.assign);
+      // const customerId = params.row.assign;
+      // navigate(`/customerreg/${customerId}`);
+    } else {
+      navigate(`/ayareg/${params.row._id}`);
     }
-    // console.log(`/ayareg/${params.row._id}`);
-
-    else navigate(`/ayareg/${params.row._id}`);
-    // }
-
   };
+  
 
   useEffect(() => {
     apiCategory();
@@ -100,40 +99,151 @@ const AyaListContent = () => {
          renderCell: (params) =>
            params.api.getRowIndexRelativeToVisibleRows(params.row._id) + 1,
          width: 60 ,
-        //   renderCell:(params) =>{
-        //     const id = params;
-        //     console.log("what's paramas",id);
-        // }
+      },
+      {
+        field: "file",
+        headerName: "IMAGE",
+        width: 80,
+        renderCell: (params) => {
+          const { value } = params;
+          return (
+            <img
+              src={`${URL}/${value}`}
+              className="tableimgmui"
+              style={{height:"55px",width:"55px"}}
+            ></img>
+          );
+      },
       },
         {
           field: 'ayaCode',
           headerName: 'AYA CODE',
-          width: 130,
+          width: 85,
           type: 'string',
           editable: true,
         },
+
         {
           field: 'name',
-          headerName: 'NAME',
+          headerName: 'AYA NAME',
+          type: 'string',
+          width: 120,
+          editable: true,
+        },
+        {
+          field: 'contactNumber',
+          headerName: 'CONTACT NO.',
           type: 'string',
           width: 110,
           editable: true,
         },
         {
-          field: "file",
-          headerName: "IMAGE",
-          width: 80,
-          renderCell: (params) => {
-            const { value } = params;
-            return (
-              <img
-                src={`${URL}/${value}`}
-                className="tableimgmui"
-                style={{height:"55px",width:"55px"}}
-              ></img>
-            );
+          field: 'presentAddress',
+          headerName: 'LOCATION',
+          type: 'string',
+          width: 110,
+          editable: true,
         },
-      },
+        {
+          field: 'assignedCustomerName',
+          headerName: 'ASSIGNED',
+          type: 'string',
+          width: 145,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerName) {
+              // return <>{data[0].assignedCustomerName}</>;
+              return (
+                <Link
+                  to={`/customerreg/${data[0].assignedCustomerCode}`}
+                  className="btn-success btn text-white"
+                >
+                  {data[0].assignedCustomerName}
+                </Link>
+              );
+            } else {
+              return (
+                <Link
+                  to={`/ayaassign/${params.row._id}`}
+                  className="btn-danger btn text-white"
+                >
+                  Assign Customer
+                </Link>
+              );
+            }
+          },
+        },
+        
+        {
+          field: 'rate',
+          headerName: 'RATE',
+          type: 'string',
+          width: 60,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerRate) {
+              return <>{data[0].assignedCustomerRate}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+        {
+          field: 'assignedCustomerPurpose',
+          headerName: 'PURPOSE',
+          type: 'string',
+          width: 100,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerPurpose) {
+              return <>{data[0].assignedCustomerPurpose}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+        {
+          field: 'assignedCustomerShift',
+          headerName: 'SHIFT',
+          type: 'string',
+          width: 60,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerShift) {
+              return <>{data[0].assignedCustomerShift}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+        
+        // {
+        //   field: 'paymentstatus',
+        //   headerName: 'STATUS',
+        //   type: 'string',
+        //   width:70,
+        //   editable: true,
+        // },
+        
+        {
+          field: 'gender',
+          headerName: 'GENDER',
+          type: 'string',
+          width: 75,
+          editable: true,
+        },
+        {
+          field: 'age',
+          headerName: 'AGE',
+          type: 'number',
+          width: 20,
+          editable: true,
+        },
+
         {
           field: 'guardianName',
           headerName: 'PARENT NAME',
@@ -142,41 +252,9 @@ const AyaListContent = () => {
           sortable: false,
           width: 140,
         },
-        {
-            field: 'workShift',
-            headerName: 'SHIFT',
-            type: 'string',
-            width: 80,
-            editable: true,
-          },
-          {
-            field: 'presentAddress',
-            headerName: 'LOCATION',
-            type: 'string',
-            width: 120,
-            editable: true,
-          },
-          {
-            field: 'gender',
-            headerName: 'GENDER',
-            type: 'string',
-            width: 90,
-            editable: true,
-          },
-          {
-            field: 'age',
-            headerName: 'AGE',
-            type: 'number',
-            width: 20,
-            editable: true,
-          },
-          {
-            field: 'contactNumber',
-            headerName: 'CONTACT NO.',
-            type: 'string',
-            width: 110,
-            editable: true,
-          },
+
+
+
           // {
           //   field: 'assign',
           //   headerName: 'ASSIGNED',
@@ -191,32 +269,7 @@ const AyaListContent = () => {
           //   width: 50,
           //   editable: true,
           // },
-        {
-          field: 'assignedCustomerName',
-          headerName: 'ASSIGNED',
-          type: 'string',
-          width: 130,
-          editable: true,
-          renderCell: (params) => {
-            const data = params.row.assignedCustomerDetails;
-            return (
-              <>
-                {data[0].assignedCustomerName}
-              </>
-            );
-          },
-        },
-        {
-          field: 'rate',
-          headerName: 'RATE',
-          type: 'string',
-          width: 80,
-          editable: true,
-          renderCell: (params) => {
-            const data = params.row.assignedCustomerDetails;
-            return <>{data[0].assignedCustomerRate}</>;
-          },
-        },
+
         //   {
         //     field: 'daysLeft',
         //     headerName: 'DAYS LEFT',
@@ -231,13 +284,7 @@ const AyaListContent = () => {
         //     width: 180,
         //     editable: true,
         //   },
-          {
-            field: 'paymentstatus',
-            headerName: 'STATUS',
-            type: 'string',
-            width:70,
-            editable: true,
-          },
+
       ];
     return (
         <Box sx={{ height: 600, width: '100%' }}>

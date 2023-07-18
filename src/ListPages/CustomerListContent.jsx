@@ -35,9 +35,10 @@ const CustomerListContent = () => {
       const field  = params.field;
       console.log("let's see again",field)
       if(field === "assignedAyaName"){
-        const ayaName = params.row.assignedAyaDetails
-        console.log("what's in this",ayaName[0].assignedAyaCode)
-          navigate(`/ayareg/${ayaName[0].assignedAyaCode}`)
+        // const ayaName = params.row.assignedAyaDetails
+        // console.log("what's in this",ayaName[0].assignedAyaCode)
+        //   navigate(`/ayareg/${ayaName[0].assignedAyaCode}`)
+        return
       }
       // console.log(`/customerreg/${params.row._id}`);
   
@@ -73,33 +74,34 @@ const CustomerListContent = () => {
           //     console.log("what's paramas",id);
           // }
         },
-        //   {
-        //     field: 'customerCode',
-        //     headerName: 'CUSTOMER CODE',
-        //     width: 140,
-        //     type: 'string',
-        //     editable: true,
-        //   },
         {
-            field: "file",
-            headerName: "IMAGE",
-            width: 80,
-            renderCell: (params) => {
-              const { value } = params;
-              return (
-                <img
-                  src={`${URL}/${value}`}
-                  className="tableimgmui"
-                  style={{height:"55px",width:"55px"}}
-                ></img>
-              );
-          },
+          field: "file",
+          headerName: "IMAGE",
+          width: 80,
+          renderCell: (params) => {
+            const { value } = params;
+            return (
+              <img
+                src={`${URL}/${value}`}
+                className="tableimgmui"
+                style={{height:"55px",width:"55px"}}
+              ></img>
+            );
         },
+      },
+          {
+            field: 'customerCode',
+            headerName: 'CUSTOMER CODE',
+            width: 140,
+            type: 'string',
+            editable: true,
+          },
+
           {
             field: 'name',
             headerName: 'CUSTOMER NAME',
             type: 'string',
-            width: 160,
+            width: 140,
             editable: true,
           },
           {
@@ -150,35 +152,70 @@ const CustomerListContent = () => {
             field: 'assignedAyaName',
             headerName: 'ASSIGNED',
             type: 'string',
-            width: 130,
+            width: 125,
             editable: true,
+
             renderCell: (params) => {
               const data = params.row.assignedAyaDetails;
-              return (
-                <>
-                  {data[0].assignedAyaName}
-                </>
-              );
+              if (data && data.length > 0 && data[0].assignedAyaName) {
+                // return <>{data[0].assignedCustomerName}</>;
+                return (
+                  <Link
+                    to={`/ayareg/${data[0].assignedAyaCode}`}
+                    className="btn-success btn text-white"
+                  >
+                    {data[0].assignedAyaName}
+                  </Link>
+                );
+              } else {
+                return (
+                  <Link
+                    to={`/customerassign/${params.row._id}`}
+                    className="btn-danger btn text-white"
+                  >
+                    Assign Aya
+                  </Link>
+                );
+              }
             },
           },
           {
             field: 'rate',
             headerName: 'RATE',
             type: 'string',
-            width: 80,
+            width: 50,
             editable: true,
             renderCell: (params) => {
               const data = params.row.assignedAyaDetails;
-              return <>{data[0].assignedAyaRate}</>;
+              if (data && data.length > 0 && data[0].assignedAyaRate) {
+                return <>{data[0].assignedAyaRate}</>;
+              } else {
+                return null; // or render a placeholder text or component
+              }
             },
           },
           {
-            field: 'paymentstatus',
-            headerName: 'STATUS',
+            field: 'assignedAyaPurpose',
+            headerName: 'PURPOSE',
             type: 'string',
-            width:70,
+            width: 100,
             editable: true,
+            renderCell: (params) => {
+              const data = params.row.assignedAyaDetails;
+              if (data && data.length > 0 && data[0].assignedAyaPurpose) {
+                return <>{data[0].assignedAyaPurpose}</>;
+              } else {
+                return null; // or render a placeholder text or component
+              }
+            },
           },
+          // {
+          //   field: 'paymentstatus',
+          //   headerName: 'STATUS',
+          //   type: 'string',
+          //   width:70,
+          //   editable: true,
+          // },
 
 
         //   {
@@ -193,7 +230,7 @@ const CustomerListContent = () => {
               field: 'gender',
               headerName: 'GENDER',
               type: 'string',
-              width: 90,
+              width: 75,
               editable: true,
             },
             {

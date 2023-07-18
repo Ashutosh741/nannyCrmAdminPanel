@@ -170,7 +170,7 @@ function AyaReg() {
   const handleCheckAddress = () => {
     setSameAddress(!sameAddress);
     console.log("same Address", sameAddress);
-    if (sameAddress) {
+    if (sameAddress === true) {
       setPermanentAddress(presentAddress);
       setPermanentVill(vill);
       setPermanentStreet(street);

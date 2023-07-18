@@ -24,8 +24,12 @@ const AyaPaymentListContent = () => {
       axios
         .get(`${URL}/ayareg`)
         .then((res) => {
-          setList(res.data.data);
-  
+          const data = res.data.data.map((item) => {
+            const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
+            return { ...item, assignedCustomerDetails };
+          });
+          setList(data);
+          // console.log("ismein kya aa rha bhau",res.data.data)
           setLoading(false);
         })
         .catch((error) => {
@@ -35,9 +39,15 @@ const AyaPaymentListContent = () => {
     };
   
     const handleRowClick = (params) => {
-      console.log(`/ayapayment/${params.row._id}`);
-  
+    const field = params.field;
+    console.log("aisa kya hai isme", field);
+
+      if (field === "assignedCustomerName") {
+        return;
+      }
+      else {
       navigate(`/ayapayment/${params.row._id}`);
+      }
     };
   
     useEffect(() => {
@@ -93,9 +103,9 @@ const AyaPaymentListContent = () => {
         },
           {
             field: 'name',
-            headerName: 'CUSTOMER NAME',
+            headerName: 'AYA NAME',
             type: 'string',
-            width: 160,
+            width: 140,
             editable: true,
           },
           {
@@ -112,28 +122,104 @@ const AyaPaymentListContent = () => {
             width: 120,
             editable: true,
           },
-          {
-            field: 'assign',
-            headerName: 'ASSIGNED',
-            type: 'string',
-            width: 130,
-            editable: true,
+                  {
+          field: 'assignedCustomerName',
+          headerName: 'ASSIGNED',
+          type: 'string',
+          width: 145,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerName) {
+              // return <>{data[0].assignedCustomerName}</>;
+              return (
+                <Link
+                  to={`/customerreg/${data[0].assignedCustomerCode}`}
+                  className="btn-success btn text-white"
+                >
+                  {data[0].assignedCustomerName}
+                </Link>
+              );
+            } else {
+              return (
+                <Link
+                  to={`/ayaassign/${params.row._id}`}
+                  className="btn-danger btn text-white"
+                >
+                  Assign Customer
+                </Link>
+              );
+            }
           },
+        },
+        
+        {
+          field: 'rate',
+          headerName: 'RATE',
+          type: 'string',
+          width: 60,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerRate) {
+              return <>{data[0].assignedCustomerRate}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+        {
+          field: 'assignedCustomerPurpose',
+          headerName: 'PURPOSE',
+          type: 'string',
+          width: 100,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerPurpose) {
+              return <>{data[0].assignedCustomerPurpose}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+        {
+          field: 'assignedCustomerShift',
+          headerName: 'SHIFT',
+          type: 'string',
+          width: 60,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.assignedCustomerDetails;
+            if (data && data.length > 0 && data[0].assignedCustomerShift) {
+              return <>{data[0].assignedCustomerShift}</>;
+            } else {
+              return null; // or render a placeholder text or component
+            }
+          },
+        },
+          // {
+          //   field: 'assign',
+          //   headerName: 'ASSIGNED',
+          //   type: 'string',
+          //   width: 130,
+          //   editable: true,
+          // },
           
-          {
-            field: 'rate',
-            headerName: 'RATE',
-            type: 'string',
-            width: 80,
-            editable: true,
-          },
-          {
-            field: 'paymentstatus',
-            headerName: 'STATUS',
-            type: 'string',
-            width:70,
-            editable: true,
-          },
+          // {
+          //   field: 'rate',
+          //   headerName: 'RATE',
+          //   type: 'string',
+          //   width: 80,
+          //   editable: true,
+          // },
+          // {
+          //   field: 'paymentstatus',
+          //   headerName: 'STATUS',
+          //   type: 'string',
+          //   width:70,
+          //   editable: true,
+          // },
 
 
         //   {
@@ -190,8 +276,8 @@ const AyaPaymentListContent = () => {
               rows={list}
               columns={columns}
               getRowId={getRowId}
-              // onCellClick={handleRowClick()}
-              onRowClick={handleRowClick}
+              onCellClick={handleRowClick}
+              // onRowClick={handleRowClick}
   
               initialState={{
                 pagination: {

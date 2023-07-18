@@ -38,6 +38,8 @@
 
 9 PER MONTH PROFIT AND OVERALL PROFIT
 
+10 in generate bill we can show all customer and aya assigned
+
 
 
   -->
@@ -127,7 +129,35 @@ And you can start making an awesome admin application now.
 <!-- changes to do -- 
 
 1 . Dashboard
-    1.1 in dashboard here we have to show the total customer with their payment status, 
+    1.1 in dashboard here we have to show the total customer with their payment status,
+
+2. excehange of dat awhen assigning to one
+
+3. customer can visit aya , and aya can visit customer
+
+4. show assign aya , and assign customer when no one is assigned
+
+5. show go to generate bill when no one is bill is generated
+
+6. in generate bill create one more column for edit the information of that index
+
+7. for total available nanny for work we can do, which is taking rest we can set current active status and then keep counter, or keep counting 
+
+8. for total customer bill, we can add recently how much bill is generated for and then we can show the total sum of that
+
+9. for a security money we can add all  security money
+
+10. total amount received  from customer we can add all the amount received from customer
+
+11. for total aya payment, we can again do same thing
+
+12. in aya payment, add more column for total money paid , and amount remaining
+
+13. add new customer is not working , check it out
+
+14. remove aya and customer functionality is not added
+
+15. so in customer payment what we have to do here is, receive the amount update 
 
  -->
 
@@ -144,6 +174,8 @@ And you can start making an awesome admin application now.
  6 . fetching of ayaassign and customerassign is done
 
  7. exchange of ayaassignedDetails and assignedCustomerDetails is remaining
+
+ 8. api fetched for customer and aya, for payment
 
 
   -->

@@ -24,6 +24,8 @@ function CustomerAssign() {
   const [assignedAyaShift, setAssignedAyaShift] = useState("");
   const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
   const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
+  const [assignedAyaId,setAssignedAyaId] = useState('');
+
 
   const { id } = useParams();
 
@@ -39,7 +41,7 @@ function CustomerAssign() {
       const response = await axios.get(`${URL}/customerreg/${id}`);
       const techData = response.data.data;
       setTech(techData);
-      console.log("what's techDAata",techData)
+      console.log("it's customer techDAata",techData)
 
       setAssignedAyaDetails(techData.assignedAyaDetails)
       // setAssignedAyaCode(techData.assignedAyaCode);
@@ -52,8 +54,9 @@ function CustomerAssign() {
     try {
       const response = await axios.get(`${URL}/ayareg/${assignedAyaCode}`);
       const techData = response.data.data;
-      // console.log("what's techDAata",techData)
-
+      console.log("what's techDAata",techData)
+      setAssignedAyaId(techData._id);
+      console.log("dekho kya hota hai",techData._id)
       setAssignedAyaName(techData.name);
       console.log("it's her",techData.name);
 
@@ -88,6 +91,32 @@ function CustomerAssign() {
   }, [id,ayaSelect,assignedAyaPurpose]);
 
   console.log("id", id);
+
+  const handleFormSubmitAya = async (e) => {
+    e.preventDefault();
+    console.log("yeah bro running",assignedAyaId);
+    try {
+      const response = await axios.put(`${URL}/ayareg/${assignedAyaId}`, {
+        assignedCustomerCode: tech.customerCode,
+        assignedCustomerName: tech.name,
+        assignedCustomerFromDate: assignedAyaFromDate,
+        assignedCustomerToDate: assignedAyaToDate,
+        assignedCustomerReason: assignedAyaReason,
+        assignedCustomerRate: assignedAyaRate,
+        assignedCustomerShift: assignedAyaShift,
+        assignedCustomerPurpose: assignedAyaPurpose,
+      });
+      const data = response.data;
+      console.log("it's show time ", data);
+      // await fetchassignData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -109,20 +138,6 @@ function CustomerAssign() {
       });
       await fetchCustomerData();
 
-      // const response2 = await axios.put(`${URL}/ayareg/${assignedAyaCode}`, {
-      //   assignedCustomerCode: tech.customerCode,
-      //   assignedCustomerName: tech.name,
-      //   assignedCustomerFromDate: assignedAyaFromDate,
-      //   assignedCustomerToDate: assignedAyaToDate,
-      //   assignedCustomerReason: assignedAyaReason,
-      //   assignedCustomerRate: assignedAyaRate,
-      //   assignedCustomerShift: assignedAyaShift,
-      //   assignedCustomerPurpose: assignedAyaPurpose,
-      // });
-
-      // const data2 = await response2.json();
-      // console.log("ho ja bhai yrr",data2);
-
       const data = await response.json();
       console.log(data);
       const newAssignedAyaDetails = {
@@ -143,6 +158,7 @@ function CustomerAssign() {
       setAssignedAyaShift("select");
       setAssignedAyaPurpose("select");
       setAssignedAyaCode("");
+      handleFormSubmitAya(e);
 
       alert("data Submitted Succesfully");
     } catch (err) {
@@ -150,13 +166,13 @@ function CustomerAssign() {
     }
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setTech((prevTech) => ({
-      ...prevTech,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setTech((prevTech) => ({
+  //     ...prevTech,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleRowClick = () => {
     // console.log(`/customerreg/${item._id}`);

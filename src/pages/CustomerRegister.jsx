@@ -154,7 +154,7 @@ function CustomerRegister() {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append("customer", customerCode);
+    formData.append("customerCode", customerCode);
     formData.append("name", name);
     formData.append("guardianName", fatherName);
     formData.append("booking", booking);
@@ -222,7 +222,7 @@ function CustomerRegister() {
   const handleCheckAddress = () => {
     setSameAddress(!sameAddress);
     console.log("same Address", sameAddress);
-    if (sameAddress) {
+    if (sameAddress === true) {
       setPermanentAddress(presentAddress);
       setPermanentVill(vill);
       setPermanentStreet(street);

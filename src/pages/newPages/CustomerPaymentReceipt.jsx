@@ -39,6 +39,8 @@ const CustomerPaymentReceipt = (props) => {
     const [assignedAyaName, setAssignedAyaName] = useState("");
     const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
     const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
+  const [securityAmount, setSecurityAmount] = useState("");
+
 
     const {id} = useParams();
 
@@ -78,6 +80,8 @@ const CustomerPaymentReceipt = (props) => {
             setCustomerId(response.data.data._id)
             setCustomerData(response.data.data);
             const data = response.data.data
+            setSecurityAmount(data.securityAmount);
+
             // console.log("generated Invoice",data.generatedInvoice)
             // setGeneratedInvoice(data.generatedInvoice);
             setGeneratedInvoice(data.customerGeneratedInvoice || []); 
@@ -105,13 +109,10 @@ const CustomerPaymentReceipt = (props) => {
     const get_diff_days  =  () => {
         if(toDate && fromDate){
             let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
-            // console.log(Math.floor(diff/86400000) + 1);
-            // diff -= leaveTaken
             return  Math.ceil(diff/(1000*86400));
         }else{
-            // console.log('not a number')
+            console.log('not a number')
         }
-     
     }
     // const generatedBill = get_diff_days()*{rate};
 
@@ -393,12 +394,7 @@ const CustomerPaymentReceipt = (props) => {
                             {/* <span></span> */}
                         </div>
                         <div className="securityMoney col-4 d-flex">
-                        <span>SECURITY MONEY:</span>
-                        <select className="form-select options" aria-label="Default select example">
-                            <option selected>select</option>
-                            <option value="1">Paid</option>
-                            <option value="2">Not Paid</option>
-                            </select>
+                        <span>SECURITY MONEY:</span>{securityAmount}
                         </div>
                     </div>
                     <div className="col-12 row-6 mb-2">

@@ -34,7 +34,6 @@ function PaymentEdit() {
   const [paymentstatus, setPaymentStatus] = useState("");
   const [securityAdjustment, setSecurityAdjustment] = useState("");
   const [month, setMonth] = useState("");
-  const [securityAmount, setSecurityAmount] = useState("");
   const [date, setDate] = useState("");
   const [customerpayment, setCustomerPayment] = useState([]);
   const [showbox, setShowbox] = useState(true);
@@ -55,6 +54,10 @@ function PaymentEdit() {
   const [leaveTaken,setLeaveTaken] = useState(0);
   const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
   const [customerPaymentDetails,setCustomerPaymentDetails] = useState([]);
+  const [securityAmount, setSecurityAmount] = useState("");
+  const [status, setStatus] = useState("");
+  const[pendingAmount,setPendingAmount] = useState('');
+
   // const [mountReceived,setGeneratedAmountReceived] = useState('');
   const { id } = useParams();
 
@@ -66,13 +69,15 @@ function PaymentEdit() {
       const techData = response.data.data;
       setTech(techData);
       console.log("techdata" , techData)
+      setSecurityAmount(techData.securityAmount);
       const reversePaymentData = techData.customerPaymentDetails.reverse();
       setCustomerPaymentDetails(reversePaymentData);
       const reverseBillData = techData.customerGeneratedInvoice.reverse();
       // const reversalData = reverseBillData.reverse();
       console.log("reversal data",reverseBillData[0])
       setGeneratedInvoice(reverseBillData);
-
+      setPendingAmount(techData.pendingAmount);
+      console.log("are yha to dekha hi nhi", techData.pendingAmount)
       setCustomerbill(reverseBillData[0].generatedBill)
       // console.log("mic chcek check check",generatedInvoice)
 
@@ -85,7 +90,6 @@ function PaymentEdit() {
       setAssignedAyaPurpose(reverseBillData[0].generatedAyaPurpose);
       setLeaveTaken(reverseBillData[0].generatedLeaveTaken);
       setGeneratedWorkingDays(reverseBillData[0].generatedWorkingDays);
-
       // console.log("generated bill" , reverseBillData[0].generatedBill)
       
       setGeneratedBill(reverseBillData[0].generatedBill); 
@@ -139,12 +143,15 @@ function PaymentEdit() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    // pendingBill();
+    console.log("let' see, kitna ban gya",pendingAmount)
     try {
       const response = await fetch(`${URL}/customerreg/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           paymentBill: generatedBill,
           paymentAmountReceived: amountReceived,
+          pendingAmount : pendingAmount,
           paymentFromDate: fromDate,
           paymentToDate: toDate,
           paymentRate: rate,
@@ -165,19 +172,20 @@ function PaymentEdit() {
 
       const data = await response.json();
       // console.log(data);
-    //   const newPaymentDetails = {
-    //     paymentBill: generatedBill,
-    //     paymentAmountReceived: amountReceived,  
-    //     paymentFromDate: fromDate,
-    //     paymentToDate: toDate,
-    //     paymentRate: rate,
-    //     paymentAyaAssigned: assignedAyaName,
-    //     paymentAyaPurpose : assignedAyaPurpose,
-    //     paymentWorkingDays : generatedWorkingDays,
-    //     paymentLeaveTaken : leaveTaken,
-    // };
+      const newPaymentDetails = {
+        paymentBill: generatedBill,
+        paymentAmountReceived: amountReceived,  
+        pendingAmount : pendingAmount,
+        paymentFromDate: fromDate,
+        paymentToDate: toDate,
+        paymentRate: rate,
+        paymentAyaAssigned: assignedAyaName,
+        paymentAyaPurpose : assignedAyaPurpose,
+        paymentWorkingDays : generatedWorkingDays,
+        paymentLeaveTaken : leaveTaken,
+    };
     
-    // setCustomerPaymentDetails (prevPaymentDetails => [...prevPaymentDetails, newPaymentDetails]);
+    setCustomerPaymentDetails (prevPaymentDetails => [...prevPaymentDetails, newPaymentDetails]);
       // console.log("Total customer bill:", totalCustomerBill);
       // console.log("Total received amount:", totalRecieved);
 
@@ -193,8 +201,9 @@ function PaymentEdit() {
 
   useEffect(() => {
     fetchCustomerData();
+    setPendingAmount(pendingBill());
     // fetchTotalBill();
-  }, [id,showGeneratedButton,amountReceived]);
+  }, [id,showGeneratedButton,amountReceived,generatedBill]);
 
 
   
@@ -208,6 +217,14 @@ function PaymentEdit() {
     // console.log("Payement Assign");
     navigate(`/customerassign/${id}`);
   };
+
+  const pendingBill = () => {
+    const calc = parseFloat(generatedBill) + parseFloat(pendingAmount) - parseFloat(amountReceived);
+    console.log("Calculated pending amount:", calc);
+    return isNaN(calc) ? 0 : calc;
+  };
+  
+  
 
   return (
     <>
@@ -233,7 +250,7 @@ function PaymentEdit() {
                       </span>
                     </div>
                   </div>
-                  <div class="profile-userbuttons">
+                  {/* <div class="profile-userbuttons">
                     <button
                       type="button"
                       class="btn btn-success btn-sm mb-3"
@@ -241,7 +258,7 @@ function PaymentEdit() {
                     >
                       Edit
                     </button>
-                  </div>
+                  </div> */}
 
                   <hr />
                 </div>
@@ -328,7 +345,7 @@ function PaymentEdit() {
                           <label>Security Amount</label>
                           <input
                             type="text"
-                            // value={amountRec}
+                            value={securityAmount}
                             className={`form-control `}
                             // onChange={(e) => setAmountRec(e.target.value)}
                           />
@@ -360,13 +377,20 @@ function PaymentEdit() {
                             // onChange={(e) => setAmountRec(e.target.value)}
                           />
                         </Col>
+                        <Col md="3">
+                          <label>Adjust With Security Money</label>
+                          <select className="form-control form-select">
+                            <option value = "No">NO</option>
+                            <option value = "Yes">YES</option>
+                          </select>
+                        </Col>
 
                         <Col md="12">
                           <div className="mt-3">
                             <button
                               type="submit"
                               className="btn bg-primary text-white"
-                              // onClick={calculate}
+                              onClick= {()=>setPendingAmount(pendingBill())}
                             >
                               Save
                             </button>
@@ -416,6 +440,8 @@ function PaymentEdit() {
                         <tr className="text-uppercase">
                           <th className="">Customer Bill</th>
                           <th className="">Amount Recieved</th>
+                          <th className="">Status</th>
+                          <th className="">Pending Amount</th>
                           <th className="">From Data</th>
                           <th className="">To Date</th>
                           <th className="">Assigned Aya</th>
@@ -430,10 +456,41 @@ function PaymentEdit() {
                       <tbody>
                       {(customerPaymentDetails[0] !== undefined) && customerPaymentDetails.map((item, index) => {
                         if (item) {
+                                // Calculate the status based on customer bill and amount received
+                                let status = "";
+                                if (item.paymentBill === item.paymentAmountReceived) {
+                                  status = "Complete";
+                                } else if (item.paymentBill < item.paymentAmountReceived) {
+                                  status = "Advanced";
+                                } else {
+                                  status = "Pending";
+                                }
+
+                                // Update the status value in the item
+                                item.status = status;
                           return (
                             <tr key={item.generatedCustomerId}>
                               <td>{item.paymentBill}</td>
                               <td>{item.paymentAmountReceived}</td>
+                              {/* <td>{item.status}</td> */}
+                              <td>
+                                {status === "Complete" && (
+                                  <button className="btn btn-primary text-white">
+                                    Complete
+                                  </button>
+                                )}
+                                {status === "Pending" && (
+                                  <button className="btn btn-danger text-white" >
+                                    Pending
+                                  </button>
+                                )}
+                                {status === "Advanced" && (
+                                  <button className="btn btn-success text-white" >
+                                    Advanced
+                                  </button>
+                                )}
+                              </td>
+                              <td>{tech.pendingAmount}</td>
                               <td>{item.paymentFromDate}</td>
                               <td>{item.paymentToDate}</td>
                               <td>{item.paymentAyaAssigned}</td>

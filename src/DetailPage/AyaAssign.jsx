@@ -24,7 +24,7 @@ function AyaAssign() {
   const [assignedCustomerShift, setAssignedCustomerShift] = useState("");
   const [assignedCustomerPurpose, setAssignedCustomerPurpose] = useState("");
   const [assignedCustomerDetails,setAssignedCustomerDetails] = useState([]);
-  const [assignedCustomerId,setAssignedCustomerId] = useState([]);
+  const [assignedCustomerId,setAssignedCustomerId] = useState('');
 
 
   const { id } = useParams();
@@ -51,10 +51,10 @@ function AyaAssign() {
       const response = await axios.get(`${URL}/customerreg/${assignedCustomerCode}`);
       const techData = response.data.data;
       console.log("where are you",techData)
-      setAssignedCustomerId(techData[0]._id);
-      console.log("yhi kr skta hai",techData[0]._id)
-      setAssignData(techData);
+      setAssignedCustomerId(techData._id);
+      console.log("yhi kr skta hai",techData._id)
       setAssignedCustomerName(techData.name);
+      setAssignedCustomerId(techData._id);
       console.log("it's me ",techData.name);
 
       // console.log("assign data", assignData);
@@ -74,158 +74,34 @@ function AyaAssign() {
   useEffect(() => {
     fetchaayaData();
     apiCustomerid();
-    fetchassignData();
   }, [id, assignedCustomerPurpose, customerSelect]);
   
 
-  console.log("id", id);
-
-  // const handleFormSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await fetch(`${URL}/ayareg/${id}`, {
-  //       method: "PUT",
-  //       body: JSON.stringify({
-  //         assignedCustomerCode : assignedCustomerCode,
-  //         assignedCustomerName : assignedCustomerName,
-  //         assignedCustomerFromDate : assignedCustomerFromDate,
-  //         assignedCustomerToDate : assignedCustomerToDate,
-  //         assignedCustomerReason : assignedCustomerReason,
-  //         assignedCustomerRate : assignedCustomerRate,
-  //         assignedCustomerShift : assignedCustomerShift,
-  //         assignedCustomerPurpose : assignedCustomerPurpose,
-  //       }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     await fetchaayaData();
-  //     const data = await response.json();
-  //     console.log(data);
-  //     const newAssignedCustomerDetails = {
-  //       assignedCustomerCode : assignedCustomerCode,
-  //       assignedCustomerName : assignedCustomerName,
-  //       assignedCustomerFromDate : assignedCustomerFromDate,
-  //       assignedCustomerToDate : assignedCustomerToDate,
-  //       assignedCustomerReason : assignedCustomerReason,
-  //       assignedCustomerRate : assignedCustomerRate,
-  //       assignedCustomerShift : assignedCustomerShift,
-  //       assignedCustomerPurpose : assignedCustomerPurpose,
-  //     }
-  //     setAssignedCustomerDetails(previousassignedCustomerDetails => [...previousassignedCustomerDetails,newAssignedCustomerDetails])
-  //     setAssignedCustomerFromDate("");
-  //     setAssignedCustomerToDate("");
-  //     setAssignedCustomerReason("select");
-  //     setAssignedCustomerRate("0");
-  //     setAssignedCustomerShift("select");
-  //     setAssignedCustomerPurpose("select");
-  //     setAssignedCustomerCode("");
-  //     setCustomerSelect(false);
-  //     setCustomerList([])
-  //     // console.log("setAssignedCustomerDetails is this",assignedCustomerDetails)
-  //     alert("data Submitted Succesfully");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   // fetchaayaData();
-  // };
-
-  // const handleFormSubmitCustomer = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await fetch(`${URL}/customerreg/${assignedCustomerCode}`, {
-  //       method: "PUT",
-  //       body: JSON.stringify({
-  //         assignedAyaCode : tech.ayaCode,
-  //         assignedAyaName : tech.name,
-  //         assignedAyaFromDate : assignedCustomerFromDate,
-  //         assignedAyaToDate : assignedCustomerToDate,
-  //         assignedAyaReason : assignedCustomerReason,
-  //         assignedAyaRate : assignedCustomerRate,
-  //         assignedAyaShift : assignedCustomerShift,
-  //         assignedAyaPurpose : assignedCustomerPurpose,
-  //       }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log("it's show time ",data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   fetchassignData();
-  // };
-
-
-  // const handleFormSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await axios.put(`${URL}/ayareg/${id}`, {
-  //       assignedCustomerCode: assignedCustomerCode,
-  //       assignedCustomerName: assignedCustomerName,
-  //       assignedCustomerFromDate: assignedCustomerFromDate,
-  //       assignedCustomerToDate: assignedCustomerToDate,
-  //       assignedCustomerReason: assignedCustomerReason,
-  //       assignedCustomerRate: assignedCustomerRate,
-  //       assignedCustomerShift: assignedCustomerShift,
-  //       assignedCustomerPurpose: assignedCustomerPurpose,
-  //     });
-  //     await fetchaayaData();
-  //     const data = response.data;
-  //     console.log(data);
-  //     const newAssignedCustomerDetails = {
-  //       assignedCustomerCode: assignedCustomerCode,
-  //       assignedCustomerName: assignedCustomerName,
-  //       assignedCustomerFromDate: assignedCustomerFromDate,
-  //       assignedCustomerToDate: assignedCustomerToDate,
-  //       assignedCustomerReason: assignedCustomerReason,
-  //       assignedCustomerRate: assignedCustomerRate,
-  //       assignedCustomerShift: assignedCustomerShift,
-  //       assignedCustomerPurpose: assignedCustomerPurpose,
-  //     };
-  //     setAssignedCustomerDetails((previousassignedCustomerDetails) => [
-  //       ...previousassignedCustomerDetails,
-  //       newAssignedCustomerDetails,
-  //     ]);
-  //     setAssignedCustomerFromDate("");
-  //     setAssignedCustomerToDate("");
-  //     setAssignedCustomerReason("select");
-  //     setAssignedCustomerRate("0");
-  //     setAssignedCustomerShift("select");
-  //     setAssignedCustomerPurpose("select");
-  //     setAssignedCustomerCode("");
-  //     setCustomerSelect(false);
-  //     setCustomerList([]);
-  //     alert("Data Submitted Successfully");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  
-  // const handleFormSubmitCustomer = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await axios.put(`${URL}/customerreg/${assignedCustomerCode}`, {
-  //       assignedAyaCode: tech.ayaCode,
-  //       assignedAyaName: tech.name,
-  //       assignedAyaFromDate: assignedCustomerFromDate,
-  //       assignedAyaToDate: assignedCustomerToDate,
-  //       assignedAyaReason: assignedCustomerReason,
-  //       assignedAyaRate: assignedCustomerRate,
-  //       assignedAyaShift: assignedCustomerShift,
-  //       assignedAyaPurpose: assignedCustomerPurpose,
-  //     });
-  //     const data = response.data;
-  //     console.log("it's show time ", data);
-  //     await fetchassignData();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const handleFormSubmitCustomer = async (e) => {
+    e.preventDefault();
+    console.log("yeah bro running",assignedCustomerId);
+    try {
+      const response = await axios.put(`${URL}/customerreg/${assignedCustomerId}`, {
+        assignedAyaCode: tech.ayaCode,
+        assignedAyaName: tech.name,
+        assignedAyaFromDate: assignedCustomerFromDate,
+        assignedAyaToDate: assignedCustomerToDate,
+        assignedAyaReason: assignedCustomerReason,
+        assignedAyaRate: assignedCustomerRate,
+        assignedAyaShift: assignedCustomerShift,
+        assignedAyaPurpose: assignedCustomerPurpose,
+      });
+      const data = response.data;
+      console.log("it's show time ", data);
+      await fetchassignData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("helo hello ")
+     
+        console.log("helo hello why this is not showing+",assignedCustomerName)
     try {
       const response = await axios.put(`${URL}/ayareg/${id}`, {
         assignedCustomerCode: assignedCustomerCode,
@@ -239,6 +115,8 @@ function AyaAssign() {
       });
       const data = response.data;
       console.log(data);
+
+      
   
       const newAssignedCustomerDetails = {
         assignedCustomerCode: assignedCustomerCode,
@@ -258,22 +136,8 @@ function AyaAssign() {
           newAssignedCustomerDetails,
         ],
       };
+
       setTech(updatedTech);
-
-
-      // const response2 = await axios.put(`${URL}/customerreg/${assignedCustomerId}`, {
-      //   assignedAyaCode: tech.ayaCode,
-      //   assignedAyaName: tech.name,
-      //   assignedAyaFromDate: assignedCustomerFromDate,
-      //   assignedAyaToDate: assignedCustomerToDate,
-      //   assignedAyaReason: assignedCustomerReason,
-      //   assignedAyaRate: assignedCustomerRate,
-      //   assignedAyaShift: assignedCustomerShift,
-      //   assignedAyaPurpose: assignedCustomerPurpose,
-      // });
-      // const data2 = response2.data;
-      // console.log("dekhte hai hota ha yeh nih",data2);
-  
       setAssignedCustomerFromDate("");
       setAssignedCustomerToDate("");
       setAssignedCustomerReason("select");
@@ -284,44 +148,24 @@ function AyaAssign() {
       setCustomerSelect(false);
       setCustomerList([]);
       alert("Data Submitted Successfully");
+      handleFormSubmitCustomer(e);
+
       
     } catch (err) {
       console.log(err);
     }
   };
-  
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setTech((prevTech) => ({
-      ...prevTech,
-      [name]: value,
-    }));
-  };
 
   const handleRowClick = () => {
     // console.log(`/customerreg/${item._id}`);
 
-    navigate(`/customerreg/${id}`);
+    navigate(`/customerreg/${assignedCustomerCode}`);
   };
 
-  const apiCategory = () => {
-    setLoading(true);
-    axios
-      .get(`${URL}/customerreg`)
-      .then((res) => {
-        setList(res.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  };
 
   useEffect(() => {
-    apiCategory();
-  }, []);
+    fetchassignData();
+  }, [assignedCustomerCode]);
 
   return (
     <>
