@@ -197,3 +197,6 @@ input[type="date"]{
 .rate input{
     width : 20%;
 }
+.options{
+    height: 24px !important;
+}

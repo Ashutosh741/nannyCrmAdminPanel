@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
@@ -50,6 +50,11 @@ function CustomerRegister() {
   const [forService, setForService] = useState("");
   const [file, setFile] = useState(null);
   const [sameAddress, setSameAddress] = useState(true);
+  // const [aadharCardNumber,setAadharCardNumber] = useState('');
+  // const [aadharCardImage,setAadharCardImage] = useState(null);
+  const [idCardImage,setIdCardImage] = useState(null);  
+  const[casteCategory,setCasteCategory] = useState('')
+  const [baseRate,setBaseRate] = useState('');
 
   const navigate = useNavigate();
 
@@ -162,7 +167,7 @@ function CustomerRegister() {
     formData.append("requirementpurpose", requirementpurpose);
     formData.append("securityAdjustment", securityAdjustment);
     formData.append("closingDate", closingDate);
-
+    formData.append("attendService",attendService);
     formData.append("presentAddress", presentAddress);
     formData.append("vill", vill);
     formData.append("street", street);
@@ -188,12 +193,17 @@ function CustomerRegister() {
     formData.append("alternativeNumber", alternativeNumber);
     formData.append("religion", religion);
     formData.append("marriageStatus", marriageStatus);
+    // formData.append("aadharCardNumber", aadharCardNumber);
+    // formData.append("aadharCardImage", aadharCardImage);
+    formData.append("idCardImage", idCardImage);
     formData.append("idCardType", idCardType);
     formData.append("idCardNumber", idCardNumber);
     formData.append("statusofCustomer", status);
     formData.append("customerRemark", customerRemark);
     formData.append("customerSpeak", customerSpeak);
     formData.append("file", file);
+    formData.append("baseRate",baseRate);
+
 
     axios
       .post(`${URL}/customerreg`, formData, {
@@ -218,6 +228,34 @@ function CustomerRegister() {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
   };
+
+
+  // const handleAadharFileChange = (event) => {
+  //   const selectedFile = event.target.files[0];
+  //   setAadharCardImage(selectedFile);
+  // };
+  const handleIdCardFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setIdCardImage(selectedFile);
+  };
+
+  function getAge(dateString) 
+  {
+      var today = new Date();
+      var birthDate = new Date(dateString);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+      {
+          age--;
+      }
+       setAge(age);
+  }
+  
+    useEffect(()=>{
+      getAge(dateOfBirth);
+    },[dateOfBirth])
+
 
   const handleCheckAddress = () => {
     setSameAddress(!sameAddress);
@@ -336,7 +374,7 @@ function CustomerRegister() {
                   </FormGroup>
                 </div>
               </Col>
-              <Col md="4">
+              {/* <Col md="4">
                 <div className="">
                   <FormGroup>
                     <label>Requirement Purpose:</label>
@@ -349,7 +387,7 @@ function CustomerRegister() {
                     />
                   </FormGroup>
                 </div>
-              </Col>
+              </Col> */}
               <Col md="4">
                 <label>Security Deposit Amount:</label>
                 <input
@@ -372,6 +410,18 @@ function CustomerRegister() {
                   />
                 </FormGroup>
               </Col>
+              <Col md="4">
+                  <FormGroup>
+                    <label>Base Rate</label>
+                    <input
+                      type="baseRate"
+                      name="baseRate"
+                      className="form-control"
+                      value={baseRate}
+                      onChange={(e) => setBaseRate(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
               {/* <Col md="4">
                 <FormGroup>
                   <label>Security Deposit Adjustment:</label>
@@ -654,7 +704,75 @@ function CustomerRegister() {
               <Col md="12">
                 <h3 className="">Personal Detail</h3>
               </Col>
+              {/* <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="dateOfBirth">Aadhar Card Number</label>
+                    <input type="text"
+                    id="aadharCardNumber"
+                    name="aadharCardNumber"
+                    className="form-control"
+                    value={aadharCardNumber}
+                    onChange={(e) => setAadharCardNumber(e.target.value)}
+                    required
+                    data-type="adhaar-number"
+                     maxLength="12"/>
+                  </FormGroup>
+                </Col> */}
+                {/* <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="" className="fw-bold">
+                      Aadhar Card Image
+                    </label>
+                    <input
+                      type="file"
+                      name="aadharCardImage"
+                      className="form-control"
+                      onChange={handleAadharFileChange}
+                    />
+
+                  </FormGroup>
+                </Col> */}
               <Col md="4">
+                <FormGroup>
+                  <label>ID Card Type:</label>
+                  <select
+                    className="form-control form-select"
+                    value={idCardType}
+                    onChange={(e) => setIdCardType(e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    <option value="aadhar-card">Aadhar Card</option>
+                    <option value="voter-idcard">Voter IdCard</option>
+                    <option value="pan-card">Pan Card</option>
+                    <option value="driving-license">Driving License</option>
+                  </select>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>ID Card Number:</label>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={idCardNumber}
+                    onChange={(e) => setIdCardNumber(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="" className="fw-bold">
+                      ID Card Image
+                    </label>
+                    <input
+                      type="file"
+                      name="IdCardImage"
+                      className="form-control"
+                      onChange={handleIdCardFileChange}
+                    />
+                  </FormGroup>
+                </Col>
+              {/* <Col md="4">
                 <FormGroup>
                   <label htmlFor="dateOfBirth">Date of Birth:</label>
                   <input
@@ -665,7 +783,22 @@ function CustomerRegister() {
                     onChange={(e) => setDateOfBirth(e.target.value)}
                   />
                 </FormGroup>
-              </Col>
+              </Col> */}
+                <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="dateOfBirth">Date of Birth:</label>
+                    <input
+                      type="date"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      className="form-control"
+                      value={dateOfBirth}
+                      onChange={(e) => setDateOfBirth(e.target.value)}
+                      required
+
+                    />
+                  </FormGroup>
+                </Col>
               <Col md="4">
                 <FormGroup>
                   <label htmlFor="gender">Gender:</label>
@@ -678,8 +811,8 @@ function CustomerRegister() {
                     required
                   >
                     <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
                   </select>
                 </FormGroup>
               </Col>
@@ -692,7 +825,8 @@ function CustomerRegister() {
                     id="age"
                     className="form-control"
                     value={age}
-                    onChange={(e) => setAge(e.target.value)}
+                    readOnly
+                    // onChange={(e) => setAge(e.target.value)}
                   />
                 </FormGroup>
               </Col>
@@ -703,8 +837,9 @@ function CustomerRegister() {
                     type="text"
                     id="nationality"
                     className="form-control"
-                    value={nationality}
-                    onChange={(e) => setNationality(e.target.value)}
+                    value="Indian"
+                    readOnly
+                    // onChange={(e) => setNationality(e.target.value)}
                   />
                 </FormGroup>
               </Col>
@@ -733,7 +868,7 @@ function CustomerRegister() {
                   />
                 </FormGroup>
               </Col>
-              <Col md="4">
+              {/* <Col md="4">
                 <FormGroup>
                   <label htmlFor="religion">Religion:</label>
                   <input
@@ -744,7 +879,48 @@ function CustomerRegister() {
                     onChange={(e) => setReligion(e.target.value)}
                   />
                 </FormGroup>
-              </Col>
+              </Col> */}
+              <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="religion">Religion:</label>
+                    <select
+                      id="religion"
+                      name="religion"
+                      className="form-control form-select"
+                      value={religion}
+                      onChange={(e) => setReligion(e.target.value)}
+                      required
+
+                    >
+                      <option value="">Select</option>
+                      <option value="Hinduism">Hinduism</option>
+                      <option value="Islam">Islam</option>
+                      <option value="Christanity">Christanity</option>
+                      <option value="Sikhism">Sikhism</option>
+                      <option value="Buddhism">Buddhism</option>
+                      <option value="Jainism">Jainism</option>
+                    </select>
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="religion">Caste Category</label>
+                    <select
+                      id="casteCategory"
+                      name="casteCategory"
+                      className="form-control form-select"
+                      value={casteCategory}
+                      onChange={(e) => setCasteCategory(e.target.value)}
+                      required
+                    >
+                      <option value="">Select</option>
+                      <option value="GEN/GC">General Category</option>
+                      <option value="ST">Scheduled Tribe</option>
+                      <option value="SC">Scheduled Caste</option>
+                      <option value="OBC">Other Backward Class</option>
+                    </select>
+                  </FormGroup>
+                </Col>
               <Col md="4">
                 <FormGroup>
                   <label for="marriageStatus">Marriage Status:</label>
@@ -761,33 +937,7 @@ function CustomerRegister() {
                   </select>
                 </FormGroup>
               </Col>
-              <Col md="4">
-                <FormGroup>
-                  <label>ID Card Type:</label>
-                  <select
-                    className="form-control form-select"
-                    value={idCardType}
-                    onChange={(e) => setIdCardType(e.target.value)}
-                  >
-                    <option value="">Select</option>
-                    <option value="aadhar-card">Aadhar Card</option>
-                    <option value="voter-idcard">Voter IdCard</option>
-                    <option value="pan-card">Pan Card</option>
-                    <option value="driving-license">Driving License</option>
-                  </select>
-                </FormGroup>
-              </Col>
-              <Col md="4">
-                <FormGroup>
-                  <label>ID Card Number:</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={idCardNumber}
-                    onChange={(e) => setIdCardNumber(e.target.value)}
-                  />
-                </FormGroup>
-              </Col>
+
               {/* <Col md="4">
                 <FormGroup>
                   <label for="idProof">ID Proof:</label>
@@ -795,7 +945,7 @@ function CustomerRegister() {
                   <input type="file" className="idproof form-control" />
                 </FormGroup>
               </Col> */}
-              <Col md="4">
+              {/* <Col md="4">
                 <FormGroup>
                   <label for="status">Status for Customer:</label>
                   <select
@@ -812,8 +962,8 @@ function CustomerRegister() {
                     <option value="Hold Customer">Hold Customer</option>
                   </select>
                 </FormGroup>
-              </Col>
-              <Col md="4">
+              </Col> */}
+              {/* <Col md="4">
                 <FormGroup>
                   <label for="customerRemark">Customer Remark:</label>
                   <select
@@ -834,7 +984,7 @@ function CustomerRegister() {
                     </option>
                   </select>
                 </FormGroup>
-              </Col>
+              </Col> */}
               <Col md="4">
                 <FormGroup>
                   <label for="canspeak">Customer Can Speak:</label>

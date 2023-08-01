@@ -8,10 +8,10 @@ import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 
 
-const AyaListContent = () => {
+const AyaListContent = (props) => {
+  // console.log("type station",props.type)
 
-
-
+console.log(props);
   const navigate = useNavigate();
 
   const [assigncheck, setAssignCheck] = useState("");
@@ -20,6 +20,7 @@ const AyaListContent = () => {
   const [list, setList] = useState([]);
 
   const [loading, setLoading] = useState(false);
+
 
 
   // const apiCategory = () => {
@@ -43,7 +44,16 @@ const AyaListContent = () => {
     axios
       .get(`${URL}/ayareg`)
       .then((res) => {
-        const data = res.data.data.map((item) => {
+        console.log(res.data.data);
+  
+        let filteredData = res.data.data;
+        
+        if (props.type) {
+          // Filter data based on the workinglocation
+          filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
+        }
+  
+        const data = filteredData.map((item) => {
           const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
           return { ...item, assignedCustomerDetails };
         });
@@ -56,6 +66,8 @@ const AyaListContent = () => {
       });
   };
   
+  
+  // console.log(type)
 
   const handleRowClick = (params) => {
     const field = params.field;
@@ -77,17 +89,17 @@ const AyaListContent = () => {
 
   useEffect(() => {
     apiCategory();
-  }, [])
+  }, [props.type])
 
   console.log(list.file);
 
     //download Excel
-    const handleDownloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(list);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Aya  Data");
-    XLSX.writeFile(workbook, "Aya_data.xlsx");
-    };
+    // const handleDownloadExcel = () => {
+    // const worksheet = XLSX.utils.json_to_sheet(list);
+    // const workbook = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(workbook, worksheet, "Aya  Data");
+    // XLSX.writeFile(workbook, "Aya_data.xlsx");
+    // };
         
     const getRowId = (row) => row._id;
 
@@ -131,12 +143,20 @@ const AyaListContent = () => {
           editable: true,
         },
         {
+          field: 'workShift',
+          headerName: 'SHIFT',
+          type: 'string',
+          width: 80,
+          editable: true,
+        },
+        {
           field: 'contactNumber',
           headerName: 'CONTACT NO.',
           type: 'string',
           width: 110,
           editable: true,
         },
+        
         {
           field: 'presentAddress',
           headerName: 'LOCATION',
@@ -287,7 +307,7 @@ const AyaListContent = () => {
 
       ];
     return (
-        <Box sx={{ height: 600, width: '100%' }}>
+        <Box sx={{ height: '100%', width: '100%' }}>
           <DataGrid
             rows={list}
             columns={columns}

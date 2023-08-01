@@ -21,13 +21,8 @@ function CustomerList() {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
-  const handleRowClick = (item) => {
-    console.log(`/customerreg/${item._id}`);
-
-    navigate(`/customerreg/${item._id}`, { state: { item } });
-  };
-
+  const [selectedType, setSelectedType] = useState(""); // local or outstation
+  const [selectedStation, setSelectedStation] = useState(null);
   const apiCategory = () => {
     setLoading(true);
 
@@ -54,74 +49,29 @@ function CustomerList() {
     apiCategory();
   }, []);
 
-  const filterData = (data) => {
-    const filteredList = data.filter((item) => {
-      const nameMatch =
-        item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const numberMatch =
-        item.contactNumber &&
-        item.contactNumber.toString().includes(searchTerm);
-      return nameMatch || numberMatch;
-    });
-    return filteredList;
-  };
-
-  useEffect(() => {
-    const filteredList = filterData(list);
-    setFilteredData(filteredList);
-    setCurrentPage(1);
-  }, [list, searchTerm]);
-
-  const handleSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  //   const handleSearch = (event) => {
-  //     setSearchTerm(event.target.value);
-  //   };
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reset pagination to the first page when searching
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Sorting logic
-  const sortedData = filteredData.sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  // Pagination logic
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const currentItems = sortedData.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  // const filterDataByDate = (data, fromDate, toDate) => {
-  //   return data.filter((item) => {
-  //     const createdDate = new Date(item.createdDate);
-  //     return (
-  //       createdDate >= new Date(fromDate) && createdDate <= new Date(toDate)
-  //     );
-  //   });
-  // };
+  // useEffect(() => {
+  //   const filteredList = filterData(list);
+  //   setFilteredData(filteredList);
+  //   setCurrentPage(1);
+  // }, [list, searchTerm]);
 
   const tableRef = useRef();
   const handlePrintTable = useReactToPrint({
     content: () => tableRef.current,
     });
+
+    useEffect(()=>{
+      <CustomerListContent type={selectedType}/>
+      console.log("request sent")
+    },[selectedType])
+  
+
+    
+  const handleStation = (stationType) => {
+    setSelectedStation((prevStation) => (prevStation === stationType ? null : stationType));
+    setSelectedType(stationType);
+
+  };
 
   return (
     <>
@@ -131,6 +81,21 @@ function CustomerList() {
             <Col md="12">
               <div className="my-3 text-end">
                 <div className="d-flex align-items-center gap-5 w-100">
+                <div className="w-100 text-start">
+                  <Button
+                    className={`stationbtn btn bg-primary text-white mx-2 ${selectedStation === "Local" ? "active" : ""}`}
+                    onClick={() => handleStation("Local")}
+                  >
+                    LOCAL
+                  </Button>
+                  <Button
+                    className={`stationbtn btn bg-primary text-white ${selectedStation === "Out-Station" ? "active" : ""}`}
+                    onClick={() => handleStation("Out-Station")}
+                  >
+                    OUT STATION
+                  </Button>
+                  </div>
+
                   <div className="w-100 text-end">
                     <Button
                       className="btn bg-primary text-white mx-2"

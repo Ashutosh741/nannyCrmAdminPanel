@@ -79,9 +79,14 @@ const Attendence = () => {
   const generateSrNo = () => {
     setSrNo((prevSrNo) => prevSrNo + 1);
   };
+  function ReverseString(str) {
+    return str.split('-').reverse().join('-')
+}
 
   const renderRows = () => {
     const rows = [];
+    // selectedDate.split('').reverse().join('')
+    console.log("yeh kaam krna chahiye",ReverseString(selectedDate))
 
     for (let i = 1; i <= getLastDayOfMonth(); i++) {
       rows.push(
@@ -103,7 +108,7 @@ const Attendence = () => {
               textAlign: i % 2 === 0 ? "center" : "start",
             }}
           >
-            {selectedDate}-{i}
+            {i}-{ReverseString(selectedDate)}
           </td>
           <td
             style={{

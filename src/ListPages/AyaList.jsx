@@ -26,6 +26,8 @@ function AyaList() {
   const [assigncheck, setAssignCheck] = useState("");
 
   const [assignCustomer, setAssginCustomer] = useState([]);
+  const [selectedType, setSelectedType] = useState(""); // local or outstation
+  const [selectedStation, setSelectedStation] = useState(null);
 
   const apiCategory = () => {
     setLoading(true);
@@ -42,11 +44,6 @@ function AyaList() {
       });
   };
 
-  const handleRowClick = (item) => {
-    console.log(`/ayareg/${item._id}`);
-
-    navigate(`/ayareg/${item._id}`, { state: { item } });
-  };
 
   //download Excel
   const handleDownloadExcel = () => {
@@ -59,56 +56,28 @@ function AyaList() {
   useEffect(() => {
     apiCategory();
   }, [assigncheck]);
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reset pagination to the first page when searching
-  };
 
-  const filterData = (data) => {
-    const filteredList = data.filter((item) => {
-      const nameMatch = item.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const numberMatch = item.contactNumber.toString().includes(searchTerm);
-      return nameMatch || numberMatch;
-    });
-    return filteredList;
-  };
+  useEffect(()=>{
+    <AyaListContent type={selectedType}/>
+    console.log("request sent")
+  },[selectedType])
 
-  useEffect(() => {
-    const filteredList = filterData(list);
-    setFilteredData(filteredList);
-    setCurrentPage(1);
-  }, [list, searchTerm]);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Sorting logic
-  const sortedData = filteredData.sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  // Pagination logic
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const currentItems = sortedData.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  console.log(list.file);
+ 
+  // console.log(list.file);
 
   const tableRef = useRef();
 
   const handlePrintTable = useReactToPrint({
     content : ()=> tableRef.current,
   })
+
+
+  const handleStation = (stationType) => {
+    setSelectedStation((prevStation) => (prevStation === stationType ? null : stationType));
+    setSelectedType(stationType);
+
+  };
+  
 
   return (
     <>
@@ -118,16 +87,20 @@ function AyaList() {
             <Col md="12">
               <div className="my-3">
                 <div className="d-flex align-items-center gap-5 w-100">
-                  {/* Search Field */}
-                  {/* <div className="w-100">
-                    <input
-                      type="search"
-                      className="form-control"
-                      placeholder="Search by name and Contact Number"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
-                  </div> */}
+                  <div className="w-100 text-start">
+                  <Button
+                    className={`stationbtn btn bg-primary text-white mx-2 ${selectedStation === "Local" ? "active" : ""}`}
+                    onClick={() => handleStation("Local")}
+                  >
+                    LOCAL
+                  </Button>
+                  <Button
+                    className={`stationbtn btn bg-primary text-white ${selectedStation === "Out-Station" ? "active" : ""}`}
+                    onClick={() => handleStation("Out-Station")}
+                  >
+                    OUT STATION
+                  </Button>
+                  </div>
 
 
                   <div className="w-100 text-end">
@@ -155,7 +128,7 @@ function AyaList() {
               <div className="container" ref = {tableRef}>
                 <div className="row">
                   <form onSubmit = {handlePrintTable}>
-                    <AyaListContent/>
+                    <AyaListContent type={selectedType}/>
                   </form>
                 </div>
               </div>

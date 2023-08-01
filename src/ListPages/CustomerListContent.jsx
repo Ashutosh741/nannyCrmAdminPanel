@@ -8,7 +8,7 @@ import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 
 
-const CustomerListContent = () => {
+const CustomerListContent = (props) => {
   const navigate = useNavigate();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,16 @@ const CustomerListContent = () => {
     axios
       .get(`${URL}/customerreg`)
       .then((res) => {
-        const data = res.data.data.map((item) => {
+        console.log(res.data.data);
+  
+        let filteredData = res.data.data;
+        
+        if (props.type) {
+          // Filter data based on the workinglocation
+          filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
+        }
+  
+        const data = filteredData.map((item) => {
           const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
           return { ...item, assignedAyaDetails };
         });
@@ -48,6 +57,10 @@ const CustomerListContent = () => {
     useEffect(() => {
       apiCategory();
     },[])
+
+    useEffect(() => {
+      apiCategory();
+    }, [props.type])
   
     console.log(list.file);
   
@@ -91,17 +104,24 @@ const CustomerListContent = () => {
       },
           {
             field: 'customerCode',
-            headerName: 'CUSTOMER CODE',
-            width: 140,
+            headerName: 'C CODE',
+            width: 80,
             type: 'string',
             editable: true,
           },
 
           {
             field: 'name',
-            headerName: 'CUSTOMER NAME',
+            headerName: 'C NAME',
             type: 'string',
             width: 140,
+            editable: true,
+          },
+          {
+            field: 'attendService',
+            headerName: 'SHIFT',
+            type: 'string',
+            width: 60,
             editable: true,
           },
           {
@@ -118,6 +138,20 @@ const CustomerListContent = () => {
             width: 120,
             editable: true,
           },
+          // {
+          //   field: 'rate',
+          //   headerName: 'RATE',
+          //   type: 'string',
+          //   width: 80,
+          //   editable: true,
+          // },
+          // {
+          //   field: 'workShift',
+          //   headerName: 'SHIFT',
+          //   type: 'string',
+          //   width: 80,
+          //   editable: true,
+          // },
           // {
           //   field: 'assignedAyaName',
           //   headerName: 'ASSIGNED',
@@ -180,7 +214,7 @@ const CustomerListContent = () => {
             },
           },
           {
-            field: 'rate',
+            field: 'assignedAyaRate',
             headerName: 'RATE',
             type: 'string',
             width: 50,
@@ -209,6 +243,7 @@ const CustomerListContent = () => {
               }
             },
           },
+          
           // {
           //   field: 'paymentstatus',
           //   headerName: 'STATUS',
@@ -233,21 +268,21 @@ const CustomerListContent = () => {
               width: 75,
               editable: true,
             },
-            {
-              field: 'age',
-              headerName: 'AGE',
-              type: 'number',
-              width: 20,
-              editable: true,
-            },
-            {
-                field: 'guardianName',
-                headerName: 'PARENT NAME',
-                type: 'string',
-                description: 'This column has a value getter and is not sortable.',
-                sortable: false,
-                width: 140,
-              },
+            // {
+            //   field: 'age',
+            //   headerName: 'AGE',
+            //   type: 'number',
+            //   width: 20,
+            //   editable: true,
+            // },
+            // {
+            //     field: 'guardianName',
+            //     headerName: 'PARENT NAME',
+            //     type: 'string',
+            //     description: 'This column has a value getter and is not sortable.',
+            //     sortable: false,
+            //     width: 140,
+            //   },
 
 
           //   {
@@ -267,7 +302,7 @@ const CustomerListContent = () => {
 
         ];
       return (
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: '100%', width: '100%' }}>
             <DataGrid
               rows={list}
               columns={columns}

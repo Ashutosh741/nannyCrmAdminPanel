@@ -12,14 +12,14 @@
     1.1 like which aya have been assigned from starting in the form table
     1.2 their transaction history
 
-2. update the table of customer list with more details
+2. update the table of customer list with more details ✅
 
-3. in the table of aya list, their will be one more column for to check , whether aya is assigned?
+3. in the table of aya list, their will be one more column for to check , whether aya is assigned? ✅
     3.1 also their will be one more column to know the rate of aya
     3.2 days left for the aya, add one more column
     3.3 location column one more
-    3.4 change aya code like customer code  
-    3.5 name of customer assigned to aya
+    3.4 change aya code like customer code  ✅
+    3.5 name of customer assigned to aya ✅
     3.6 status of payment, due or paid 
 
 4 remove gender column from aya payment
@@ -28,7 +28,7 @@
 5 remove  customer payment , column of guardian name
     5.1 add remaining money to take from customer add one column
 
-6 updTE THE Table with mui table to enable sorting and filter
+6 updTE THE Table with mui table to enable sorting and filter  ✅
 
 7 when going to edit the aya assign page, then it should show, which customer is assigned to them
     7.1 also in front of customer their should be one button, name as change , which redirect to change ayaassigned to customer
@@ -64,9 +64,9 @@ to uske liye hmhe customer ko ek se adhik assign krna hoga
 1 .create a check such that, when we generate bill, it should only be generated , when all the entries 
 are filled.
 
-2. entries are coming in reverse, correct it
+2. entries are coming in reverse, correct it ✅
  
-3. when aya are deleting then it should not show assigned to anyone
+3. when aya are deleting then it should not show assigned to anyone ✅
     
 
  -->
@@ -131,13 +131,13 @@ And you can start making an awesome admin application now.
 1 . Dashboard
     1.1 in dashboard here we have to show the total customer with their payment status,
 
-2. excehange of dat awhen assigning to one
+2. excehange of dat awhen assigning to one ✅
 
-3. customer can visit aya , and aya can visit customer
+3. customer can visit aya , and aya can visit customer ✅
 
-4. show assign aya , and assign customer when no one is assigned
+4. show assign aya , and assign customer when no one is assigned ✅
 
-5. show go to generate bill when no one is bill is generated
+5. show go to generate bill when no one is bill is generated 
 
 6. in generate bill create one more column for edit the information of that index
 
@@ -153,11 +153,11 @@ And you can start making an awesome admin application now.
 
 12. in aya payment, add more column for total money paid , and amount remaining
 
-13. add new customer is not working , check it out
+13. add new customer is not working , check it out ✅
 
 14. remove aya and customer functionality is not added
 
-15. so in customer payment what we have to do here is, receive the amount update 
+15. so in customer payment what we have to do here is, receive the amount update ✅
 
 16. sabse phle 
 
@@ -181,3 +181,15 @@ And you can start making an awesome admin application now.
 
 
   -->
+
+
+  <!-- 
+  
+  1. delete aya , or custoemer then it should first give alert message , are you sure, then remove that aya
+  2.  and remove from the customer to blank to whom aya was assigned
+
+  3. day-night , ismein kya hai ki , 
+  
+
+
+   -->

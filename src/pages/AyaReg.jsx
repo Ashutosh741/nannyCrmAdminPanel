@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
@@ -51,6 +51,11 @@ function AyaReg() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [file, setFile] = useState(null);
   const [sameAddress, setSameAddress] = useState(true);
+  const [aadharCardNumber,setAadharCardNumber] = useState('');
+  const [aadharCardImage,setAadharCardImage] = useState(null);
+  const [idCardImage,setIdCardImage] = useState(null);  
+  const[casteCategory,setCasteCategory] = useState('')
+  const [baseRate,setBaseRate] = useState('');
 
   // const handleFileChange = (event) => {
   //   const selectedFile = event.target.files[0];
@@ -103,6 +108,7 @@ function AyaReg() {
     event.preventDefault();
 
     const formData = new FormData();
+
     formData.append("ayaCode", ayaCode);
     formData.append("name", name);
     formData.append("guardianName", fatherName);
@@ -132,7 +138,11 @@ function AyaReg() {
     formData.append("contactNumber", contactNumber);
     formData.append("alternativeNumber", alternativeNumber);
     formData.append("religion", religion);
+    formData.append("casteCategory",casteCategory);
     formData.append("marriageStatus", marriageStatus);
+    formData.append("aadharCardNumber", aadharCardNumber);
+    formData.append("aadharCardImage", aadharCardImage);
+    formData.append("idCardImage", idCardImage);
     formData.append("idCardType", idCardType);
     formData.append("idCardNumber", idCardNumber);
     formData.append("statusAya", statusAya);
@@ -141,6 +151,7 @@ function AyaReg() {
     formData.append("ayaSpeciality", ayaSpeciality);
     formData.append("ayaCanSpeak", ayaCanSpeak);
     formData.append("file", file);
+    formData.append("baseRate",baseRate);
     axios
       .post(`${URL}/ayareg`, formData, {
         headers: {
@@ -165,7 +176,17 @@ function AyaReg() {
     setFile(selectedFile);
   };
 
-  console.log(" ayamdkfds", file);
+  const handleAadharFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setAadharCardImage(selectedFile);
+  };
+  const handleIdCardFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setIdCardImage(selectedFile);
+  };
+
+
+  console.log("ayamdkfds", file);
 
   const handleCheckAddress = () => {
     setSameAddress(!sameAddress);
@@ -190,6 +211,24 @@ function AyaReg() {
       setPermanentPin("");
     }
   };
+
+
+  function getAge(dateString) 
+{
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+    {
+        age--;
+    }
+     setAge(age);
+}
+
+  useEffect(()=>{
+    getAge(dateOfBirth);
+  },[dateOfBirth])
 
   return (
     <>
@@ -271,6 +310,18 @@ function AyaReg() {
                       className="form-control"
                       value={closingDate}
                       onChange={(e) => setClosingDate(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label>Base Rate</label>
+                    <input
+                      type="baseRate"
+                      name="baseRate"
+                      className="form-control"
+                      value={baseRate}
+                      onChange={(e) => setBaseRate(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -524,6 +575,79 @@ function AyaReg() {
                 </Col>
                 <Col md="4">
                   <FormGroup>
+                    <label htmlFor="dateOfBirth">Aadhar Card Number</label>
+                    <input type="text"
+                    id="aadharCardNumber"
+                    name="aadharCardNumber"
+                    className="form-control"
+                    value={aadharCardNumber}
+                    onChange={(e) => setAadharCardNumber(e.target.value)}
+                    required
+                    data-type="adhaar-number"
+                     maxLength="12"/>
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="" className="fw-bold">
+                      Aadhar Card Image
+                    </label>
+                    <input
+                      type="file"
+                      name="aadharCardImage"
+                      className="form-control"
+                      onChange={handleAadharFileChange}
+                    />
+
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label>ID Card Type:</label>
+                    <select
+                      className="form-control form-select"
+                      name="idCardType"
+                      value={idCardType}
+                      onChange={(e) => setIdCardType(e.target.value)}
+                    >
+                      <option value="">Select</option>
+                      <option value="voter-idcard">Voter IdCard</option>
+                      <option value="pan-card">Pan Card</option>
+                      <option value="driving-license">Driving License</option>
+                      required
+
+                    </select>
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label>ID Card Number:</label>
+                    <input
+                      className="form-control"
+                      name="idCardNumber"
+                      type="text"
+                      value={idCardNumber}
+                      onChange={(e) => setIdCardNumber(e.target.value)}
+                      required
+
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="" className="fw-bold">
+                      ID Card Image
+                    </label>
+                    <input
+                      type="file"
+                      name="IdCardImage"
+                      className="form-control"
+                      onChange={handleIdCardFileChange}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
                     <label htmlFor="dateOfBirth">Date of Birth:</label>
                     <input
                       type="date"
@@ -551,21 +675,22 @@ function AyaReg() {
 
                     >
                       <option value="">Select</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
                     </select>
                   </FormGroup>
                 </Col>
                 <Col md="4">
                   <FormGroup>
-                    <label htmlFor="age">Age:</label>
+                    <label  htmlFor="age">Age:</label>
                     <input
+                    readOnly
                       type="number"
                       name="age"
                       id="age"
                       className="form-control"
                       value={age}
-                      onChange={(e) => setAge(e.target.value)}
+                      // onChange={(e) => setAge(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -577,8 +702,9 @@ function AyaReg() {
                       name="nationality"
                       id="nationality"
                       className="form-control"
-                      value={nationality}
+                      value="Indian"
                       required
+                      readOnly
 
                       onChange={(e) => setNationality(e.target.value)}
                     />
@@ -617,14 +743,42 @@ function AyaReg() {
                 <Col md="4">
                   <FormGroup>
                     <label htmlFor="religion">Religion:</label>
-                    <input
-                      type="text"
-                      name="religion"
+                    <select
                       id="religion"
-                      className="form-control"
+                      name="religion"
+                      className="form-control form-select"
                       value={religion}
                       onChange={(e) => setReligion(e.target.value)}
-                    />
+                      required
+
+                    >
+                      <option value="">Select</option>
+                      <option value="Hinduism">Hinduism</option>
+                      <option value="Islam">Islam</option>
+                      <option value="Christanity">Christanity</option>
+                      <option value="Sikhism">Sikhism</option>
+                      <option value="Buddhism">Buddhism</option>
+                      <option value="Jainism">Jainism</option>
+                    </select>
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="religion">Caste Category</label>
+                    <select
+                      id="casteCategory"
+                      name="casteCategory"
+                      className="form-control form-select"
+                      value={casteCategory}
+                      onChange={(e) => setCasteCategory(e.target.value)}
+                      required
+                    >
+                      <option value="">Select</option>
+                      <option value="GEN/GC">General Category</option>
+                      <option value="ST">Scheduled Tribe</option>
+                      <option value="SC">Scheduled Caste</option>
+                      <option value="OBC">Other Backward Class</option>
+                    </select>
                   </FormGroup>
                 </Col>
                 <Col md="4">
@@ -647,39 +801,7 @@ function AyaReg() {
                   </FormGroup>
                 </Col>
 
-                <Col md="4">
-                  <FormGroup>
-                    <label>ID Card Type:</label>
-                    <select
-                      className="form-control form-select"
-                      name="idCardType"
-                      value={idCardType}
-                      onChange={(e) => setIdCardType(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      <option value="aadhar-card">Aadhar Card</option>
-                      <option value="voter-idcard">Voter IdCard</option>
-                      <option value="pan-card">Pan Card</option>
-                      <option value="driving-license">Driving License</option>
-                      required
 
-                    </select>
-                  </FormGroup>
-                </Col>
-                <Col md="4">
-                  <FormGroup>
-                    <label>ID Card Number:</label>
-                    <input
-                      className="form-control"
-                      name="idCardNumber"
-                      type="text"
-                      value={idCardNumber}
-                      onChange={(e) => setIdCardNumber(e.target.value)}
-                      required
-
-                    />
-                  </FormGroup>
-                </Col>
 
                 <Col md="4">
                   <FormGroup>
@@ -703,7 +825,7 @@ function AyaReg() {
                     </div>
                   </div>
                 </Col> */}
-                <Col md="4">
+                {/* <Col md="4">
                   <FormGroup>
                     <label for="idProof">Status of Aya:</label>
                     <select
@@ -719,7 +841,7 @@ function AyaReg() {
                       <option value="Hold-Aya">Hold Aya</option>
                     </select>
                   </FormGroup>
-                </Col>
+                </Col> */}
                 <Col md="4">
                   <FormGroup>
                     <label for="idProof">Working Location:</label>

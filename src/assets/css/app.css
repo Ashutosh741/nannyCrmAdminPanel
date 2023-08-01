@@ -428,6 +428,17 @@ button {
   background-color: var(--blue-dark) !important;
 }
 
+.stationbtn.active{
+    /* background-color: var(--blue-dark) !important; */
+    color: white;
+    font-weight: bolder;
+    background-color: bisque;
+    color: black !important;
+    background-color: #0dfd37 !important;
+    width: fit-content;
+    /* width: 100% !important; */
+}
+
 .bg-body h6 {
   color: var(--secondary-color);
 }

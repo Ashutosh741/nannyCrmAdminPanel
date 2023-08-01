@@ -104,6 +104,7 @@ function PaymentEdit() {
       const reversePaymentData = techData.customerPaymentDetails.reverse();
       setCustomerPaymentDetails(reversePaymentData);
       console.log("ismein payment ka kya hai",reversePaymentData)
+      // get_payment_pending();
 
       if(reversePaymentData){
         // const done = reversePaymentData[0].paymentAmountReceived
@@ -305,10 +306,24 @@ const handlePayment = async (e) => {
 
   console.log(ayaCost);
   console.log(amountRec);
-
+// const [pamount, setPAmount] = useState(0)
+// const get_payment_pending = () => {
+//   let sum = 0;
+//   customerPaymentDetails.forEach((item, index) => {
+//     if(item.paymentPendingAmount > 0 && item.paymentPendingAmount != ""){
+//       sum = sum + item.paymentPendingAmount;
+//     }
+   
+//     console.log(item.paymentPendingAmount + ' - '+index +'is nan');
+//   });
+//   setPAmount(sum);
+// }
 
 useEffect(() => {
   fetchCustomerData();
+    
+  
+  
 
 }, [id, showGeneratedButton]);
 
@@ -322,6 +337,12 @@ useEffect(() => {
     // setTotalPendingAmount(tech.totalPendingAmount);
     value = value + generatedBill
     setTotalBill(value);
+    // let isum = false;
+    // if(isum == false){
+    //   get_payment_pending();
+    //   isum = true;
+    // }
+    
     // if(generatedBill === ''){
     //   value = totalPendingAmount - amountReceived;
     //   setTotalPendingAmount(value);
@@ -335,11 +356,6 @@ useEffect(() => {
 
   const pendingBill = () => {
     const calc = parseFloat(generatedBill) - parseFloat(amountReceived);
-    // setPendingAmount(calc + )
-    // setTotalPendingAmount(pendingAmount + totalPendingAmount)
-    // console.log("total pending amount",calc + totalPendingAmount)
-    // setTotalBill(totalPendingAmount + generatedBill);
-    // console.log("total csutmer bill",totalPendingAmount+generatedBill);
     console.log("Calculated pending amount:", calc);
     return isNaN(calc) ? 0 : calc;
   };
