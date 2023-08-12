@@ -16,6 +16,8 @@ function Payment() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [selectedType, setSelectedType] = useState(""); // local or outstation
+  const [selectedStation, setSelectedStation] = useState(null);
 
   const navigate = useNavigate();
 
@@ -86,6 +88,19 @@ function Payment() {
     content : ()=>tableRef.current,
   })
 
+  useEffect(()=>{
+    <CustomerPaymentList type={selectedType}/>
+    console.log("request sent")
+  },[selectedType])
+
+
+  
+  const handleStation = (stationType) => {
+    setSelectedStation((prevStation) => (prevStation === stationType ? null : stationType));
+    setSelectedType(stationType);
+
+  };
+
   return (
     <>
       <section className="regList">
@@ -94,16 +109,20 @@ function Payment() {
             <Col md="12">
               <div className="my-3 text-end">
                 <div className="d-flex align-items-center gap-5 w-100">
-                  {/* Search Field */}
-                  {/* <div className="w-100">
-                    <input
-                      type="search"
-                      className="form-control"
-                      placeholder="Search by name and Contact Number"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
-                  </div> */}
+                <div className="w-100 text-start">
+                  <Button
+                    className={`stationbtn btn bg-primary text-white mx-2 ${selectedStation === "Local" ? "active" : ""}`}
+                    onClick={() => handleStation("Local")}
+                  >
+                    LOCAL
+                  </Button>
+                  <Button
+                    className={`stationbtn btn bg-primary text-white ${selectedStation === "Out-Station" ? "active" : ""}`}
+                    onClick={() => handleStation("Out-Station")}
+                  >
+                    OUT STATION
+                  </Button>
+                  </div>
                   <div className="w-100 text-end">
                     <Button
                       className="btn bg-primary text-white mx-2"
@@ -129,7 +148,7 @@ function Payment() {
               <div className="container" ref = {tableRef}>
                 <div className="row">
                   <form onSubmit={handlePrintTable}>
-                  <CustomerPaymentList/>
+                  <CustomerPaymentList type = {selectedType}/>
                   </form>
                 </div>
               </div>

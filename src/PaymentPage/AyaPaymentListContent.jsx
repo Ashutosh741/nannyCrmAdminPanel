@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 
 
 
-const AyaPaymentListContent = () => {
+const AyaPaymentListContent = (props) => {
     const navigate = useNavigate();
 
     const [assigncheck, setAssignCheck] = useState("");
@@ -24,12 +24,21 @@ const AyaPaymentListContent = () => {
       axios
         .get(`${URL}/ayareg`)
         .then((res) => {
-          const data = res.data.data.map((item) => {
+          console.log(res.data.data);
+    
+          let filteredData = res.data.data;
+          
+          if (props.type) {
+            // Filter data based on the workinglocation
+            filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
+          }
+    
+          const data = filteredData.map((item) => {
             const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
             return { ...item, assignedCustomerDetails };
           });
+          // console.log("filtered data, chcekc it",data);
           setList(data);
-          // console.log("ismein kya aa rha bhau",res.data.data)
           setLoading(false);
         })
         .catch((error) => {
@@ -53,16 +62,21 @@ const AyaPaymentListContent = () => {
     useEffect(() => {
       apiCategory();
     }, [setLoading])
+
+    useEffect(() => {
+      apiCategory();
+    }, [props.type])
   
-    console.log(list.file);
+  
+    // console.log(list.file);
   
       //download Excel
-      const handleDownloadExcel = () => {
-      const worksheet = XLSX.utils.json_to_sheet(list);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "AYA Data");
-      XLSX.writeFile(workbook, "Aya_data.xlsx");
-      };
+      // const handleDownloadExcel = () => {
+      // const worksheet = XLSX.utils.json_to_sheet(list);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "AYA Data");
+      // XLSX.writeFile(workbook, "Aya_data.xlsx");
+      // };
           
       const getRowId = (row) => row._id;
   
@@ -271,7 +285,7 @@ const AyaPaymentListContent = () => {
 
         ];
       return (
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: '100%', width: '100%' }}>
             <DataGrid
               rows={list}
               columns={columns}

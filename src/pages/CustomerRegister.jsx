@@ -55,6 +55,8 @@ function CustomerRegister() {
   const [idCardImage,setIdCardImage] = useState(null);  
   const[casteCategory,setCasteCategory] = useState('')
   const [baseRate,setBaseRate] = useState('');
+  const [workinglocation, setWorkingLocation] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -203,6 +205,8 @@ function CustomerRegister() {
     formData.append("customerSpeak", customerSpeak);
     formData.append("file", file);
     formData.append("baseRate",baseRate);
+    formData.append("workinglocation", workinglocation);
+
 
 
     axios
@@ -479,6 +483,24 @@ function CustomerRegister() {
                   </select>
                 </FormGroup>
               </Col>
+              <Col md="4">
+                  <FormGroup>
+                    <label for="idProof">Working Location:</label>
+                    <select
+                      id="workinglocation"
+                      name="workinglocation"
+                      className="form-control form-select"
+                      value={workinglocation}
+                      onChange={(e) => setWorkingLocation(e.target.value)}
+                      required
+                      
+                    >
+                      <option value="">Select</option>
+                      <option value="Local">Local</option>
+                      <option value="Out-Station">Out Station</option>
+                    </select>
+                  </FormGroup>
+                </Col>
 
               <Col md="12">
                 <h3 className="">Present Address</h3>

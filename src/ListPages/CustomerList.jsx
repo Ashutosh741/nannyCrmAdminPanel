@@ -120,7 +120,7 @@ function CustomerList() {
               <div className="container" ref = {tableRef}>
                 <div className="row">
                   <form onSubmit={handlePrintTable}>
-                    <CustomerListContent/>
+                    <CustomerListContent type = {selectedType}/>
                   </form>
                 </div>
 

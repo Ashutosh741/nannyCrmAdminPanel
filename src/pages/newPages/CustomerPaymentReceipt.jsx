@@ -10,10 +10,11 @@ import { URL } from "../../Url";
 import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
 import AyaPaymentReceipt from "./AyaPaymentReceipt";
 
-// is page ka table, change krna hai or , jo new state add kiya hai usko database se update krna hai
-// or edit ka option ka bhi dena hai
+
 // date fetch from choosing month,  and update in customer code, still reflect update bill button
 // onclick of update bill button it should update the details, instead it is pushing new element
+// remove security money option
+// month ko choose krne pr fromdate or todate set nhi ho rhe
 
 const CustomerPaymentReceipt = (props) => {
 

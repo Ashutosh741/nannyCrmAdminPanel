@@ -65,12 +65,12 @@ const CustomerListContent = (props) => {
     console.log(list.file);
   
       //download Excel
-      const handleDownloadExcel = () => {
-      const worksheet = XLSX.utils.json_to_sheet(list);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Data");
-      XLSX.writeFile(workbook, "Customer_data.xlsx");
-      };
+      // const handleDownloadExcel = () => {
+      // const worksheet = XLSX.utils.json_to_sheet(list);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Data");
+      // XLSX.writeFile(workbook, "Customer_data.xlsx");
+      // };
           
       const getRowId = (row) => row._id;
   

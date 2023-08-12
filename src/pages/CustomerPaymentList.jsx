@@ -6,7 +6,7 @@ import axios from "axios";
 import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 
-const CustomerPaymentList = () => {
+const CustomerPaymentList = (props) => {
     const navigate = useNavigate();
 
     const [assigncheck, setAssignCheck] = useState("");
@@ -17,17 +17,44 @@ const CustomerPaymentList = () => {
     const [loading, setLoading] = useState(false);
   
   
+    // const apiCategory = () => {
+    //   setLoading(true);
+    //   axios
+    //     .get(`${URL}/customerreg`)
+    //     .then((res) => {
+
+    //       const data = res.data.data.map((item) => {
+    //         const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
+    //         return { ...item, assignedAyaDetails };
+    //       });
+
+    //       setList(data);
+    //       setLoading(false);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching data:", error);
+    //       setLoading(false);
+    //     });
+    // };
+
     const apiCategory = () => {
       setLoading(true);
       axios
         .get(`${URL}/customerreg`)
         .then((res) => {
-
-          const data = res.data.data.map((item) => {
+          console.log(res.data.data);
+    
+          let filteredData = res.data.data;
+          
+          if (props.type) {
+            // Filter data based on the workinglocation
+            filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
+          }
+    
+          const data = filteredData.map((item) => {
             const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
             return { ...item, assignedAyaDetails };
           });
-
           setList(data);
           setLoading(false);
         })
@@ -36,6 +63,7 @@ const CustomerPaymentList = () => {
           setLoading(false);
         });
     };
+    
   
     const handleRowClick = (params) => {
       const field = params.field;
@@ -48,16 +76,20 @@ const CustomerPaymentList = () => {
     useEffect(() => {
       apiCategory();
     }, [setLoading])
+
+    useEffect(() => {
+      apiCategory();
+    }, [props.type])
   
     console.log(list.file);
   
       //download Excel
-      const handleDownloadExcel = () => {
-      const worksheet = XLSX.utils.json_to_sheet(list);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Data");
-      XLSX.writeFile(workbook, "Customer_data.xlsx");
-      };
+      // const handleDownloadExcel = () => {
+      // const worksheet = XLSX.utils.json_to_sheet(list);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Data");
+      // XLSX.writeFile(workbook, "Customer_data.xlsx");
+      // };
           
       const getRowId = (row) => row._id;
   
