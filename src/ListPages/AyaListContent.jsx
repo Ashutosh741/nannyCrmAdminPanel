@@ -23,22 +23,6 @@ console.log(props);
 
 
 
-  // const apiCategory = () => {
-  //   setLoading(true);
-  //   axios
-  //     .get(`${URL}/ayareg`)
-  //     .then((res) => {
-  //       setList(res.data.data);
-
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //       setLoading(false);
-  //     });
-  // };
-
-
   const apiCategory = () => {
     setLoading(true);
     axios
@@ -72,7 +56,7 @@ console.log(props);
   const handleRowClick = (params) => {
     const field = params.field;
     console.log("aisa kya hai isme", field);
-    if (field === "assignedCustomerName") {
+    if (field === "assignedCustomerName" || field === "replaceCustomerDetails") {
       return;
       // console.log("bhai tu chaal bhi rha hai ?", params.row.assign);
       // const customerId = params.row.assign;
@@ -81,8 +65,71 @@ console.log(props);
       navigate(`/ayareg/${params.row._id}`);
     }
   };
+
+  const checkDateDifference = (data) => {
+    if (data && data.length > 0) {
+      // const reverseData = data[0].assignedCustomerDetails.reverse();
+      const fromDate = new Date(data[0].assignedCustomerFromDate);
+      const toDate = new Date(data[0].assignedCustomerToDate);
+      const todayDate = new Date();
+      // console.log("from date let's see",fromDate);
+      // console.log("toDate date let's see",toDate)
+      // console.log("today date let's see",todayDate)
+
+  
+      if (todayDate >= fromDate && todayDate <= toDate) {
+        // Today's date is between fromDate and toDate
+        return true;
+      } else if(toDate == 'Invalid Date' && todayDate >= fromDate ){
+        return true
+      }else{
+        return false;
+      }
+    }
+    return false; // Handle the case when data is missing or empty
+  };
+
+    const replacedDateDifference = (data) => {
+    if (data && data.length > 0) {
+      // const reverseData = data[0].assignedCustomerDetails.reverse();
+      const fromDate = new Date(data[0].replaceCustomerFromDate);
+      const toDate = new Date(data[0].replaceCustomerToDate);
+      const todayDate = new Date();
+      // console.log("from date let's see",fromDate);
+      // console.log("toDate date let's see",toDate)
+      // console.log("today date let's see",todayDate)
+
+  
+      if (todayDate >= fromDate && todayDate <= toDate) {
+        // Today's date is between fromDate and toDate
+        return true;
+      } else if(toDate == 'Invalid Date' && todayDate >= fromDate ){
+        return true
+      }else{
+        return false;
+      }
+    }
+    return false; // Handle the case when data is missing or empty
+  };
+  
   
 
+  const compareDate = (billDate) => {
+    // console.log('bill date format',billDate);
+
+    const todayDate = new Date();
+    // console.log('today date format',todayDate)
+    const replaceDateParts = billDate.split('-');
+    const compareDate = new Date(replaceDateParts[0], replaceDateParts[1] - 1, replaceDateParts[2],0,0,0);
+    // console.log('billDate format',compareDate)
+    // console.log('compare date format',compareDate);
+    // console.log('today date format',todayDate);
+    // console.log("result",todayDate <= compareDate)
+    return todayDate <= compareDate;
+}
+
+
+  
   useEffect(() => {
     apiCategory();
   }, [setLoading])
@@ -142,13 +189,13 @@ console.log(props);
           width: 120,
           editable: true,
         },
-        {
-          field: 'workShift',
-          headerName: 'SHIFT',
-          type: 'string',
-          width: 80,
-          editable: true,
-        },
+        // {
+        //   field: 'workShift',
+        //   headerName: 'SHIFT',
+        //   type: 'string',
+        //   width: 80,
+        //   editable: true,
+        // },
         {
           field: 'contactNumber',
           headerName: 'CONTACT NO.',
@@ -171,18 +218,22 @@ console.log(props);
           width: 145,
           editable: true,
           renderCell: (params) => {
+            //  i don't know why reverse data aa rha hai, to isko as it is chod do
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerName) {
-              // return <>{data[0].assignedCustomerName}</>;
+            console.log("bhai tahbi mein kisme kr rha tha",data);
+            // console.log("bhai tahbi mein kisme kr rha tha",checkDateDifference(data));
+
+            if (checkDateDifference(data)){
               return (
                 <Link
-                  to={`/customerreg/${data[0].assignedCustomerCode}`}
-                  className="btn-success btn text-white"
-                >
-                  {data[0].assignedCustomerName}
-                </Link>
-              );
-            } else {
+                to={`/customerreg/${data[0].assignedCustomerCode}`}
+                className="btn-success btn text-white"
+              >
+                {data[0].assignedCustomerName}
+              </Link>
+              )
+            }
+            else{
               return (
                 <Link
                   to={`/ayaassign/${params.row._id}`}
@@ -192,6 +243,8 @@ console.log(props);
                 </Link>
               );
             }
+
+
           },
         },
         
@@ -229,7 +282,7 @@ console.log(props);
           field: 'assignedCustomerShift',
           headerName: 'SHIFT',
           type: 'string',
-          width: 60,
+          width: 70,
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
@@ -240,6 +293,41 @@ console.log(props);
             }
           },
         },
+        {
+        field: 'replaceCustomerDetails',
+        headerName: 'REPLACED',
+        type: 'string',
+        width: 90,
+        editable: true,
+        renderCell: (params) => {
+        const data = params.row.assignedCustomerDetails;
+        if (data && data.length > 0 && data[0].replaceCustomerDetails) {
+          const replaceDetails = data[0].replaceCustomerDetails;
+          if (replaceDetails) {
+            const replaceDetailsCopy = [...replaceDetails].reverse();
+            // console.log('bhai yeh apne aap chal rrha tha', replaceDetailsCopy);
+            return replacedDateDifference(replaceDetailsCopy)
+              ? (
+                <Link to={`/ayaassign/${params.row._id}`} className="btn-warning btn text-black">
+                  YES
+                </Link>
+              )
+              : (
+                <Link to={`/ayaassign/${params.row._id}`} className="btn-success btn text-white">
+                  NO
+                </Link>
+              );
+          }
+        }
+        return (
+          <Link to={`/ayaassign/${params.row._id}`} className="btn-success btn text-white">
+            NO
+          </Link>
+        );
+        }
+
+      }
+        
         
         // {
         //   field: 'paymentstatus',
@@ -249,29 +337,29 @@ console.log(props);
         //   editable: true,
         // },
         
-        {
-          field: 'gender',
-          headerName: 'GENDER',
-          type: 'string',
-          width: 75,
-          editable: true,
-        },
-        {
-          field: 'age',
-          headerName: 'AGE',
-          type: 'number',
-          width: 20,
-          editable: true,
-        },
+        // {
+        //   field: 'gender',
+        //   headerName: 'GENDER',
+        //   type: 'string',
+        //   width: 75,
+        //   editable: true,
+        // },
+        // {
+        //   field: 'age',
+        //   headerName: 'AGE',
+        //   type: 'number',
+        //   width: 20,
+        //   editable: true,
+        // },
 
-        {
-          field: 'guardianName',
-          headerName: 'PARENT NAME',
-          type: 'string',
-          description: 'This column has a value getter and is not sortable.',
-          sortable: false,
-          width: 140,
-        },
+        // {
+        //   field: 'guardianName',
+        //   headerName: 'PARENT NAME',
+        //   type: 'string',
+        //   description: 'This column has a value getter and is not sortable.',
+        //   sortable: false,
+        //   width: 140,
+        // },
 
 
 

@@ -49,7 +49,7 @@ function CustomerRegister() {
   const [customerSpeak, setCustomerSpeak] = useState([]);
   const [forService, setForService] = useState("");
   const [file, setFile] = useState(null);
-  const [sameAddress, setSameAddress] = useState(true);
+  const [sameAddress, setSameAddress] = useState(false);
   // const [aadharCardNumber,setAadharCardNumber] = useState('');
   // const [aadharCardImage,setAadharCardImage] = useState(null);
   const [idCardImage,setIdCardImage] = useState(null);  
@@ -206,6 +206,8 @@ function CustomerRegister() {
     formData.append("file", file);
     formData.append("baseRate",baseRate);
     formData.append("workinglocation", workinglocation);
+    formData.append("forService", forService);
+
 
 
 
@@ -395,11 +397,13 @@ function CustomerRegister() {
               <Col md="4">
                 <label>Security Deposit Amount:</label>
                 <input
-                  type="text"
+                  type="number"
                   name="securityAmount"
                   value={securityAmount}
                   className="form-control"
                   onChange={(e) => setSecurityAmount(e.target.value)}
+
+                  required
                 />
               </Col>
               <Col md="4">
@@ -418,11 +422,12 @@ function CustomerRegister() {
                   <FormGroup>
                     <label>Base Rate</label>
                     <input
-                      type="baseRate"
+                      type="number"
                       name="baseRate"
                       className="form-control"
                       value={baseRate}
                       onChange={(e) => setBaseRate(e.target.value)}
+                      required
                     />
                   </FormGroup>
                 </Col>
@@ -451,6 +456,7 @@ function CustomerRegister() {
                     value={attendService}
                     name="attendService"
                     onChange={(e) => setAttendService(e.target.value)}
+                    required
                   >
                     <option value="">Select</option>
                     <option value="Day">Day</option>
@@ -469,6 +475,7 @@ function CustomerRegister() {
                     value={forService}
                     name="forService"
                     onChange={(e) => setForService(e.target.value)}
+                    required
                   >
                     <option value="">Select</option>
                     <option value="Cooking">Cooking</option>
@@ -593,7 +600,7 @@ function CustomerRegister() {
                   <label> Pin:</label>
                   <input
                     className="form-control"
-                    type="text"
+                    type="number"
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
                   />
@@ -654,7 +661,7 @@ function CustomerRegister() {
               </Col>
               <Col md="4">
                 <FormGroup>
-                  <label htmlhtmlFor="permanentStreet">Street:</label>
+                  <label htmlFor="permanentStreet">Street:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -666,7 +673,7 @@ function CustomerRegister() {
               </Col>
               <Col md="4">
                 <FormGroup>
-                  <label htmlhtmlFor="permanentLandmark">Land Mark:</label>
+                  <label htmlFor="permanentLandmark">Land Mark:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -678,7 +685,7 @@ function CustomerRegister() {
               </Col>
               <Col md="4">
                 <FormGroup>
-                  <label htmlhtmlFor="permanentPost">Post:</label>
+                  <label htmlFor="permanentPost">Post:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -690,7 +697,7 @@ function CustomerRegister() {
               </Col>
               <Col md="4">
                 <FormGroup>
-                  <label htmlhtmlFor="permanentDistrict">District:</label>
+                  <label htmlFor="permanentDistrict">District:</label>
                   <input
                     type="text"
                     id="permanentDistrict"
@@ -717,7 +724,7 @@ function CustomerRegister() {
                   <label> Pin:</label>
                   <input
                     className="form-control"
-                    type="text"
+                    type="number"
                     value={permanentPin}
                     onChange={(e) => setPermanentPin(e.target.value)}
                   />
@@ -761,6 +768,7 @@ function CustomerRegister() {
                     className="form-control form-select"
                     value={idCardType}
                     onChange={(e) => setIdCardType(e.target.value)}
+                    required
                   >
                     <option value="">Select</option>
                     <option value="aadhar-card">Aadhar Card</option>
@@ -775,9 +783,10 @@ function CustomerRegister() {
                   <label>ID Card Number:</label>
                   <input
                     className="form-control"
-                    type="text"
+                    type="number"
                     value={idCardNumber}
                     onChange={(e) => setIdCardNumber(e.target.value)}
+                    required
                   />
                 </FormGroup>
               </Col>
@@ -791,6 +800,7 @@ function CustomerRegister() {
                       name="IdCardImage"
                       className="form-control"
                       onChange={handleIdCardFileChange}
+                      required
                     />
                   </FormGroup>
                 </Col>
@@ -869,7 +879,7 @@ function CustomerRegister() {
                 <FormGroup>
                   <label htmlFor="contactNumber">Contact Number:</label>
                   <input
-                    type="tel"
+                    type="number"
                     id="contactNumber"
                     required
                     className="form-control"
@@ -882,7 +892,7 @@ function CustomerRegister() {
                 <FormGroup>
                   <label htmlFor="alternativeNumber">Alternative Number:</label>
                   <input
-                    type="tel"
+                    type="number"
                     id="alternativeNumber"
                     className="form-control"
                     value={alternativeNumber}
@@ -951,6 +961,7 @@ function CustomerRegister() {
                     className="form-control form-select"
                     value={marriageStatus}
                     onChange={(e) => setMarriageStatus(e.target.value)}
+
                   >
                     <option value="">Select</option>
                     <option value="Single">Single</option>
@@ -1015,6 +1026,7 @@ function CustomerRegister() {
                     className="form-control form-select"
                     value={customerSpeak}
                     onChange={(e) => setCustomerSpeak(e.target.value)}
+                    required
                   >
                     <option value="">Select</option>
                     <option value="Hindi">Hindi</option>

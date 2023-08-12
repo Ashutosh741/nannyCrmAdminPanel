@@ -5,6 +5,11 @@ import { URL } from "../Url";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+//  for regisstraction don't forget to let enter other charcater than alphabets    
+// on replacement the replaced button should change, also then the inner content should also be changed
+// also in the replace details , their should be one generate bill option, which turn on different colour 
+// if the bill is generated, and overall the generatedbill should also show 
+
 function AyaReg() {
   const [ayaCode, setayaCode] = useState("");
   const [joining, setJoining] = useState("");
@@ -317,7 +322,7 @@ function AyaReg() {
                   <FormGroup>
                     <label>Base Rate</label>
                     <input
-                      type="baseRate"
+                      type="number"
                       name="baseRate"
                       className="form-control"
                       value={baseRate}
@@ -429,7 +434,7 @@ function AyaReg() {
                     <label> Pin:</label>
                     <input
                       className="form-control"
-                      type="text"
+                      type="number"
                       name="pin"
                       value={pin}
                       onChange={(e) => setPin(e.target.value)}
@@ -564,7 +569,7 @@ function AyaReg() {
                     <input
                       className="form-control"
                       name="permanentPin"
-                      type="text"
+                      type="number"
                       value={permanentPin}
                       onChange={(e) => setPermanentPin(e.target.value)}
                     />
@@ -576,7 +581,7 @@ function AyaReg() {
                 <Col md="4">
                   <FormGroup>
                     <label htmlFor="dateOfBirth">Aadhar Card Number</label>
-                    <input type="text"
+                    <input type="number"
                     id="aadharCardNumber"
                     name="aadharCardNumber"
                     className="form-control"
@@ -625,7 +630,7 @@ function AyaReg() {
                     <input
                       className="form-control"
                       name="idCardNumber"
-                      type="text"
+                      type="number"
                       value={idCardNumber}
                       onChange={(e) => setIdCardNumber(e.target.value)}
                       required
@@ -714,7 +719,7 @@ function AyaReg() {
                   <FormGroup>
                     <label htmlFor="contactNumber">Contact Number:</label>
                     <input
-                      type="tel"
+                      type="number"
                       id="contactNumber"
                       name="contactNumber"
                       className="form-control"
@@ -731,7 +736,7 @@ function AyaReg() {
                       Alternative Number:
                     </label>
                     <input
-                      type="tel"
+                      type="number"
                       name="alternativeNumber"
                       id="alternativeNumber"
                       className="form-control"
@@ -884,7 +889,7 @@ function AyaReg() {
                     </select>
                   </FormGroup>
                 </Col> */}
-                {/* <Col md="4">
+                <Col md="4">
                   <FormGroup>
                     <label for="ayaRemark">Aya Speciality:</label>
                     <select
@@ -908,7 +913,7 @@ function AyaReg() {
                       <option value="Take-care-baby">Take care baby</option>
                     </select>
                   </FormGroup>
-                </Col> */}
+                </Col>
                 <Col md="4">
                   <FormGroup>
                     <label for="canspeak">aya Can Speak:</label>

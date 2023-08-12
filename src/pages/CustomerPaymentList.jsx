@@ -37,6 +37,17 @@ const CustomerPaymentList = (props) => {
     //     });
     // };
 
+    const compareDate = (billDate) => {
+      const todayDate = new Date();
+      // console.log('today date format',todayDate)
+      const replaceDateParts = billDate.split('-');
+      const compareDate = new Date(replaceDateParts[2], replaceDateParts[1] - 1, replaceDateParts[0]);
+      // console.log('billDate format',compareDate)
+  
+      return todayDate <= compareDate;
+  }
+  
+
     const apiCategory = () => {
       setLoading(true);
       axios
@@ -243,8 +254,34 @@ const CustomerPaymentList = (props) => {
             field: 'paymentstatus',
             headerName: 'STATUS',
             type: 'string',
-            width:70,
-            editable: true,
+            width:100,
+            // editable: true,
+            renderCell: (params) => {
+              const data = params.row.customerGeneratedInvoice;
+              if (data && data.length > 0) {
+                const reverseData = data.reverse();
+
+                console.log("compare date result",compareDate(reverseData[0].generatedToDate))
+                if(compareDate(reverseData[0].generatedToDate) === true){
+                return (
+                
+                  <button className="btn btn-outline-danger">Completed</button>
+
+                   );
+                }
+                else if(compareDate(reverseData[0].generatedToDate) === false){
+                  return (
+                    <button className="btn btn-outline-danger">Pending</button>
+  
+                  );
+                }
+              } else {
+                return (
+                  <button className="btn btn-outline-danger">Pending</button>
+
+                );
+              }
+            },
           },
 
 

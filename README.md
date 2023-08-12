@@ -189,6 +189,14 @@ And you can start making an awesome admin application now.
   2.  and remove from the customer to blank to whom aya was assigned
 
   3. day-night , ismein kya hai ki , 
+
+  4. when we, create customer code then, we are generating it from previous recrods, and if it is
+  deleted then the, customer again keep hold of previous code 
+    4.1 so you can do something to keep pointer and always assigned value next, so that it donn't repeat
+
+  5. ismein jab replace kr rhe hai toh, aya ke bhi side se update ho jana chahiye ki, banda assign hua hai from, to date and purpose and rate
+
+    
   
 
 

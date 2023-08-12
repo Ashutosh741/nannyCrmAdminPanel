@@ -10,11 +10,9 @@ import { URL } from "../../Url";
 import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
 import AyaPaymentReceipt from "./AyaPaymentReceipt";
 
-
-// date fetch from choosing month,  and update in customer code, still reflect update bill button
+// set the print page, to A5 styling
+// do all the same changes to aya as
 // onclick of update bill button it should update the details, instead it is pushing new element
-// remove security money option
-// month ko choose krne pr fromdate or todate set nhi ho rhe
 
 const CustomerPaymentReceipt = (props) => {
 
@@ -43,7 +41,7 @@ const CustomerPaymentReceipt = (props) => {
     const [assignedAyaName, setAssignedAyaName] = useState("");
     const [assignedAyaPurpose, setAssignedAyaPurpose] = useState("");
     const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
-    const [securityAmount, setSecurityAmount] = useState("");
+    // const [securityAmount, setSecurityAmount] = useState("");
     const [paymentMode,setPaymentMode] = useState('Cash');
     const [upi,setUpi] = useState('');
     const[transactionId, setTransactionId] = useState('');
@@ -57,6 +55,10 @@ const CustomerPaymentReceipt = (props) => {
 
     const {id} = useParams();
 
+    function ReverseString(str) {
+      return str.split('-').reverse().join('-');
+    }
+
     const fetchEditDetails = async(index)=>{
       setShowUpdateButton(true);
       try{
@@ -66,8 +68,8 @@ const CustomerPaymentReceipt = (props) => {
 
         // const data = response.data.data;
         setRate(data.generatedRate);
-        setFromDate(data.generatedFromDate);
-        setToDate(data.generatedToDate);
+        setFromDate(ReverseString(data.generatedFromDate));
+        setToDate(ReverseString(data.generatedToDate));
         // setgeneratedBill(data.generatedBill);
         // setGeneratedWorkingDays(data.generatedWorkingDays);
         // setAssignedAyaPurpose(data.generatedAyaAssigned);
@@ -81,11 +83,16 @@ const CustomerPaymentReceipt = (props) => {
         setUpi(data.generatedUpi);
         setShowUpdateButton(true);
         setEditIndex(index);
-        
+        // if(fromDate){
+        //   setFromDate(ReverseString(fromDate))
+        // }
+        // if(toDate){
+        //   setToDate(ReverseString(toDate))
+        // }
 
         // handleGenerateBill();
     }catch(err){
-        console.log("error in fetching printing details",err);
+        console.log("error in fetching editing details",err);
     }
     setShowGeneratedButton(false)
     }
@@ -100,8 +107,8 @@ const CustomerPaymentReceipt = (props) => {
 
             // const data = response.data.data;
             setRate(data.generatedRate);
-            setFromDate(data.generatedFromDate);
-            setToDate(data.generatedToDate);
+            setFromDate(ReverseString(data.generatedFromDate));
+            setToDate(ReverseString(data.generatedToDate));
             // setgeneratedBill(data.generatedBill);
             // setGeneratedWorkingDays(data.generatedWorkingDays);
             setAssignedAyaPurpose(data.generatedAyaAssigned);
@@ -120,7 +127,7 @@ const CustomerPaymentReceipt = (props) => {
             console.log("error in fetching printing details",err);
         }
         setShowGeneratedButton(false)
-
+        setShowUpdateButton(false)
         handlePrint()
     }
 
@@ -132,7 +139,7 @@ const CustomerPaymentReceipt = (props) => {
             setCustomerId(response.data.data._id)
             setCustomerData(response.data.data);
             const data = response.data.data
-            setSecurityAmount(data.securityAmount);
+            // setSecurityAmount(data.securityAmount);
 
             // console.log("generated Invoice",data.generatedInvoice)
             // setGeneratedInvoice(data.generatedInvoice);
@@ -151,22 +158,50 @@ const CustomerPaymentReceipt = (props) => {
               console.log("reversed data",reverseData)
               setAssignedAyaName(reverseData[0].assignedAyaName)
               setAssignedAyaPurpose(reverseData[0].assignedAyaPurpose)
+              setRate(reverseData[0].assignedAyaRate);
               console.log("are you there",reverseData[0].assignedAyaName);
             }
+            setTransactionDate(date);
            
         }
         catch(e){
             console.log("error in fetching customer data:",e)
         }
     }
-    const get_diff_days  =  () => {
-        if(toDate && fromDate){
-            let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
-            return  Math.ceil(diff/(1000*86400));
-        }else{
-            console.log('not a number')
+    // const get_diff_days  =  () => {
+    //     if(toDate && fromDate){
+    //         let diff = parseFloat(new Date(toDate).getTime() - new Date(fromDate).getTime() - leaveTaken);
+    //         return  Math.ceil(diff/(1000*86400));
+    //     }else{
+    //         console.log('not a number')
+    //     }
+    // }
+
+    const get_diff_days = () => {
+      if (toDate && fromDate) {
+        const toDateParts = toDate.split('-');
+        const fromDateParts = fromDate.split('-');
+        const toDateObj = new Date(`${toDateParts[1]}-${toDateParts[0]}-${toDateParts[2]}`);
+        const fromDateObj = new Date(`${fromDateParts[1]}-${fromDateParts[0]}-${fromDateParts[2]}`);
+        // const leaveTakenDays = parseFloat(leaveTaken);
+    
+        if (!isNaN(toDateObj) && !isNaN(fromDateObj) && !isNaN(leaveTaken)) {
+          const diff = Math.floor((toDateObj.getTime() - fromDateObj.getTime()) / (1000 * 86400)) + 1;
+          return diff;
+        } else {
+          console.log('Invalid date or leaveTaken value.');
+          return 0; // Or any other appropriate value to indicate an error.
         }
-    }
+      } else {
+        console.log('Missing toDate, fromDate, or leaveTaken value.');
+        return 0; // Or any other appropriate value to indicate an error.
+      }
+    };
+    
+    useEffect(()=>{
+      fetchCustomerData();
+    },[customerCode])
+    
     // const generatedBill = get_diff_days()*{rate};
 
     const checkBillFor = ()=>{
@@ -192,32 +227,51 @@ const CustomerPaymentReceipt = (props) => {
     
     useEffect(()=>{
         // rate
+        // console.log("ek kam ku aa rha",get_diff_days())
         let calculatedgeneratedBill = (get_diff_days()-leaveTaken) * rate;
         if(calculatedgeneratedBill < 0)calculatedgeneratedBill = 0;
         setgeneratedBill(calculatedgeneratedBill);
-        fetchCustomerData();
+        // fetchCustomerData();
         setGeneratedWorkingDays(get_diff_days()-leaveTaken);
         // checkBillFor();
 
         // currentTime();
         
-    },[rate,customerCode,leaveTaken])
+    },[fromDate,toDate,rate,customerCode,leaveTaken])
 
     useEffect(()=>{
-      checkBillFor()
+      checkBillFor();
+      setCustomerCode('');
+      setAyaCode('');
+      setSelectedDate('');
+      resetBillEntry();
+
     },[billFor])
 
     const tableRef = useRef();
+
+    const resetBillEntry = ()=>{
+      setFromDate("");
+      setToDate("");
+      setRate(0);
+      setAssignedAyaName("");
+      setAssignedAyaPurpose("");
+      setPaymentMode('Cash');
+      // setTransactionDate('');
+      setSelectedDate('');
+      setLeaveTaken('')
+      setSelectedDate('');
+    }
 
     // console.log(id)
 
 
     const handleUpdateBill = async (e) => {
       e.preventDefault();
-      
       try {
 
         const updatedInvoice = {
+          // id:customerId,
           generatedCustomerId: customerId,
           generatedTime: new Date().toLocaleTimeString(),
           generatedBill: generatedBill,
@@ -234,7 +288,7 @@ const CustomerPaymentReceipt = (props) => {
           generatedUpi: upi,
           generatedTransactionDate: transactionDate,
         };
-        const response = await fetch(`${URL}/customerreg/${customerId}/customerGeneratedInvoice[${editIndex}])`, {
+        const response = await fetch(`${URL}/updateCustomerBill?index=${editIndex}`, {
           method: "PUT",
           body: JSON.stringify(updatedInvoice),
           headers: {
@@ -242,7 +296,6 @@ const CustomerPaymentReceipt = (props) => {
           },
         });
       //   await customerData();
-  
         const data = await response.json();
         console.log("updated data",data);
         alert("data Submitted Succesfully");
@@ -252,15 +305,9 @@ const CustomerPaymentReceipt = (props) => {
         updatedInvoices[editIndex] = updatedInvoice;
         
         setGeneratedInvoice (updatedInvoices);
-        
-        setFromDate("");
-        setToDate("");
-        setRate(0);
-        setAssignedAyaName("");
-        setAssignedAyaPurpose("");
-        setPaymentMode('Cash');
-        setTransactionDate('');
+        resetBillEntry();
         setShowUpdateButton(false); 
+        // setShowGeneratedButton(true)
 
       } catch (err) {
         console.log("error in this customerCode",customerId);
@@ -321,18 +368,12 @@ const CustomerPaymentReceipt = (props) => {
               generatedPaymentMode : paymentMode,
               generatedTransactionId : transactionId,
               generatedUpi : upi,
-              generatedTransactionDate : toDate
+              generatedTransactionDate : transactionDate
           };
           
           setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
           
-          setFromDate("");
-          setToDate("");
-          setRate(0);
-          setAssignedAyaName("");
-          setAssignedAyaPurpose("");
-          setPaymentMode('Cash');
-          setTransactionDate('');
+          resetBillEntry();
 
         } catch (err) {
           console.log("error in this customerCode",customerId);
@@ -384,37 +425,34 @@ const CustomerPaymentReceipt = (props) => {
       }
 
 
-      function ReverseString(str) {
-        return str.split('-').reverse().join('-')
-    }
 
-    
-    const getLastDayOfMonth = () => {
-      const [year, month] = selectedDate.split("-");
-      const lastDay = new Date(year, month, 0).getDate();
-      return lastDay;
-    };
-
+      
+      const getLastDayOfMonth = () => {
+        const [year, month] = selectedDate.split('-');
+        const lastDay = new Date(year, month, 0).getDate();
+        return lastDay;
+      };
+      
       const handleInputChange = (event) => {
         const { value } = event.target;
         setSelectedDate(value);
-        console.log("my value is ", value)
-
-        // setFromDate(`1-${selectedDate}`);
-        // setToDate(getLastDayOfMonth()- {selectedDate})
-    
-
-        // setFromDate(1-ReverseString({selectedDate}));
-        // setToDate(getLastDayOfMonth()- ReverseString({selectedDate}))
+        console.log('my value is ', value);
       };
+      
+      useEffect(() => {
+        if (selectedDate) {
+          const reversedDate = ReverseString(selectedDate);
+          setFromDate(`01-${reversedDate}`);
+          setToDate(`${getLastDayOfMonth()}-${reversedDate}`);
+          console.log('my fromdate', fromDate);
+          console.log('my todate', toDate);
+        }
+      }, [selectedDate]);
 
-    useEffect(()=>{
-      setFromDate(`1-${selectedDate}`);
-      setToDate(`${getLastDayOfMonth()}- ${selectedDate}`)
-      console.log("my fromdate",fromDate)
-      console.log("my todate",toDate)
-
-    },[selectedDate])
+      useEffect(()=>{
+        setTransactionDate(date);
+      },[paymentMode])
+      
 
   return (
     <>
@@ -468,23 +506,22 @@ const CustomerPaymentReceipt = (props) => {
                 value={customerCode}
                 onChange={(e) => setCustomerCode(e.target.value)}
             />
-        {/* <button onClick={fetchCustomerData}>Fetch Data</button> */}
             </div>
           </div>
           <Col md="4">
           <div className="print-container">
             <div className="print-header">
               <div className="">
-                <label htmlFor="" className="fw-bold mb-1">
+                <label for="month" className="fw-bold mb-1">
                   Select Month
                 </label>
                 <input
                   type="month"
                   className="form-control "
                   value={selectedDate}
+                  id = "month"
                   onChange={handleInputChange}
                 />
-                {/* <p>Last day of the month: {getLastDayOfMonth()} </p> */}
               </div>
             </div>
           </div>
@@ -509,55 +546,64 @@ const CustomerPaymentReceipt = (props) => {
             <div className="col-12">
 
                 <div className="row receipt">
-                    <div className="col-6">
-                        <img src = {logo} className='companyLogo'/>
+                    <div className="col-6 text-start mb-4">
+                        <img src = {logo} className='companyLogo img-fluid'/>
                     </div>
                     <div className="col-6 contactNumber">
                         <span>MOBILE NO : 97349-15314<br></br></span>
                         <span>70010-85855</span>
                     </div>
-                    <div className="col-12 companyName">
-                        <span>Joy Guru Janakalyan Trust <span style = {{color : "black",fontWeight:"lighter",fontFamily:"system-ui"}}>&</span> Service</span>
+                    <div className="col-12 companyName mt-2">
+                        <span>Joy Guru Janakalyan Trust <span style = {{color : "black",fontWeight:"bolder"}}>&</span> Service</span>
                     </div>
-                    <div className="col-12 companyAddress">
+                    <div className="col-12 companyAddress mb-2">
                         <span>SARBAMANGALA PALLY, M.K ROAD, ENGLISH BAZAR, MALDA - 732101</span>
+                    </div>
+                    <div className="col-12  text-center mb-2">
+                            <span className="prop"> MR. ABHIJIT PODDAR</span>
                     </div>
                     <div className="col-12 row-1 mb-2">
                         
-                        <div className="serial col-5 ms-0">
+                        <div className="serial col-6">
                         
-                            <span>SL NO. {customerCode}</span>
+                            <span>SL NO.<strong> {customerCode}</strong></span>
                         </div>
-                        <div className="prop col-3 me-5">
-                            <span> MR. ABHIJIT PODDAR</span>
-                        </div>
-                        <div className="date col-4 me-5">
-                            <span>PAYMENT DATE: </span>{date}
+
+                        <div className="date col-6">
+                            <span>PAYMENT DATE: </span><strong>{date}</strong>
                         </div>
                     </div>
-                    <div className="col-4 row-2 mb-2">
+                    <div className="col-12 row-2 d-flex mb-2">
+                      <div className="col-6">
                         <div className="partyName">
-                            <span>PARTY NAME: {name}</span>
+                            <span>PARTY NAME: <strong>{name}</strong></span>
                         </div>
-                    </div>
-                    <div className="col-4 row-2 mb-2 d-flex">
-                        <div className="paymentMode">
+                        </div>
+                        <div className="col-6">
+                        <div className="paymentMode d-flex">
                             <span>PAYMENT MODE : </span>
-                        </div>
                         <select className="form-select options" aria-label="Default select example"   onChange={(e) => setPaymentMode(e.target.value)} value = {paymentMode} required>
                             {/* <option value = "select">select</option> */}
                             <option value="cash">CASH</option>
                             <option value="online">ONLINE</option>
                         </select>
+                        </div>
+
                     </div>
+                    </div>
+
                     {
                       paymentMode === 'online' ? 
                       (
-                      <div className="col-4 row-2 mb-2 d-flex">
-                      <div className="paymentMode">
+                        <>
+                        <div className="col-12 row-3 d-flex mb-2">
+                        <div className="address col-6">
+                            <span>ADDRESS: {presentAddress}</span>
+                        </div>
+                        <div className="col-6">
+                      <div className="paymentMode d-flex">
                           <span>UPI:</span>
-                      </div>
-                      <select className="form-select options" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
+                          <select className="form-select options" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
                           <option selected>select</option>
                           <option value="paytm">PAYTM</option>
                           <option value="gpay">GPAY</option>
@@ -566,13 +612,13 @@ const CustomerPaymentReceipt = (props) => {
                           <option value="bankDeposit">BANK DEPOSIT</option>
                           <option value="other">OTHER</option>
                       </select>
-                      {/* {
-                            upi === 'other' ?
-                            (
-                              <input type = "text" placeholder = "Please Specify" onChange={(e) => setUpi(e.target.value)} value = {upi}></input>
-                            ) : ''
-                      } */}
-                  </div>) : ""
+                      </div>
+
+                  </div>
+                    </div>
+
+                  </>
+                  ) : ""
 
                     }
                     
@@ -581,39 +627,36 @@ const CustomerPaymentReceipt = (props) => {
                       paymentMode === 'online' ? 
                       (
                         <>
-                        <div className="col-4 row-3 mb-2">
-                        <div className="address">
-                            <span>ADDRESS: {presentAddress}</span>
-                        </div>
-                    </div>
-                      <div className="col-4 row-3 mb-2">
+                      <div className="d-flex">
+                      <div className="col-12 row-3 mb-2">
                       <div className="transactionId">
                           <span>TRANSACTION NO:</span>
-                          <input type="text" value = {transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
+                          <input type="text" value ={transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
 
                       </div>
                       </div>
-                      <div className="col-4 row-3 mb-2">
+                      {/* <div className="col-6 row-3 mb-2">
                       <div className="transactionDate">
                           <span>TRANSACTION DATE:</span>
                           <input type="text" value = {transactionDate} onChange={(e)=>setTransactionDate(e.target.value)}/>
 
                       </div>
+                      </div> */}
                       </div>
                       </>
                       ) : 
                       (
                     <div className="col-12 row-3 mb-2">
                         <div className="address">
-                            <span>ADDRESS: {presentAddress}</span>
+                            <span>ADDRESS:{presentAddress}</span>
                         </div>
                     </div> 
                       )
                     }
-                    <div className="col-12 row-4  d-flex gap-3">
+                    <div className="col-12 row-4 mb-2  d-flex ">
                       <div className="div col-6 d-flex">
                         <div className="purpose">
-                            <span>ASSIGNED TO: {assignedAyaName}</span>
+                            <span>ASSIGNED TO: <strong>{assignedAyaName}</strong></span>
                         </div>
                         {/* <select className="form-select options" aria-label="Default select example" required>
                             <option selected>select</option>
@@ -624,45 +667,51 @@ const CustomerPaymentReceipt = (props) => {
                         </div>
                         <div className="col-6 d-flex">
                         <div className="purpose">
-                            <span>PURPOSE OF : {assignedAyaPurpose}</span>
+                            <span>PURPOSE OF : <strong>{assignedAyaPurpose}</strong></span>
                         </div>
                         </div>
                     </div>
                     <div className="col-12 row-5 mb-2">
-                        <div className="mobile col-4">
-                            <span>MOBILE NO: {contactNumber}</span>
+                        <div className="mobile col-6">
+                            <span>MOBILE NO:{contactNumber}</span>
                         </div>
-                        <div className="rate col-5">
+                        <div className="rate col-6">
                                 <span>RATE:</span>
-                                    <input type="number" min="0" value={rate} onChange={(e)=>setRate(e.target.value)}/>
-                            {/* <span></span> */}
+                                <input type="number" min="0" value={rate}/>
                         </div>
-                        <div className="securityMoney col-4 d-flex">
+                        {/* <div className="securityMoney col-4 d-flex">
                         <span>SECURITY MONEY:</span>{securityAmount}
-                        </div>
+                        </div> */}
                     </div>
                     <div className="col-12 row-6 mb-2">
-                        <div className="duration col-4">
+                        {/* <div className="duration col-6">
                             <label required>FROM DATE:
-                            <input type="date" value = {fromDate} onChange={(e)=>setFromDate(e.target.value)}/>
+                            <input type="text" value = {fromDate} onChange={(e)=>setFromDate(e.target.value)}/>
+                            </label>
+                        </div> */}
+                        <div className="duration col-6">
+                            <label required>FROM DATE:
+                            <input type="text" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="to col-4">
+                        <div className="to col-6">
                             <label required>TO DATE:
-                            <input type="date" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
+                            <input type="text" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
-                        <div className="leave col-3">
+
+                    </div>
+
+                    <div className="col-12 row-6 mb-2">
+                    <div className="leave col-6">
                           <label>LEAVE :  
                             <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
                           </label>
                         </div>
-                        <div className="total col-4">
-                            <span>WORKING DAYS: </span>{get_diff_days()-leaveTaken}
+                        <div className="total col-6">
+                            <span>WORKING DAYS: </span><strong>{get_diff_days()-leaveTaken}</strong>
                         </div>
                     </div>
-
-                
 
                     <div className="col-12 row-7 mb-2">
                         <div className="amountInWord">
@@ -675,7 +724,7 @@ const CustomerPaymentReceipt = (props) => {
                             <div className="display text-start">
                                 <span className='currency'>RS-</span>
                                
-                                <span className='amount'> {generatedBill}/-</span>
+                                <span className='amount'> <strong>{generatedBill}</strong>/-</span>
                                 
                             </div>
                         </div>
@@ -704,10 +753,12 @@ const CustomerPaymentReceipt = (props) => {
                 </div>
                 
               ) : (
-                // ()=>(
+                  ((showUpdateButton) ? (
                   <div className="print-btn text-center billButton">
-                  <button className='btn bg-primary text-white'>Update Bill</button>
+                  <button className='btn bg-primary text-white' onClick={(e)=>handleUpdateBill(e)}>Update Bill</button>
                   </div>
+                  ) : null
+                  )
               )
             }
             </form>

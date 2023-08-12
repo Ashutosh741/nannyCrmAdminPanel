@@ -11,6 +11,7 @@ import { URL } from "../Url";
 import CustomerPaymentReceipt from "./newPages/CustomerPaymentReceipt";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function PaymentEdit() {
 
@@ -364,229 +365,7 @@ useEffect(() => {
 
   return (
     <>
-      <section>
-        <Container>
-          <Row>
-            <Col md="3">
-              <div class="profile-sidebar">
-                <div class="my-3 p-3 bg-body rounded shadow-sm">
-                  <div class="profile-userpic">
-                    <img
-                      src={`${URL}/${tech.file}`}
-                      class="img-responsive profile-img-center"
-                      alt=""
-                    />
-                  </div>
-                  <div class="profile-usertitle">
-                    <div class="profile-usertitle-name">{tech.name}</div>
-                    <div class="profile-usertitle-job">
-                      Customer Code :{" "}
-                      <span style={{ textTransform: "lowercase" }}>
-                        {tech.customerCode}
-                      </span>
-                    </div>
-                  </div>
-                  {/* <div class="profile-userbuttons">
-                    <button
-                      type="button"
-                      class="btn btn-success btn-sm mb-3"
-                      onClick={handleRowRemove}
-                    >
-                      Edit
-                    </button>
-                  </div> */}
-
-                  <hr />
-                </div>
-              </div>
-            </Col>
-
-            {showbox ? (
-              <>
-                <Col md="9">
-                  {
-                    showGeneratedButton && (
-                      <div className="invoice-button text-end">
-                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Go To Generate Bill</button>
-                      </div>
-                    )
-                  }
-
-                  <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
-                      <h6 className="border-bottom pb-2 mb-0 mb-3 ">
-                        Personal Info
-                      </h6>
-                    <Form onSubmit={handleFormSubmit}>
-                      <Row>
-                        <Col md="3">
-                          <label>Customer bill:</label>
-                          <input
-                            type="text"
-                            name="customerbill"
-                            value={generatedBill}
-                            readOnly
-                            className={`form-control `}
-                            // onChange={(e) => setCustomerbill(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Total Pending Amount:</label>
-                          <input
-                            type="text"
-                            name="totalpendingbill"
-                            value={totalPendingAmount}
-                            readOnly
-                            className={`form-control `}
-                            // onChange={(e) => setCustomerbill(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Total Customer bill:</label>
-                          <input
-                            type="text"
-                            name="customerbill"
-                            value={totalBill}
-                            readOnly
-                            className={`form-control `}
-                            // onChange={(e) => setCustomerbill(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Amount Recieved:</label>
-                          <input
-                            type="text"
-                            name="amount_received"
-                            value={amountReceived}
-                            className={`form-control `}
-                            onChange={(e) => setAmountReceived(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>From Data:</label>
-                          <input
-                            type="text"
-                            name="fromDate"
-                            value={fromDate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>To Date</label>
-                          <input
-                            type="text"
-                            name="toDate"
-                            value={toDate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Assigned Aya</label>
-                          <input
-                            type="text"
-                            value={assignedAyaName}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Rate</label>
-                          <input
-                            type="text"
-                            value={rate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Security Amount</label>
-                          <input
-                            type="text"
-                            value={securityAmount}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Purpose</label>
-                          <input
-                            type="text"
-                            value={assignedAyaPurpose}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Leave</label>
-                          <input
-                            type="text"
-                            value={leaveTaken}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Working Days</label>
-                          <input
-                            type="text"
-                            value={generatedWorkingDays}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Adjust With Security Money</label>
-                          <select className="form-control form-select">
-                            <option value = "No">NO</option>
-                            <option value = "Yes">YES</option>
-                          </select>
-                        </Col>
-
-                        <Col md="12">
-                          <div className="mt-3">
-                            <button
-                              type="submit"
-                              className="btn bg-primary text-white"
-                              onClick= {()=>setPendingAmount(pendingBill())}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </div>
-                </Col>
-              </>
-            ) : (
-              <>
-                <Col md="9">
-                  <div className="my-3 p-3  bg-body rounded shadow-sm detailPage">
-                    <div className="h-100 text-center">
-                      <img
-                        src={aayawork}
-                        className="img-fluid"
-                        alt=""
-                        style={{ height: "100px" }}
-                      />
-                      <h3>Please assign Aaya</h3>
-
-                      <button
-                        className="btn btn-success btn-sm mb-3"
-                        onClick={handleAssign}
-                      >
-                        Assign Aya
-                      </button>
-                    </div>
-                  </div>
-                </Col>
-              </>
-            )}
-          </Row>
-        </Container>
-      </section>
-      {showbox ? (
+      {/* {showbox ? ( */}
           <section>
             <Container>
               <Row>
@@ -594,70 +373,51 @@ useEffect(() => {
                   <div className="my-3 text-end"></div>
                   <div className="table-responsive rounded-3">
                     <table className="table table-responsive table-sm table-stripped table-bordered p-0">
-                      <thead className="bg-blue text-white">
+                    <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
-                          <th className="">Customer Bill</th>
-                          <th className="">Amount Recieved</th>
-                          <th className="">Status</th>
-                          <th className="">Pending Amount</th>
+                          <th>Sr. No</th>
+                          <th className="">Customer Code</th>
+                          <th className="">Customer Name</th>
 
-                          <th className="">From Data</th>
-                          <th className="">To Date</th>
-                          <th className="">Assigned Aya</th>
+                          <th className="">Date</th>
+                          <th className="">Generated Bill</th>
+                          <th className="">Payment Mode</th>
+                          <th className="">To Data</th>
+                          <th className="">From Date</th>
                           <th className="">Rate</th>
-                          <th className="">Purpose</th>
-                          <th className="">Leave</th>
-                          <th className="">Working Days</th>
-
+                          <th className="">Aya Assigned</th>
+                          <th className="">Actions</th>
+                          
                           {/* <th className="">Invoice</th> */}
                         </tr>
+
                       </thead>
                       <tbody>
-                      {(customerPaymentDetails[0] !== undefined) && customerPaymentDetails.map((item, index) => {
+                      {generatedInvoice.map((item, index) => {
                         if (item) {
-                                // Calculate the status based on customer bill and amount received
-                                let status = "";
-                                if (item.paymentBill === item.paymentAmountReceived) {
-                                  status = "Complete";
-                                } else if (item.paymentBill < item.paymentAmountReceived) {
-                                  status = "Advanced";
-                                } else {
-                                  status = "Pending";
-                                }
-
-                                // Update the status value in the item
-                                item.status = status;
                           return (
                             <tr key={item.generatedCustomerId}>
-                              <td>{item.paymentBill}</td>
-                              <td>{item.paymentAmountReceived}</td>
-                              {/* <td>{item.status}</td> */}
+                              <td>{index + 1}</td>
+                              <td>{customerCode}</td>
+                              <td>{tech.name}</td>
+
+                              <td>{item.generatedDate}</td>
+                              <td>{item.generatedBill}</td>
+                              <td>{item.generatedPaymentMode}</td>
+                              <td>{item.generatedToDate}</td>
+                              <td>{item.generatedFromDate}</td>
+                              <td>{item.generatedRate}</td>
+                              <td>{item.generatedAyaAssigned}</td>
                               <td>
-                                {status === "Complete" && (
-                                  <button className="btn btn-primary text-white">
-                                    Complete
-                                  </button>
-                                )}
-                                {status === "Pending" && (
-                                  <button className="btn btn-danger text-white" >
-                                    Pending
-                                  </button>
-                                )}
-                                {status === "Advanced" && (
-                                  <button className="btn btn-success text-white" >
-                                    Advanced
-                                  </button>
-                                )}
+                              <div className="d-flex gap-3">
+                              <i class="fa-solid fa-eye"></i>
+                              <i class="fa-solid fa-trash"></i>
+                              <i class="fa-solid fa-pen-to-square"></i>
+                              </div>
                               </td>
-                              <td>{item.paymentPendingAmount}</td>
-                              <td>{item.paymentFromDate}</td>
-                              <td>{item.paymentToDate}</td>
-                              <td>{item.paymentAyaAssigned}</td>
-                              <td>{item.paymentRate}</td>
-                              <td>{item.paymentAyaPurpose}</td>
-                              <td>{item.paymentLeaveTaken}</td>
-                              <td>{item.paymentWorkingDays}</td>
+                              
                             </tr>
+                            
                           );
                         }
                       })}
@@ -668,7 +428,7 @@ useEffect(() => {
               </Row>
             </Container>
           </section>
-      ) : null}
+      {/* ) : null} */}
     </>
   );
 }

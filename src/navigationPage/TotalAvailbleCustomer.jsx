@@ -6,10 +6,10 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import Pagination from "../components/Pagination";
-import CustomerListContent from "./CustomerListContent";
+import CustomerAvailable from "./CustomerAvailable";
 import { useReactToPrint } from "react-to-print";
 
-function CustomerList() {
+const TotalAvailbleCustomer = () => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
@@ -23,6 +23,7 @@ function CustomerList() {
   const [toDate, setToDate] = useState("");
   const [selectedType, setSelectedType] = useState(""); // local or outstation
   const [selectedStation, setSelectedStation] = useState(null);
+  // const {filterSecurityPaid} = props;
   const apiCategory = () => {
     setLoading(true);
 
@@ -61,12 +62,12 @@ function CustomerList() {
     });
 
     useEffect(()=>{
-      <CustomerListContent  type={selectedType}/>
+      <CustomerAvailable type={selectedType}/>
       console.log("request sent")
     },[selectedType])
 
     // useEffect(()=>{
-    //   <CustomerListContent availableCustomer = {availableCustomer}  type={selectedType}/>
+    //   <CustomerAvailable availableCustomer = {availableCustomer}  type={selectedType}/>
     //   console.log("request sent")
     // },[selectedType])
 
@@ -126,7 +127,7 @@ function CustomerList() {
               <div className="container" ref = {tableRef}>
                 <div className="row">
                   <form onSubmit={handlePrintTable}>
-                    <CustomerListContent type = {selectedType}/>
+                    <CustomerAvailable type = {selectedType}/>
                   </form>
                 </div>
 
@@ -137,6 +138,7 @@ function CustomerList() {
       </section>
     </>
   );
+
 }
 
-export default adminLayout(CustomerList);
+export default adminLayout(TotalAvailbleCustomer)

@@ -27,6 +27,9 @@ function AyaPayment() {
   const [leaveTaken,setLeaveTaken] = useState(0);
   const [generatedWorkingDays,setGeneratedWorkingDays] = useState('');
   const [ayaPaymentDetails,setAyaPaymentDetails] = useState([]);
+  const [generatedInvoice, setGeneratedInvoice] = useState([]);
+  const [ayaCode,setAyaCode] = useState('');
+  
   // const [customerPaymentDetails,setCustomerPaymentDetails] = useState([]);
 
 
@@ -48,12 +51,14 @@ function AyaPayment() {
       // const assignCustomer = techData.assign;
       setAssignCheck(assignCustomer);
 
+      setAyaCode(techData.ayaCode)
       const reversePaymentData = techData.ayaPaymentDetails.reverse();
       setAyaPaymentDetails(reversePaymentData);
 
       console.log("her payment details",techData)
 
       const reverseBillData = techData.ayaGeneratedInvoice.reverse();
+      setGeneratedInvoice(reverseBillData);
       setGeneratedBill(reverseBillData[0].generatedBill)
       setFromDate(reverseBillData[0].generatedFromDate);
       setToDate(reverseBillData[0].generatedToDate);
@@ -217,250 +222,53 @@ function AyaPayment() {
   };
 
   return (
-    <>
+    <>    
       <section>
         <Container>
           <Row>
-            <Col md="3">
-              <div className="profile-sidebar">
-                <div className="my-3 p-3 bg-body rounded shadow-sm">
-                  <div className="profile-userpic">
-                    <img
-                      src={`${URL}/${tech.file}`}
-                      className="img-responsive profile-img-center"
-                      alt=""
-                    />
-                  </div>
-                  <div className="profile-usertitle">
-                    <div className="profile-usertitle-name">{tech.name}</div>
-                    <div className="profile-usertitle-job">
-                      Aya Code :{" "}
-                      <span style={{ textTransform: "lowercase" }}>
-                        {tech.ayaCode}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="profile-userbuttons">
-                    <button
-                      type="button"
-                      className="btn btn-success btn-sm mb-3"
-                      onClick={handleRowRemove}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                  <hr />
-                </div>
-              </div>
-            </Col>
-
-            {showbox ? (
-              <>
-                <Col md="9">
-                  {/* {
-                    showGeneratedButton && (
-                      <div className="invoice-button text-end">
-                      <button className="btn bg-primary text-white" onClick={handleInvoice}>Go To Generate Bill</button>
-                      </div>
-                    )
-                  } */}
-
-                  <div className="my-3 p-3 bg-body rounded shadow-sm detailPage">
-                      <h6 className="border-bottom pb-2 mb-0 mb-3 ">
-                        Personal Info
-                      </h6>
-                    <Form onSubmit={handleFormSubmit}>
-                      <Row>
-                        <Col md="3">
-                          <label>Aya bill:</label>
-                          <input
-                            type="text"
-                            name="customerbill"
-                            value={generatedBill}
-                            readOnly
-                            className={`form-control `}
-                            // onChange={(e) => setCustomerbill(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Amount Recieved:</label>
-                          <input
-                            type="text"
-                            name="amount_received"
-                            value={amountPaid}
-                            className={`form-control `}
-                            onChange={(e) => setAmountPaid(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>From Data:</label>
-                          <input
-                            type="text"
-                            name="fromDate"
-                            value={fromDate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>To Date</label>
-                          <input
-                            type="text"
-                            name="toDate"
-                            value={toDate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Assigned Customer</label>
-                          <input
-                            type="text"
-                            value={assignedCustomerName}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Rate</label>
-                          <input
-                            type="text"
-                            value={rate}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        {/* <Col md="3">
-                          <label>Security Amount</label>
-                          <input
-                            type="text"
-                            // value={amountRec}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col> */}
-                        <Col md="3">
-                          <label>Purpose</label>
-                          <input
-                            type="text"
-                            value={assignedCustomerPurpose}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Leave</label>
-                          <input
-                            type="text"
-                            value={leaveTaken}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <label>Working Days</label>
-                          <input
-                            type="text"
-                            value={generatedWorkingDays}
-                            className={`form-control `}
-                            // onChange={(e) => setAmountRec(e.target.value)}
-                          />
-                        </Col>
-
-                        <Col md="12">
-                          <div className="mt-3">
-                            <button
-                              type="submit"
-                              className="btn bg-primary text-white"
-                              // onClick={calculate}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </div>
-                </Col>
-              </>
-            ) : (
-              <>
-                <>
-                  <Col md="9">
-                    <div className="my-3 p-3  bg-body rounded shadow-sm detailPage">
-                      <div className="h-100 text-center">
-                        <img
-                          src={assignCustomer}
-                          className="img-fluid"
-                          alt=""
-                          style={{ height: "100px" }}
-                        />
-                        <h3>Please assign Customer</h3>
-                        <button
-                          className="btn btn-success btn-sm mb-3"
-                          onClick={handleCustomer}
-                        >
-                          Assign Customer
-                        </button>
-                      </div>
-                    </div>
-                  </Col>
-                </>
-              </>
-            )}
-          </Row>
-        </Container>
-      </section>
-
-      {showbox ? (
-          <section>
-            <Container>
-              <Row>
-                <Col md="12" className="mt-2">
-                  <div className="my-3 text-end"></div>
-                  <div className="table-responsive rounded-3">
-                    <table className="table table-responsive table-sm table-stripped table-bordered p-0">
+            <Col md="12" className="mt-2">
+              <div className="my-3 text-end"></div>
+              <div className="table-responsive rounded-3">
+              <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                       <thead className="bg-blue text-white">
                         <tr className="text-uppercase">
-                          <th className="">Aya Bill</th>
-                          <th className="">Aya Paid</th>
-                          <th className="">From Data</th>
-                          <th className="">To Date</th>
-                          <th className="">Assigned Customer</th>
+                        <th>Sr. No</th>
+                          <th className="">Date</th>
+                          <th className="">Aya Code</th>
+                          <th className="">Generated Bill</th>
+                          <th className="">Payment Mode</th>
+                          <th className="">To Data</th>
+                          <th className="">From Date</th>
                           <th className="">Rate</th>
-                          <th className="">Purpose</th>
-                          <th className="">Leave</th>
-                          <th className="">Working Days</th>
-
-                          {/* <th className="">Invoice</th> */}
+                          <th className="">Aya Assigned</th>
                         </tr>
                       </thead>
                       <tbody>
-                      {(ayaPaymentDetails[0]) && ayaPaymentDetails.map((item, index) => {
+                      {generatedInvoice.map((item, index) => {
                         if (item) {
                           return (
                             <tr key={item.generatedAyaId}>
-                              <td>{item.paymentBill}</td>
-                              <td>{item.paymentAmountReceived}</td>
-                              <td>{item.paymentFromDate}</td>
-                              <td>{item.paymentToDate}</td>
-                              <td>{item.paymentCustomerAssigned}</td>
-                              <td>{item.paymentRate}</td>
-                              <td>{item.paymentCustomerPurpose}</td>
-                              <td>{item.paymentLeaveTaken}</td>
-                              <td>{item.paymentWorkingDays}</td>
+                              <td>{index + 1}</td>
+                              <td>{item.generatedDate}</td>
+                              <td>{ayaCode}</td>
+                              <td>{item.generatedBill}</td>
+                              <td>{item.generatedPaymentMode}</td>
+                              <td>{item.generatedToDate}</td>
+                              <td>{item.generatedFromDate}</td>
+                              <td>{item.generatedRate}</td>
+                              <td>{item.generatedCustomerAssigned}</td>
                             </tr>
                           );
                         }
-                      })}
+                      }).reverse()}
                       </tbody>
                     </table>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          </section>
-      ) : null}
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+      
     </>
   );
 }

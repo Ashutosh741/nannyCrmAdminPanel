@@ -759,3 +759,60 @@ h1.heading {
 
 
 
+.inner-table-cell{
+  background-color: rgba(120, 117, 119, 0.212) !important; /* Set the background color to gray */
+  /* color: white !important ; */
+}
+
+/* Style the cells of the inner table */
+.inner-table-cell {
+  padding: 0; /* Adjust padding as needed */
+}
+
+
+/* Add styling for expanded row */
+.expanded-row {
+  background-color: rgba(120, 117, 119, 0.212) !important;
+  /* Additional styling as needed */
+}
+
+/* Add animation for fade-in effect */
+.fade-in {
+  animation: fadeInAnimation 0.5s ease-in-out forwards;
+}
+
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Make sure it's above other elements */
+}
+
+.css-16c50h-MuiInputBase-root-MuiTablePagination-select {
+  margin-bottom: 7px;
+}
+
+.reverse-container {
+  display: flex;
+  flex-direction: column-reverse;
+}

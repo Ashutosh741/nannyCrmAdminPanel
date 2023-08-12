@@ -72,7 +72,7 @@ const Sidebar = () => {
                     </li>
                     <li className="my-3">
                         <NavLink tag="a" className="" to="/booking">
-                            <i class="fa-solid fa-envelope"></i> Booking
+                            <i class="fa-solid fa-envelope"></i> Inquiry
                         </NavLink>
                     </li>
                     <li className="my-3">
@@ -82,7 +82,7 @@ const Sidebar = () => {
                     </li>
                     <li className="my-3">
                         <NavLink tag="a" className="" to="/generateBill">
-                            <i class="fa-solid fa-clipboard-user"></i> Generate Bill
+                            <i class="fa-solid fa-coins"></i> Generate Bill
                         </NavLink>
                     </li>
                 </ul>

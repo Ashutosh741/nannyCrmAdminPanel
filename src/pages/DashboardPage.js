@@ -23,7 +23,7 @@ const DashboardPage = () => {
   const [aya, setAya] = useState([])
 
   const [customer, setCustomer] = useState([])
-  const [assign, setAssign] = useState([])
+  const [assign, setAssign] = useState(0)
   const [pending, setPending] = useState([])
   const [advance, setAdvance] = useState([])
   const [notpending, setNotPending] = useState([])
@@ -37,6 +37,12 @@ const DashboardPage = () => {
   const [ayaPayment, setAayaPayment] = useState(0)
   const [profit, setProfit] = useState(0)
   const [amountRec, setAmountRec] = useState(0)
+  const [ayaGeneratedBill,setAyaGeneratedBill] = useState('0')
+  const [customerNotAssigned,setCustomerNotAssigned] = useState(0);
+  const [securityPaid,setSecurityPaid] = useState(0);
+  const [ayaPaid,setAyaPaid] = useState(0);
+  const [billGenerated,setBillGenerated] = useState(0);
+
   const navigate = useNavigate();
 
 
@@ -80,13 +86,54 @@ const DashboardPage = () => {
   // };
 
 
-  const assignAya = () => {
-    axios.get(`${URL}/ayareg/`).then((res) => {
-      const filteredAya = res.data.data.filter((item) => item.assign === "Not Assign");
-      setAssign(filteredAya.length);
-      console.log(assign)
-    });
-  };
+  // const assignAya = () => {
+  //   axios.get(`${URL}/ayareg/`).then((res) => {
+  //     const filteredAya = res.data.data.filter((item) => item.assign === "Not Assign");
+  //     setAssign(filteredAya.length);
+  //     // console.log(assign)
+  //   });
+  // };
+
+  const compareDate = (billDate) => {
+    const todayDate = new Date();
+    // console.log('today date format',todayDate)
+    const replaceDateParts = billDate.split('-');
+    const compareDate = new Date(replaceDateParts[0], replaceDateParts[1] - 1, replaceDateParts[2],0,0,0);
+    // console.log('billDate format',compareDate)
+
+    return todayDate <= compareDate;
+}
+
+const compareFromDate = (billDate) => {
+  const todayDate = new Date();
+  // console.log('today date format',todayDate)
+  const replaceDateParts = billDate.split('-');
+  const compareDate = new Date(replaceDateParts[0], replaceDateParts[1] - 1, replaceDateParts[2],0,0,0);
+  // console.log('billDate format',compareDate)
+
+  return todayDate <= compareDate;
+}
+
+
+const get_diff_days = (assignedCustomerFromDate) => {
+  
+    const toDateParts = new Date();
+    const fromDateParts = assignedCustomerFromDate.split('-');
+    const toDateObj = new Date(`${toDateParts[1]}-${toDateParts[0]}-${toDateParts[2]}`);
+    const fromDateObj = new Date(`${fromDateParts[1]}-${fromDateParts[0]}-${fromDateParts[2]}`);
+    // const leaveTakenDays = parseFloat(leaveTaken);
+
+    if (!isNaN(toDateObj) && !isNaN(fromDateObj)) {
+      const diff = Math.floor((toDateObj.getTime() - fromDateObj.getTime()) / (1000 * 86400));
+      // console.log("difference of date",diff)
+      return diff;
+    } else {
+      console.log('Invalid date or leaveTaken value.');
+      return 0; // Or any other appropriate value to indicate an error.
+    }
+}
+
+
 
 
   useEffect(() => {
@@ -97,20 +144,98 @@ const DashboardPage = () => {
         // Calculate total customer bill
         let totalBill = 0;
         let totalRecieved = 0;
+
         customerData.forEach((customer) => {
-          customer.customerpayment.forEach((payment) => {
-            totalBill += parseInt(payment.customerbill);
+          customer.assignedAyaDetails.forEach((payment) => {
+            let calc = 0,diffDays = 0;
+            if(payment.assignedAyaRate){
+              if(payment.assignedAyaToDate){
+                const date1 = new Date(payment.assignedAyaFromDate);
+                const date2 = new Date(payment.assignedAyaToDate);
+                const diffTime = Math.abs(date2 - date1);
+                diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                // console.log("differnece of date of from and to",diffDays);
+              }else{
+                const date1 = new Date(payment.assignedAyaFromDate);
+                const date2 = new Date();
+                const diffTime = Math.abs(date2 - date1);
+                diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                // console.log('differnece of today and from date',diffDays);
+              }
+            }
+            calc = diffDays*(payment.assignedAyaRate);
+            // console.log('yeh calculated money',calc)
+            totalBill += parseInt(calc);
           });
         });
         customerData.forEach((customer) => {
-          customer.customerpayment.forEach((payment) => {
-            totalRecieved += parseInt(payment.amount_received);
+          customer.customerGeneratedInvoice.forEach((payment) => {
+            totalRecieved += parseInt(payment.generatedBill);
           });
         });
 
-        console.log("totalBill:", totalBill);
+        // console.log("totalBill:", totalBill);
         setCustomerBill(totalBill);
         setAmountRec(totalRecieved)
+
+
+        let cnt = 0;
+        customerData.forEach((customer) => {
+          if (customer.assignedAyaDetails.length <= 0) {
+            cnt++;
+          } else {
+            const reverseData = customer.assignedAyaDetails.reverse();
+        
+            if (reverseData.length > 0 && reverseData[0].assignedAyaFromDate) {
+              if (compareDate(reverseData[0].assignedAyaFromDate)) {
+                cnt++;
+              } else if (reverseData[0].assignedAyaToDate && !compareDate(reverseData[0].assignedAyaToDate)) {
+                cnt++;
+              }
+            }
+          }
+        });
+        
+        setCustomerNotAssigned(cnt);
+
+        let billGenerated = 0;
+        customerData.forEach((customer) => {
+          // console.log('single customer',customer)
+          if(customer.customerGeneratedInvoice.length <= 0){
+            billGenerated++;
+          }else{
+            const reverseData = customer.customerGeneratedInvoice.reverse();
+            if(reverseData.length > 0 && reverseData[0].generatedToDate){
+              // console.log('dekhe to kaise bna hai',get_diff_days(reverseData[0].generatedToDate));
+              if(get_diff_days(reverseData[0].generatedToDate) > 30){
+
+                billGenerated++;
+              }else{
+                // console.log('inner customer is assigned')
+              }
+            }else{
+              billGenerated++;
+
+              // console.log('outer customer is assigned')
+            }
+          }
+        });
+
+        setBillGenerated(billGenerated);
+
+
+        const secureAmt = customerData.reduce((sum, item) => sum + parseInt(item.securityAmount), 0);
+        console.log("seekek", secureAmt)
+        setSecureMoney(secureAmt)
+  
+        let securityPaid = 0;
+        customerData.forEach((customer)=>{
+          if(customer.securityAmount < 2000)securityPaid++;
+        })
+  
+        setSecurityPaid(securityPaid);
+
+
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
@@ -125,31 +250,98 @@ const DashboardPage = () => {
 
 
 
+
+
   useEffect(() => {
     const fetchaayaPayment = async () => {
       try {
         const response = await axios.get(`${URL}/ayareg/`);
         const customerData = response.data.data;
 
-        // Calculate total customer bill
+        // Calculate generated aya bill
         let totalBill = 0;
-        let AdminProfit = 0;
+        let AdminProfit = 0,ayaGeneratedBill=0;
+
         customerData.forEach((customer) => {
-          customer.ayapayment.forEach((payment) => {
-            totalBill += parseInt(payment.ayapaid);
+          customer.assignedCustomerDetails.forEach((payment) => {
+            let calc = 0,diffDays = 0;
+            if(payment.assignedCustomerRate){
+              if(payment.assignedCustomerToDate){
+                const date1 = new Date(payment.assignedCustomerFromDate);
+                const date2 = new Date(payment.assignedCustomerToDate);
+                const diffTime = Math.abs(date2 - date1);
+                diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                // console.log("differnece of date of from and to",diffDays);
+              }else{
+                const date1 = new Date(payment.assignedCustomerFromDate);
+                const date2 = new Date();
+                const diffTime = Math.abs(date2 - date1);
+                diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                // console.log('differnece of today and from date',diffDays);
+              }
+            }
+            calc = diffDays*(payment.assignedCustomerRate);
+            // console.log('yeh calculated money',calc)
+            totalBill += parseInt(calc);
+          });
+        }); 
+        setAyaGeneratedBill(totalBill);
+
+
+        customerData.forEach((customer) => {
+          customer.ayaGeneratedInvoice.forEach((payment) => {
+            // console.log('aya ka geneerated bill',payment.generatedBill)
+            ayaGeneratedBill += parseInt(payment.generatedBill);
           });
         });
 
+        setAayaPayment(ayaGeneratedBill);
+
+        let cnt = 0;
         customerData.forEach((customer) => {
-          customer.ayapayment.forEach((payment) => {
-            AdminProfit += parseInt(payment.profit);
-          });
+          if (customer.assignedCustomerDetails.length <= 0) {
+            cnt++;
+          } else {
+            const reverseData = customer.assignedCustomerDetails.reverse();
+        
+            if (reverseData.length > 0 && reverseData[0].assignedCustomerFromDate) {
+              if (compareFromDate(reverseData[0].assignedCustomerFromDate)) {
+                cnt++;
+              } else if (reverseData[0].assignedCustomerToDate && !compareDate(reverseData[0].assignedCustomerToDate)) {
+                cnt++;
+              }
+            }
+          }
+        });
+        
+
+        setAssign(cnt);
+
+        let ayaPaid = 0;
+        customerData.forEach((customer) => {
+          // console.log('single customer',customer)
+          if(customer.ayaGeneratedInvoice.length <= 0){
+            ayaPaid++;
+          }else{
+            const reverseData = customer.ayaGeneratedInvoice.reverse();
+            if(reverseData.length > 0 && reverseData[0].generatedToDate){
+              // console.log('dekhe to kaise bna hai',get_diff_days(reverseData[0].generatedToDate));
+              if(get_diff_days(reverseData[0].generatedToDate) > 30){
+
+                ayaPaid++;
+              }else{
+                // console.log('inner customer is assigned')
+              }
+            }else{
+              ayaPaid++;
+              // console.log('outer customer is assigned')
+            }
+          }
         });
 
-
-        console.log("totalAaauauuapayment:", totalBill);
-        setAayaPayment(totalBill);
-        setProfit(AdminProfit)
+        setAyaPaid(ayaPaid);
+        // console.log("totalAaauauuapayment:", ayaGeneratedBill);
+        // setProfit(AdminProfit)
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
@@ -236,19 +428,15 @@ const DashboardPage = () => {
   };
 
 
-  const securemoneyAmount = () => {
-    axios.get(`${URL}/customerreg/`).then((res) => {
-      const customerData = res.data.data;
+  // const securemoneyAmount = () => {
+  //   axios.get(`${URL}/customerreg/`).then((res) => {
+  //     const customerData = res.data.data;
 
-      // Calculate total customer bill
-      const secureAmt = customerData.reduce((sum, item) => sum + parseInt(item.securityAmount), 0);
-
+  //     // Calculate total customer bill
 
 
-      console.log("seekek", secureAmt)
-      setSecureMoney(secureAmt)
-    });
-  };
+  //   });
+  // };
 
   // const checkpaymentList = () => {
   //   axios.get(`${URL}/customerreg/`).then((res) => {
@@ -375,8 +563,16 @@ const DashboardPage = () => {
     navigate('/totalAvaibleNanny')
   }
 
+  const handleCustomerwork = () => {
+    navigate('/totalAvaibleCustomer')
+  }
+
   const handleSecurity = () => {
     navigate('/securityAmount')
+  }
+
+  const handleCustomerBill = () => {
+    navigate('/customerBill')
   }
 
 
@@ -385,7 +581,7 @@ const DashboardPage = () => {
   useEffect(() => {
     AyaApi();
     CustomerApi();
-    assignAya();
+    // assignAya();
     pendingPayment()
 
     totalcustomerbill()
@@ -393,7 +589,7 @@ const DashboardPage = () => {
 
     totalayaEarn()
     checkpaymentList()
-    securemoneyAmount()
+    // securemoneyAmount()
 
   }, [])
   return (
@@ -423,7 +619,7 @@ const DashboardPage = () => {
           </div>
         </div>
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomer} style={{ cursor: "pointer" }}>
-          <div className="card text-white bg-warning o-hidden h-100">
+          <div className="card text-white o-hidden h-100" style={{background: "#b86d6d"}}>
             <div className="card-body">
 
               <div className="mr-5 cardbox mt-3">
@@ -462,38 +658,28 @@ const DashboardPage = () => {
             </a> */}
           </div>
         </div>
-        {/* <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerPayment}>
-          <div className="card text-white  bg-danger o-hidden h-100">
-            <div className="card-body mt-3">
-
-              <div className="mr-5 cardbox">
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerwork} style={{ cursor: "pointer" }}>
+          <div className="card text-white bg-success  o-hidden h-100">
+            <div className="card-body">
+              <div className="mr-5 cardbox mt-3">
                 <div className="card-body-icon">
-                  <i class="fa-solid fa-hand-holding-dollar"></i>
+                  {/* <i class="fa-solid fa-briefcase"></i> */}
+                  <img src={rating} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
                 </div>
-                <h4> Pending Payment list</h4>
-                <h5 className="fw-bold">{pending}</h5>
-              </div>
-
-            </div>
-
-          </div>
-        </div> */}
-        {/* <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerPayment}>
-          <div className="card text-white  o-hidden h-100" style={{ background: " #7B68EE" }}>
-            <div className="card-body mt-3">
-              <div className="mr-5 cardbox">
-                <div className="card-body-icon">
-                 
-                  <img src={paid} alt="" className="img-fluid boximg" />
-                </div>
-                <h4> Total Amount  Paid</h4>
-                <h5 className="fw-bold">{totalCustomerbill}</h5>
+                <h4>
+                  Total Customer not assigned
+                </h4>
+                <h5 className="fw-bold">{customerNotAssigned}</h5>
               </div>
             </div>
-
+            {/* <a className="card-footer text-white clearfix small z-1" href="#">
+              <span className="float-left">View Details</span>
+              <span className="float-right">
+                <i className="fa fa-angle-right"></i>
+              </span>
+            </a> */}
           </div>
-        </div> */}
-
+        </div>
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerPayment} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: "#008080" }}>
             <div className="card-body mt-3">
@@ -508,6 +694,19 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        <div className="col-xl-3 col-sm-6 mb-3"  style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#008080" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  <img src={payment} className="img-fluid boximg" style={{ width: "90px" }} />
+                </div>
+                <h4> Total Aya Bill</h4>
+                <h5 className="fw-bold"> {ayaGeneratedBill}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleSecurity} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: "#6495ED" }}>
             <div className="card-body mt-3">
@@ -522,6 +721,20 @@ const DashboardPage = () => {
             </div>
           </div>
         </div>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleSecurity} style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#6495ED" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
+                  <img src={advanceicon} alt="" className="img-fluid boximg" />
+                </div>
+                <h4>Customer Not Given base Secuirty Money</h4>
+                <h5 className="fw-bold">{securityPaid}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerPayment} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: "#2F4F4F" }}>
@@ -531,8 +744,22 @@ const DashboardPage = () => {
                   {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
                   <img src={pendingicon} alt="" className="img-fluid boximg" />
                 </div>
-                <h4> Total Amount Recieved from Customer</h4>
+                <h4> Total Amount Received from Customer</h4>
                 <h5 className="fw-bold">{amountRec}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerBill} style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#2F4F4F" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
+                  <img src={pendingicon} alt="" className="img-fluid boximg" />
+                </div>
+                <h4>Customer Bill not Generated</h4>
+                <h5 className="fw-bold">{billGenerated}</h5>
               </div>
             </div>
           </div>
@@ -551,6 +778,20 @@ const DashboardPage = () => {
             </div>
           </div>
         </div>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleayaPayment} style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#191970" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
+                  <img src={salary} alt="" className="img-fluid boximg" />
+                </div>
+                <h4>Aya Amount not Paid</h4>
+                <h5 className="fw-bold">{ayaPaid}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleProfit} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: " #7B68EE" }}>
             <div className="card-body mt-3">
@@ -560,7 +801,7 @@ const DashboardPage = () => {
                   <img src={profitimg} alt="" className="img-fluid boximg" />
                 </div>
                 <h4> Total Admin Profit</h4>
-                <h5 className="fw-bold">{profit}</h5>
+                <h5 className="fw-bold">{amountRec-ayaPayment}</h5>
               </div>
             </div>
 

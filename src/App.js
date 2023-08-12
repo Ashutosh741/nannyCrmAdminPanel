@@ -28,6 +28,7 @@ import AyaPayment from './PaymentPage/AyaPayment';
 import AyaPaymentList from './PaymentPage/AyaPaymentList';
 import Test from './ListPages/Test';
 import TotalAvailbleWork from './navigationPage/TotalAvailbleWork';
+import TotalAvailbleCustomer from './navigationPage/TotalAvailbleCustomer';
 import SecurityMoney from './navigationPage/SecurityMoney';
 import TotalAmountRec from './navigationPage/TotalAmountRec';
 import TotalAyaPayment from './navigationPage/TotalAyaPayment';
@@ -59,7 +60,7 @@ function App() {
                 <Route exact path='/booking' element={<Booking />} />
                 <Route exact path='/testbooking' element={<TestBooking />} />
                 <Route exact path='/payment' element={<Payment />} />
-                <Route exact path='/ayapayment' element={<AyaPaymentList />} />
+                <Route exact path='/ayapayment' element={<TotalAvailbleWork />} />
 
                 <Route path="ayareg" element="">
                     <Route path=':id' element={<AyaDetails />} />
@@ -83,6 +84,9 @@ function App() {
 
                 <Route exact path='/attendence' element={<Attendence />} />
                 <Route exact path='/totalAvaibleNanny' element={<TotalAvailbleWork />} />
+                <Route exact path='/totalAvaibleCustomer' element={<TotalAvailbleCustomer />} />
+                <Route exact path='/customerBill' element={<TotalAvailbleCustomer />} />
+
                 <Route exact path='/securityAmount' element={<SecurityMoney />} />
                 <Route exact path='/totalAmount' element={<TotalAmountRec />} />
                 <Route exact path='/totalAyapaid' element={<TotalAyaPayment />} />
