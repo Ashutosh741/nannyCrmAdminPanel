@@ -81,8 +81,13 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li className="my-3">
-                        <NavLink tag="a" className="" to="/generateBill">
-                            <i class="fa-solid fa-coins"></i> Generate Bill
+                        <NavLink tag="a" className="" to="/generateCustomerBill">
+                            <i class="fa-solid fa-coins"></i> Gen... Customer Bill
+                        </NavLink>
+                    </li>
+                    <li className="my-3">
+                        <NavLink tag="a" className="" to="/generateAyaBill">
+                            <i class="fa-solid fa-coins"></i> Gen... Aya Bill
                         </NavLink>
                     </li>
                 </ul>

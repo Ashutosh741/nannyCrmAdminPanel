@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Form, FormGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, FormGroup, Modal, Row } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -58,6 +58,7 @@ function CustomerDetail() {
   const [forService, setForService] = useState("");
   const [file, setFile] = useState(null);
   const [assign, setAssign] = useState("");
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
 
   const { id } = useParams();
 
@@ -121,7 +122,12 @@ function CustomerDetail() {
     console.log(aya);
   };
 
-  const handleDelete = () => {
+  const handleDelete = ()=>{
+    setShowModal(true);
+  }
+
+
+  const confirmDelete = () => {
     axios
       .delete(`${URL}/customerreg/${id}`)
       .then((res) => {
@@ -136,6 +142,12 @@ function CustomerDetail() {
         console.log("Error deleting data:", error);
         // Handle any errors that occurred during deletion
       });
+      setShowModal(false)
+  };
+
+  const cancelDelete = () => {
+    // Cancel deletion and close the modal
+    setShowModal(false);
   };
 
   const view = () => {
@@ -273,6 +285,20 @@ function CustomerDetail() {
                     >
                       Delete
                     </button>
+                    <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Confirm Deletion</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={cancelDelete}>
+                        Cancel
+                      </Button>
+                      <Button variant="danger" onClick={confirmDelete}>
+                        Delete
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
                     <button
                       type="button"
                       class="btn btn-secondary btn-sm mb-3"

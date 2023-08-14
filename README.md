@@ -161,7 +161,6 @@ And you can start making an awesome admin application now.
 
 16. sabse phle 
 
- -->
 
  <!-- changes completed
  
@@ -201,3 +200,29 @@ And you can start making an awesome admin application now.
 
 
    -->
+
+
+   <!-- what remaining complete it by today
+   
+   1. in custoomer list when the customer is replaced, then the overall structure ofassignedAyaDetails, is distorted, don't know why?
+
+   2. in payment section , show which customer bill is not generated
+
+   3. then in the payment view, give update, read , and delete functionality, both for aya and customer
+
+   4. then show the admin profit on the basis of generated bill of any customer or aya, 
+   when generated then the admin profit details get updated
+
+   5. in the security money not given page, we can show the remaining balance remaining of customer
+
+   
+   <!-- miscellaneous
+    
+    1. try out to give CURD operation in asssignedayadetails
+    2 . in customer list  and aya list
+    3. in customer assign we can give print option 
+    4. in payment also we can give print option , also all replacement should show
+    5. their should be different page for aya bill and customer bill
+    -->
+   
+    

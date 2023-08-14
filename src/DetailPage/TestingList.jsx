@@ -1,22 +1,22 @@
+
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Form, FormGroup } from "react-bootstrap";
 import adminLayout from "../hoc/adminLayout";
 import { URL } from "../Url";
 import axios from "axios";
 import { useNavigate, useParams, Link } from "react-router-dom";
-
-import "../assets/css/profile.css";
-import CustomerListContent from "../ListPages/CustomerListContent";
 import LoadingOverlay from './LoadingOverlay'; // Adjust the path
 
-function CustomerAssign() {
-  const [tech, setTech] = useState([]);
-  // const [list, setList] = useState([]);
-  const [ayaList, setAyaList] = useState([]);
-  const [AyaSelect, setAyaSelect] = useState(false);
+import "../assets/css/profile.css";
 
+function TestingList() {
+  const [tech, setTech] = useState([]);
+  const [list, setList] = useState([]);
+  const [ayaList, setAyaList] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [assignData, setAssignData] = useState([]);
+  const [ayaSelect, setAyaSelect] = useState(false);
+
+  const [assignName, setAssignName] = useState("");
   const [assignedAyaCode, setAssignedAyaCode] = useState("");
   const [assignedAyaName, setAssignedAyaName] = useState("");
   const [assignedAyaFromDate, setAssignedAyaFromDate] = useState("");
@@ -28,7 +28,6 @@ function CustomerAssign() {
   const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
   const [assignedAyaId,setAssignedAyaId] = useState('');
 
-  
   const [assignedCustomerRate, setAssignedCustomerRate] = useState("");
   const [commission,setCommission] = useState('0')
   const [toDate, setToDate] = useState('');
@@ -53,20 +52,10 @@ function CustomerAssign() {
 
   const minDate = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
-  // const [replaceAyaCode,setReplaceAyaCode] = useState('');
-  // const [fromDate, setFromDate] = us
-
-
-  // mera jo assignedAyaDetails wo reversed hai means, latest top pr hai, so i don't need to reverse it
-
 
   const { id } = useParams();
 
   const navigate = useNavigate();
-
-  // abhi mujhe ismein , kya krna hai, ek condition check krna hai , jisse yeh pta chal jaye ki , 
-  // jo Aya show ho rha hai , agr wo future mein assigned hai to check kro, ho paayega
-
 
   const compareDate = (billDate) => {
     const todayDate = new Date();
@@ -85,73 +74,84 @@ const replaceCustomerData = async () => {
 
     if (assignedAyaDetails.length > 0) {
       // let assignedAyaDetailsCopy = [...assignedAyaDetails].slice();
-      let assignedAyaDetailsCopy = [...assignedAyaDetails].reverse();
+      let length = assignedAyaDetails.length;
+      console.log('check 1', assignedAyaDetails)
+      setPreviousAyaCode(assignedAyaDetails[length-1].assignedAyaCode);
 
-      setPreviousAyaCode(assignedAyaDetailsCopy[0].assignedAyaCode);
     }
     setAssignedLength(assignedAyaDetails.length);
 
+
   } catch (error) {
-    console.log(error);
+  console.log(error);
   }
 };
 
+  // const apiTechid = () => {
+  //   axios.get(`${URL}/Ayareg/${id}`).then((res) => setTech(res.data.data));
+  //   console.log(tech);
+  // };
 
-  const checkDateDifference = (data) => {
-      const fromDate = new Date(data.assignedAyaFromDate);
-      const toDate = new Date(data.assignedAyaToDate);
-      const todayDate = new Date();
-  
-      if (todayDate >= fromDate && todayDate <= toDate) {
-        // Today's date is between fromDate and toDate
-        return true;
-      } else if(toDate == "Invalid Date" && todayDate >= fromDate){
-        return true;
-      }else{
-        return false;
-      }
-  };
-  
-  const replaceDateDifference = (data) => {
-      const fromDate = new Date(data.replaceAyaFromDate);
-      const toDate = new Date(data.replaceAyaToDate);
-      const todayDate = new Date();
-  
-      if (todayDate >= fromDate && todayDate <= toDate) {
-        // Today's date is between fromDate and toDate
-        return true;
-      } else if(toDate == "Invalid Date" && todayDate >= fromDate){
-        return true;
-      }else{
-        return false;
-      }
 
-  };
+const checkDateDifference = (data) => {
+    const fromDate = new Date(data.assignedAyaFromDate);
+    const toDate = new Date(data.assignedAyaToDate);
+    const todayDate = new Date();
+
+    if (todayDate >= fromDate && todayDate <= toDate) {
+      // Today's date is between fromDate and toDate
+      return true;
+    } else if(toDate == "Invalid Date" && todayDate >= fromDate){
+      return true;
+    }else{
+      return false;
+    }
+};
+
+const replaceDateDifference = (data) => {
+    const fromDate = new Date(data.replaceAyaFromDate);
+    const toDate = new Date(data.replaceAyaToDate);
+    const todayDate = new Date();
+
+    if (todayDate >= fromDate && todayDate <= toDate) {
+      // Today's date is between fromDate and toDate
+      return true;
+    } else if(toDate == "Invalid Date" && todayDate >= fromDate){
+      return true;
+    }else{
+      return false;
+    }
+
+};
 
   const fetchCustomerData = async () => {
     try {
       const response = await axios.get(`${URL}/customerreg/${id}`);
       const techData = response.data.data;
       
-      // Create a shallow copy of assignedAyaDetails before reversing
-      const reversedAssignedAyaDetails = [...techData.assignedAyaDetails].reverse();
-      // console.log('so whats status of assigned Details in reverse order',reversedAssignedAyaDetails)
+      // Create a shallow copy of assignedCustomerDetails before reversing
+      const reversedAssignedAyaDetails = techData.assignedAyaDetails;
+      let length = reversedAssignedAyaDetails.length;
+      console.log('so whats status of assigned Details',reversedAssignedAyaDetails)
       setTech(techData);
       setAssignedAyaDetails(reversedAssignedAyaDetails);
       
-      if (reversedAssignedAyaDetails.length > 0) {
-        // console.log('yh banda jakar kr kya rhaa',reversedAssignedAyaDetails[0])
+      if (length > 0) {
+        // console.log('yh banda jakar kr kya rhaa',reversedAssignedCustomerDetails[0])
 
-        // console.log('bhai date ka result kya a rha',checkDateDifference(reversedAssignedAyaDetails[0]))
-        if (checkDateDifference(reversedAssignedAyaDetails[0])) {
+        // console.log('bhai date ka result kya a rha',checkDateDifference(reversedAssignedCustomerDetails[0]))
+        if (checkDateDifference(reversedAssignedAyaDetails[length-1])) {
           setIsAssigned(true);
-          // console.log('aya is assigned to any Aya');
-          let replaceDetails  = reversedAssignedAyaDetails[0].replaceAyaDetails;
+          // console.log('aya is assigned to any customer');
+          let replaceDetails  = reversedAssignedAyaDetails[length-1].replaceAyaDetails;
           if(replaceDetails && replaceDetails.length > 0) {
-            let replaceDetailsCopy = [...replaceDetails].reverse();
-            if(replaceDateDifference(replaceDetailsCopy[0])){
+            let length2 = replaceDetails.length
+            // let replaceDetailsCopy = [...replaceDetails].reverse();
+            // if(replaceDateDifference(replaceDetailsCopy[length-1])){
+            if(replaceDateDifference(replaceDetails[length2-1])){
+
               setIsReplaced(true);
-              // console.log('Aya is rpelaced by someone')
+              // console.log('customer is rpelaced by someone')
             }
           }
           // setIsReplaced(false)
@@ -164,7 +164,7 @@ const replaceCustomerData = async () => {
       console.log(error);
     }
   };
-  
+
   const fetchPreviousCode = async () => {
     try {
       const response = await axios.get(`${URL}/customerreg/${id}`);
@@ -173,12 +173,15 @@ const replaceCustomerData = async () => {
       // setAssignid(techData.assign);
       // console.log("assigne custome code",techData.assign)
       
-      // setAssignedAyaDetails(response.data.data.assignedAyaDetails)
+      // setAssignedCustomerDetails(response.data.data.assignedCustomerDetails)
       const  drillingData = response.data.data.assignedAyaDetails;
       if(drillingData.length > 0){
         // let drillingDataCopy = drillingData.slice();
-        let drillingDataCopy = [...drillingData].reverse();
-        setPreviousAyaCode(drillingDataCopy[0].assignedAyaCode)
+        // let drillingDataCopy = [...drillingData].reverse();
+        let length = drillingData.length;
+        setPreviousAyaCode(drillingData[length-1].assignedAyaCode)
+        // setPreviousAyaCode(drillingDataCopy[0].assignedAyaCode)
+
       }
       // fetchFilteredAya()
       // console.log("what's techDAata",techData)
@@ -186,7 +189,7 @@ const replaceCustomerData = async () => {
       console.log(error);
     }
   };
-  // change the condition of filtering data , according to the requirement
+
 
 
   const dateDifference = () => {
@@ -212,123 +215,108 @@ const replaceCustomerData = async () => {
 
 
   const fetchFilteredAya = async(e)=>{
-    //  so in this function, i'm showing the filtered Aya, which the admin have to choose for assign
-    // where the conditioni is that it will not depend on from date and to date, it will depend on purpose and shift
-    // also not intersection only union
-    //  i think to do it like check in the interval, if someone is present will that purpose and shift
-    //  that would be best filteration, no worries we'll do it later
+    // e.preventDefault()
     try{
       const response = await axios.get(`${URL}/ayareg`);
       let filteredData = response.data.data;
-
-      filteredData = response.data.data.filter((Aya) => {
-        if (Aya.assignedCustomerDetails.length <= 0) {
-            return true;
-        } else {  
-            const reverseData = Aya.assignedCustomerDetails.reverse();
+        // console.log('bhai are you ok',filteredData)
+    //   filteredData = filteredData.filter((Aya) => {
+    //     // console.log('abhi thik krke deta hoon',Aya.assignedCustomerDetails)
+    //     if (Aya.assignedCustomerDetails && Aya.assignedCustomerDetails.length <= 0) {
+    //         return true;
+    //     } else if(Aya.assignedCustomerDetails && Aya.assignedCustomerDetails.length > 0){  
+    //         // const reverseData = [...Aya.assignedCustomerDetails].reverse();
+    //         //  reverseData = reverseData.reverse();
+    //         const reverseData = Aya.assignedCustomerDetails;
+    //         const length = Aya.assignedCustomerDetails.length;
     
-            if (reverseData.length > 0 && compareDate(reverseData[0].assignedCustomerFromDate)) {
-              if(replaceAyaToDate){
-                console.log('last chekc for Aya filtering')
-                if(compareDate(reverseData[0].assignedCustomerFromDate)){
-                  console.log('successfull filtering')
-                  return true;
-                }
-              }else{
-                return false;
-              }
-                // if(diffDays(replaceAyaFromDate,replaceAyaToDate)){
-                // return true
-                // }
-                // return true;
-            } else if (reverseData[0].assignedCustomerToDate && !compareDate(reverseData[0].assignedCustomerToDate)) {
-                return true;
-            }
-            return false; // If none of the conditions are met, filter out the item
-        }
-    });
+    //         if (length > 0 && compareDate(reverseData[length-1].assignedCustomerFromDate)) {
+    //           if(replaceAyaToDate){
+    //             console.log('last chekc for Aya filtering')
+    //             if(compareDate(reverseData[length-1].assignedCustomerFromDate)){
+    //               console.log('successfull filtering')
+    //               return true;
+    //             }
+    //           }else{
+    //             return false;
+    //           } 
+    //         } else if (length > 0 && reverseData[length-1].assignedCustomerToDate && !compareDate(reverseData[length-1].assignedCustomerToDate)) {
+    //             return true;
+    //         }
+    //         return false; // If none of the conditions are met, filter out the item
+    //     }
+    // });
 
-      // console.log("filtered Aya data which are not assigned",filteredData)
-    
-      // filteredData = filteredData.filter((item) => {
-      //   return item.workShift === assignedAyaShift || 
-      //          item.ayaSpeciality === assignedAyaPurpose;
-      // });
-      
-      console.log("filtered Aya data which align to the requirement",filteredData)
+    //     filteredData = response.data.data.filter((item) => ( item.ayaSpeciality === assignedAyaPurpose || (
+    //       item.workShift === assignedAyaShift)))
+      // }
 
       const replaceData = filteredData.filter((item)=>(item.ayaCode !== previousAyaCode));
       setReplaceList(replaceData);
-      // console.log("replace Aya list which are not assigned",filteredData)
 
-      // console.log("replace list",replaceData);
-      // console.log("required cusotmer",data);
-      // if(data.length() > 0)data = "Aya not available , add more Aya"
+
+
       setAyaList(filteredData);
     } catch(error){
       console.log(error);
     }
   }
 
-  
-  const fetchassignData = async () => {
+
+  const fetchAssignedAyaData = async () => {
     try {
       const response = await axios.get(`${URL}/ayareg/${assignedAyaCode}`);
       const techData = response.data.data;
-  
+      // console.log("what's techDAata",techData)
       setAssignedAyaId(techData._id);
+      // console.log("dekho kya hota hai",techData._id)
       setAssignedAyaName(techData.name);
-
+      // console.log("assign data", assignData);
     } catch (error) {
       console.log(error);
     }
   };
-  
+
 
   useEffect(()=>{
     fetchCustomerData();
   },[])
 
 
-
   useEffect(()=>{
     replaceCustomerData();
     
-    // console.log('dikkat yha pr thi',previousAyaCode)
+    // console.log('dikkat yha pr thi',previousCustomerCode)
     fetchFilteredAya();
   },[replaceAyaFromDate,replaceAyaToDate])
-  const apiAyaid = () => {
-      axios.get(`${URL}/ayareg/`).then((res) => {
-        setAyaList(res.data.data);
 
-        // console.log("AyaList", res.data.data);
-      }).catch((error) => {
-        console.log(error);
-      });
+
+  const apiAya = () => {
+    axios.get(`${URL}/ayareg/`).then((res) => setAyaList(res.data.data));
+    // console.log("aya list",ayaList);
   };
-  
+
+
   useEffect(() => {
-    // console.log("to date kis format mein hai",ReverseString(toDate));
-
     fetchCustomerData();
-    // apiAyaid();
-  }, [id, AyaSelect, toDate]);
+    // apiAya();
+    // fetchAssignedAyaData();
+  }, [id,ayaSelect,toDate]);
 
-
-    
   useEffect(() => {
     // console.log("to date kis format mein hai",ReverseString(toDate));
 
     // fetchaayaData();
-    apiAyaid();
-    // fetchFilteredAya();
+    apiAya();
     fetchPreviousCode();
+
   }, [assignedAyaShift, assignedAyaPurpose ]);
-  
+
+  // console.log("id", id);
 
   const handleFormSubmitAya = async (e) => {
     e.preventDefault();
-    // console.log("yeah bro running",assignedAyaId);
+    console.log("yeah bro running",assignedAyaId);
     try {
       const response = await axios.put(`${URL}/ayareg/${assignedAyaId}`, {
         assignedCustomerCode: tech.customerCode,
@@ -342,186 +330,189 @@ const replaceCustomerData = async () => {
       });
       const data = response.data;
       console.log("it's show time ", data);
-      await fetchassignData();
+      // await fetchassignData();
     } catch (err) {
       console.log(err);
     }
   };
 
+  const handleReplaceAya = async (e) => {
+    // e.preventDefault();
 
-
-
-    const handleReplaceAya = async (e) => {
-      // e.preventDefault();
-
-      console.log("yeah bro running",replaceAyaId);
-      try {
-        const response = await axios.put(`${URL}/ayareg/${replaceAyaId}`, {
-          assignedCustomerCode: tech.customerCode,
-          assignedCustomerName: tech.name,
-          assignedCustomerFromDate: assignedAyaFromDate,
-          assignedCustomerToDate: assignedAyaToDate,
-          assignedCustomerReason: assignedAyaReason,
-          assignedCustomerRate: assignedAyaRate,
-          assignedCustomerShift: assignedAyaShift,
-          assignedCustomerPurpose: assignedAyaPurpose,
-        });
-        const data = response.data;
-        console.log("it's show time ", data);
-        await fetchassignData();
-        navigate("/customerlist");
-
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-
-    const dynamicData = {
-      replaceAyaCode: replaceAyaCode,
-      replaceAyaName: replaceAyaName,
-
-      replaceAyaFromDate: replaceAyaFromDate,
-      replaceAyaToDate: replaceAyaToDate
-    };
-    
-    // const id = '64b5927940e567cce223499b';
-    // const assignedLength = 4;
-
-    const pushData =(e)=>{
-      e.preventDefault()
-      handleInsertReplacement(dynamicData)
-      .then((data) => {
-        console.log('Response:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error.message);
-      });
-    
-    }
-
-    useEffect(()=>{
-      console.log('selected id fetched',replaceAyaId)
-      console.log('From date fetched',replaceAyaFromDate)
-      console.log('to date fetched',replaceAyaToDate)
-
-    },[replaceAyaId,replaceAyaFromDate,replaceAyaToDate])
-
-    async function handleInsertReplacement(replaceAyaDetails) {
-        // e.preventDefault();
-      try {
-        const response = await axios.post(
-          `${URL}/insertReplaceAyaDetails/${id}/${assignedLength - 1}`,
-          {
-            replaceAyaDetails: [replaceAyaDetails]
-          }
-        );
-    
-        const data = response.data;
-        alert('replacement successfully')
-        fetchCustomerData();
-        handleReplaceAya();
-        resetValue()
-        // navigate("/ayalist");
-
-        return data;
-      } catch (error) {
-        console.log('Error:', error.message);
-        throw error;
-      }
-    }
-      
-
-  const resetValue = ()=>{
-    setAssignedAyaFromDate("");
-    setAssignedAyaToDate("");
-    setAssignedAyaReason("select");
-    setAssignedAyaRate("");
-    setAssignedAyaShift("select");
-    setAssignedAyaPurpose("select");
-    setAssignedAyaCode("");
-    setAyaSelect(false);
-    setAyaList([]);
-    setCommission('');
-    setAssignedAyaRate('');
-    setReplaceAyaCode('');
-    setReplaceAyaFromDate('')
-    setReplaceAyaToDate('')
-    setReplaceAyaName('')
-
-  }
-  
-
-
-
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-     
-        // console.log("helo hello why this is not showing+",assignedAyaName)
+    console.log("yeah bro running",replaceAyaId);
     try {
-      const response = await axios.put(`${URL}/customerreg/${id}`, {
-        assignedAyaCode: assignedAyaCode,
-        assignedAyaName: assignedAyaName,
-        assignedAyaFromDate: assignedAyaFromDate,
-        assignedAyaToDate: assignedAyaToDate,
-        assignedAyaReason: assignedAyaReason,
-        assignedAyaRate: assignedCustomerRate,
-        assignedAyaShift: assignedAyaShift,
-        assignedAyaPurpose: assignedAyaPurpose,
+      const response = await axios.put(`${URL}/ayareg/${replaceAyaId}`, {
+        assignedCustomerCode: tech.customerCode,
+        assignedCustomerName: tech.name,
+        assignedCustomerFromDate: replaceAyaFromDate,
+        assignedCustomerToDate: replaceAyaToDate,
+        assignedCustomerReason: assignedAyaReason,
+        assignedCustomerRate: assignedAyaRate,
+        assignedCustomerShift: assignedAyaShift,
+        assignedCustomerPurpose: assignedAyaPurpose,
       });
       const data = response.data;
-      console.log(data);
+      console.log("it's show time ", data);
+      // await fetchAssignedAyaData();
+      // navigate("/customerlist");
 
-      
-  
-      const newAssignedAyaDetails = {
-        assignedAyaCode: assignedAyaCode,
-        assignedAyaName: assignedAyaName,
-        assignedAyaFromDate: assignedAyaFromDate,
-        assignedAyaToDate: assignedAyaToDate,
-        assignedAyaReason: assignedAyaReason,
-        assignedAyaRate: assignedCustomerRate,
-        assignedAyaShift: assignedAyaShift,
-        assignedAyaPurpose: assignedAyaPurpose,
-      };
-  
-      const updatedTech = {
-        ...tech,
-        assignedAyaDetails: [
-          ...tech.assignedAyaDetails,
-          newAssignedAyaDetails,
-        ],
-      };
-
-      setTech(updatedTech);
-      resetValue();
-      // setShowAlert(true); 
-      handleFormSubmitAya(e);
-      alert("Data Submitted Successfully");
-      navigate("/customerlist");
-
-      
     } catch (err) {
       console.log(err);
     }
   };
 
-  // useEffect(() => {
-  //   if (showAlert) {
-  //     const timer = setTimeout(() => {
-  //       setShowAlert(false); // Hide the success alert after 3 seconds
-  //     }, 3000);
-  
-  //     return () => clearTimeout(timer); // Clean up the timer when the component unmounts
-  //   }
-  // }, [showAlert]);
+  const dynamicData = {
+    replaceAyaCode: replaceAyaCode,
+    replaceAyaName: replaceAyaName,
 
+    replaceAyaFromDate: replaceAyaFromDate,
+    replaceAyaToDate: replaceAyaToDate
+  };
+  
+  // const id = '64b5927940e567cce223499b';
+  // const assignedLength = 4;
+
+  const pushData =(e)=>{
+    e.preventDefault()
+    handleInsertReplacement(dynamicData)
+    .then((data) => {
+      console.log('Response:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error.message);
+    });
+  
+  }
+
+  
+  useEffect(()=>{
+    console.log('selected id fetched',replaceAyaId)
+    console.log('From date fetched',replaceAyaFromDate)
+    console.log('to date fetched',replaceAyaToDate)
+
+  },[replaceAyaId,replaceAyaFromDate,replaceAyaToDate])
+
+
+  async function handleInsertReplacement(replaceAyaDetails) {
+    // e.preventDefault();
+    // if(assignedLength <= 0)assignedLength = 1;
+  try {
+    const response = await axios.post(
+      `${URL}/insertReplaceAyaDetails/${id}/${assignedLength-1}`,
+      {
+        replaceAyaDetails: [replaceAyaDetails]
+      }
+    );
+
+    const data = response.data;
+    alert('replacement successfully')
+    fetchCustomerData();
+    handleReplaceAya();
+    resetValue()
+    // navigate("/ayalist");
+
+    return data;
+  } catch (error) {
+    console.log('Error:', error.message);
+    throw error;
+  }
+}
+
+const resetValue = ()=>{
+  setAssignedAyaFromDate("");
+  setAssignedAyaToDate("");
+  setAssignedAyaReason("select");
+  setAssignedCustomerRate("");
+  setAssignedAyaShift("select");
+  setAssignedAyaPurpose("select");
+  setAssignedAyaCode("");
+  setAyaSelect(false);
+  setAyaList([]);
+  setCommission('');
+  setAssignedAyaRate('');
+  setReplaceAyaCode('');
+  setReplaceAyaFromDate('')
+  setReplaceAyaToDate('')
+  setReplaceAyaName('')
+
+}
+
+
+
+const handleFormSubmit = async (e) => {
+  e.preventDefault();
+   
+      // console.log("helo hello why this is not showing+",assignedCustomerName)
+  try {
+    const response = await axios.put(`${URL}/customerreg/${id}`, {
+      assignedAyaCode: assignedAyaCode,
+      assignedAyaName: assignedAyaName,
+      assignedAyaFromDate: assignedAyaFromDate,
+      assignedAyaToDate: assignedAyaToDate,
+      assignedAyaReason: assignedAyaReason,
+      assignedAyaRate: assignedCustomerRate,
+      assignedAyaShift: assignedAyaShift,
+      assignedAyaPurpose: assignedAyaPurpose,
+    });
+    const data = response.data;
+    console.log(data);
+
+    
+
+    const newAssignedAyaDetails = {
+      assignedAyaCode: assignedAyaCode,
+      assignedAyaName: assignedAyaName,
+      assignedAyaFromDate: assignedAyaFromDate,
+      assignedAyaToDate: assignedAyaToDate,
+      assignedAyaReason: assignedAyaReason,
+      assignedAyaRate: assignedCustomerRate,
+      assignedAyaShift: assignedAyaShift,
+      assignedAyaPurpose: assignedAyaPurpose,
+    };
+
+    const updatedTech = {
+      ...tech,
+      assignedAyaDetails: [
+        ...tech.assignedAyaDetails,
+        newAssignedAyaDetails,
+      ],
+    };
+
+
+    // const updatedTech = {
+    //   ...tech,
+    //   assignedCustomerDetails: [
+    //     ...tech.assignedCustomerDetails,
+    //     newAssignedCustomerDetails,
+    //   ],
+    // };
+
+
+    setTech(updatedTech);
+    resetValue();
+    // setShowAlert(true); 
+    handleFormSubmitAya(e);
+    alert("Data Submitted Successfully");
+    // navigate("/customerlist");
+
+    
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setTech((prevTech) => ({
+  //     ...prevTech,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleRowClick = () => {
-    // console.log(`/Ayareg/${item._id}`);
+    // console.log(`/customerreg/${item._id}`);
 
-    navigate(`/ayareg/${assignedAyaCode}`);
+    navigate(`/customerreg/${assignedAyaCode}`);
   };
 
   const handleRowClickToExpand = (index) => {
@@ -533,28 +524,27 @@ const replaceCustomerData = async () => {
   };
 
   useEffect(() => {
-    fetchassignData();
+    fetchAssignedAyaData();
   }, [assignedAyaCode]);
 
 
   useEffect(()=>{
-    setCommission(assignedAyaRate-assignedCustomerRate)
-  },[assignedCustomerRate])
+    setCommission(assignedCustomerRate-assignedAyaRate)
+  },[assignedAyaRate])
 
   useEffect(()=>{
-    setAssignedCustomerRate(assignedAyaRate - commission)
+    setAssignedAyaRate(assignedCustomerRate - commission)
   },[commission])
+
 
   useEffect(()=>{
     setReplaceDays(dateDifference());
-    // console.log("erplace from",replaceAyaFromDate);
-    // console.log("erplace to",replaceAyaToDate);
-    // fetchFilteredAya();
+    // console.log("erplace from",replaceCustomerFromDate);
+    // console.log("erplace to",replaceCustomerToDate);
+    // fetchFilteredCustomer();
 
   },[replaceAyaFromDate,replaceAyaToDate])
-  // useEffect(()=>{
-  //   fetchFilteredAya();
-  // },[])
+
 
   const fetchLoading = () => {
     setLoading(true);
@@ -565,6 +555,12 @@ const replaceCustomerData = async () => {
     }, 2000);
   };
 
+  const handleRemoveAya = ()=>{
+    setIsAssigned(false);
+    setIsReplaced(false)
+  }
+
+
   return (
     <>
       <Container>
@@ -572,16 +568,8 @@ const replaceCustomerData = async () => {
           <Col md = '12' className="text-center mb-5">
               <h1>Manage Assigned Aya</h1>
           </Col>
-          {/* {showAlert && (
-  <div class="alert alert-success d-flex align-items-center" role="alert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"></svg>
-    <div>
-      Aya is assigned to Aya Successfully
-    </div>
-  </div>
-          )} */}
           <Col md = '6' className="text-start mb-3">
-            <button className="btn btn-primary">Remove Aya</button>
+            <button className="btn btn-primary" onClick={handleRemoveAya}>Remove Aya</button>
           </Col>
           {
             (isReplaced && isAssigned) ? (
@@ -678,7 +666,7 @@ const replaceCustomerData = async () => {
 
                       <Col md = '3' className="mt-4">
                       {/* <button className="btn bg-primary text-white" onClick = {(e)=>{handleUpdateReplacement}}>Update Changes</button> */}
-                      <button className="btn bg-primary text-white">Replace Customer</button>
+                      <button className="btn bg-primary text-white">Replace Aya</button>
     
                       </Col>
                     </Row>
@@ -695,7 +683,7 @@ const replaceCustomerData = async () => {
 
         </Row>
       </Container>
-      <section className="regList ">
+      <section className="regList mt-3">
         <Container>
           <Row className="align-items-center">
           {
@@ -780,15 +768,15 @@ const replaceCustomerData = async () => {
                     </Col>
                     <Col md = "2">
                       <label className="mb-1 mt-3">Customer Rate</label>
-                      <input type = "number" className="form-control" onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} min='0' required></input>
+                      <input type = "number" className="form-control" onChange={(e)=>setAssignedCustomerRate(e.target.value)} value={assignedCustomerRate} min='0' required></input>
                     </Col>
                     <Col md = "2">
                       <label className="mb-1  mt-3">Commission</label>
-                      <input type = "number" className="form-control" max = {assignedAyaRate} min='0' onChange={(e)=>setCommission(e.target.value)} value = {commission} required></input>
+                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setCommission(e.target.value)} value = {commission} required></input>
                     </Col>
                     <Col md = "2">
-                      <label className="mb-1  mt-3">Customer Rate</label>
-                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setAssignedCustomerRate(e.target.value)} value={assignedCustomerRate} required></input>
+                      <label className="mb-1  mt-3">Aya Rate</label>
+                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} required></input>
                     </Col>
                     <Col md="1 mt-3">
                       <div className="mt-4">
@@ -808,14 +796,13 @@ const replaceCustomerData = async () => {
               </>
             ) : null
           }
-
             <Col md="12" className="mt-4">
               <div className="my-3 text-end"></div>
               <div className="table-responsive rounded-3">
                 <table className="table table-responsive table-sm table-stripped table-bordered p-0">
                   <thead className="bg-blue text-white">
                     <tr className="text-uppercase">
-                      <th>Customer Code</th>
+                    <th>Customer Code</th>
                       <th>Customer Name</th>
                       <th>Aya Code</th>
                       <th>Aya Name</th>
@@ -826,7 +813,6 @@ const replaceCustomerData = async () => {
                       <th className="">Purpose</th>
                       <th>Replacements</th>
 
-                      {/* <th className="">Assign</th> */}
                     </tr>
                   </thead>
 
@@ -835,65 +821,65 @@ const replaceCustomerData = async () => {
                       Loading...
                     </div>
                   ) : (
-                          <tbody>
-                          {assignedAyaDetails.map((item, index) => (
-                            <React.Fragment key={index}>
-                                    <tr onClick={() => handleRowClickToExpand(index)}
-                                      className={expandedRowIndex === index ? 'expanded-row' : ''}
-                                    >
-                                      <td>{tech.customerCode}</td>
-                              <td>{tech.name}</td>
-                              <td>{item.assignedAyaCode}</td>
-                              <td>{item.assignedAyaName}</td>
-                              <td>{item.assignedAyaFromDate}</td>
-                              <td>{item.assignedAyaToDate}</td>
-                              <td>{item.assignedAyaRate}</td>
-                              <td>{item.assignedAyaShift}</td>
-                              <td>{item.assignedAyaPurpose}</td>
-                              <td>{item.replaceAyaDetails.length > 0 ? item.replaceAyaDetails.length : 0 }</td>
-                              </tr>
-                              {expandedRowIndex === index && (
-                                  <>
-                                  <tr className="text-uppercase inner-table-cell " >
+                    <tbody>
+                    {assignedAyaDetails.map((item, index) => (
+                      <React.Fragment key={index}>
+                              <tr onClick={() => handleRowClickToExpand(index)}
+                                className={expandedRowIndex === index ? 'expanded-row' : ''}
+                              >
+                                <td>{tech.customerCode}</td>
+                        <td>{tech.name}</td>
+                        <td>{item.assignedAyaCode}</td>
+                        <td>{item.assignedAyaName}</td>
+                        <td>{item.assignedAyaFromDate}</td>
+                        <td>{item.assignedAyaToDate}</td>
+                        <td>{item.assignedAyaRate}</td>
+                        <td>{item.assignedAyaShift}</td>
+                        <td>{item.assignedAyaPurpose}</td>
+                        <td>{item.replaceAyaDetails.length > 0 ? item.replaceAyaDetails.length : 0 }</td>
+                        </tr>
+                        {expandedRowIndex === index && (
+                            <>
+                            <tr className="text-uppercase inner-table-cell " >
 
-                                    <th  className="inner-table-cell">Sr.no</th>
-                                    <th  className="inner-table-cell">Aya Code</th>
-                                    <th  className="inner-table-cell">Aya Name</th>
-                                  
-                                    <th  className="inner-table-cell">From Date</th>
-                                    <th  className="inner-table-cell">To Date</th>
-
-
-                                    {/* <th  className="inner-table-cell">Generate Bill</th> */}
-                                    
-
-                                  </tr>
-                                  {assignedAyaDetails && assignedAyaDetails[expandedRowIndex].replaceAyaDetails ? (
-                                  assignedAyaDetails[expandedRowIndex].replaceAyaDetails.map((item, index) => (
-                                    <React.Fragment key={index}>
-                                      <tr colSpan={12} className={`fade-in ${expandedRowIndex === index ? 'expanded-row' : ''}`}>
-
-                                        <td  className="inner-table-cell">{index + 1}</td>
-                                        <td className="inner-table-cell">{item.replaceAyaCode}</td>
-                                        <td className="inner-table-cell">{item.replaceAyaName}</td>
-                                        <td  className="inner-table-cell">{item.replaceAyaFromDate}</td>
-                                        <td  className="inner-table-cell">{item.replaceAyaToDate}</td>
-                                        {/* <td  className="inner-table-cell">{item.replaceAyaToDate}</td> */}
+                              <th  className="inner-table-cell">Sr.no</th>
+                              <th  className="inner-table-cell">Aya Code</th>
+                              <th  className="inner-table-cell">Aya Name</th>
+                            
+                              <th  className="inner-table-cell">From Date</th>
+                              <th  className="inner-table-cell">To Date</th>
 
 
-                                      </tr>
-                                    </React.Fragment>
-                                  ))
-                                ) : (
-                                  <tr>
-                                    <td colSpan={4}>No data available</td>
-                                  </tr>
-                                  )}
-                                  </>
-                              )}
-                            </React.Fragment>
-                          ))}
-                          </tbody>
+                              {/* <th  className="inner-table-cell">Generate Bill</th> */}
+                              
+
+                            </tr>
+                            {assignedAyaDetails && assignedAyaDetails[expandedRowIndex].replaceAyaDetails ? (
+                            assignedAyaDetails[expandedRowIndex].replaceAyaDetails.map((item, index) => (
+                              <React.Fragment key={index}>
+                                <tr colSpan={12} className={`fade-in ${expandedRowIndex === index ? 'expanded-row' : ''}`}>
+
+                                  <td  className="inner-table-cell">{index + 1}</td>
+                                  <td className="inner-table-cell">{item.replaceAyaCode}</td>
+                                  <td className="inner-table-cell">{item.replaceAyaName}</td>
+                                  <td  className="inner-table-cell">{item.replaceAyaFromDate}</td>
+                                  <td  className="inner-table-cell">{item.replaceAyaToDate}</td>
+                                  {/* <td  className="inner-table-cell">{item.replaceCustomerToDate}</td> */}
+
+
+                                </tr>
+                              </React.Fragment>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={4}>No data available</td>
+                            </tr>
+                            )}
+                            </>
+                        )}
+                      </React.Fragment>
+                    )).reverse()}
+                    </tbody>
                   )}
                 </table>
               </div>
@@ -905,5 +891,4 @@ const replaceCustomerData = async () => {
   );
 }
 
-export default adminLayout(CustomerAssign);
-
+export default adminLayout(TestingList);

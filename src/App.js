@@ -33,6 +33,9 @@ import SecurityMoney from './navigationPage/SecurityMoney';
 import TotalAmountRec from './navigationPage/TotalAmountRec';
 import TotalAyaPayment from './navigationPage/TotalAyaPayment';
 import CustomerPaymentReceipt from './pages/newPages/CustomerPaymentReceipt';
+import AyaPaymentReceipt from './pages/newPages/AyaPaymentReceipt';
+import AyaBill from './pages/newPages/AyaBill';
+import CustomerBill from './pages/newPages/CustomerBill';
 
 
 function App() {
@@ -82,6 +85,8 @@ function App() {
                 </Route>
 
 
+
+
                 <Route exact path='/attendence' element={<Attendence />} />
                 <Route exact path='/totalAvaibleNanny' element={<TotalAvailbleWork />} />
                 <Route exact path='/totalAvaibleCustomer' element={<TotalAvailbleCustomer />} />
@@ -90,7 +95,18 @@ function App() {
                 <Route exact path='/securityAmount' element={<SecurityMoney />} />
                 <Route exact path='/totalAmount' element={<TotalAmountRec />} />
                 <Route exact path='/totalAyapaid' element={<TotalAyaPayment />} />
-                <Route path='generateBill' element = {<CustomerPaymentReceipt/>}/>
+                {/* <Route path='generateBill' element = {<CustomerPaymentReceipt/>}/> */}
+                <Route path='generateCustomerBill' element = {<CustomerPaymentReceipt/>}/>
+                <Route path='generateAyaBill' element = {<AyaPaymentReceipt/>}/>
+
+                <Route path="generateAyaBill" element="">
+                    <Route path=':id' element={<AyaPaymentReceipt />} />
+                </Route>
+
+                <Route path="generateCustomerBill" element="">
+                    <Route path=':id' element={<CustomerPaymentReceipt/>} />
+                </Route>
+
                 {/* <Route path = ':id' element = {<CustomerPaymentReceipt/>}/> */}
                 {/* </Route> */}
             </Routes>

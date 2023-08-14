@@ -112,21 +112,6 @@ console.log(props);
     return false; // Handle the case when data is missing or empty
   };
   
-  
-
-  const compareDate = (billDate) => {
-    // console.log('bill date format',billDate);
-
-    const todayDate = new Date();
-    // console.log('today date format',todayDate)
-    const replaceDateParts = billDate.split('-');
-    const compareDate = new Date(replaceDateParts[0], replaceDateParts[1] - 1, replaceDateParts[2],0,0,0);
-    // console.log('billDate format',compareDate)
-    // console.log('compare date format',compareDate);
-    // console.log('today date format',todayDate);
-    // console.log("result",todayDate <= compareDate)
-    return todayDate <= compareDate;
-}
 
 
   
@@ -220,7 +205,7 @@ console.log(props);
           renderCell: (params) => {
             //  i don't know why reverse data aa rha hai, to isko as it is chod do
             const data = params.row.assignedCustomerDetails;
-            console.log("bhai tahbi mein kisme kr rha tha",data);
+            // console.log("bhai tahbi mein kisme kr rha tha",data);
             // console.log("bhai tahbi mein kisme kr rha tha",checkDateDifference(data));
 
             if (checkDateDifference(data)){

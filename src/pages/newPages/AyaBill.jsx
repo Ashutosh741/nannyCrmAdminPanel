@@ -11,7 +11,7 @@ import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
 
 
 
-const AyaPaymentReceipt = () => {
+const AyaBill = () => {
 
     const [name, setName] = useState('')
     const [presentAddress,setPresentAddress] = useState('')
@@ -742,4 +742,4 @@ const AyaPaymentReceipt = () => {
   )
 }
 
-export default adminLayout(AyaPaymentReceipt)
+export default adminLayout(AyaBill)

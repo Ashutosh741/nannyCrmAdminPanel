@@ -277,27 +277,6 @@ const replaceayaData = async () => {
     }
   }
 
-  const fetchFilteredAya = async () => {
-    try {
-      const response = await axios.get(`${URL}/ayareg`);
-      let filteredData = response.data.data;
-  
-      // Create a shallow copy of assignedCustomerDetails before reversing
-      let assignedCustomerDetailsCopy = filteredData.assignedCustomerDetails.slice();
-      assignedCustomerDetailsCopy = assignedCustomerDetailsCopy.reverse();
-      let lastAyaDate = '';
-      
-      if (assignedCustomerDetailsCopy.length > 0) {
-        lastAyaDate = assignedCustomerDetailsCopy[0].assignedCustomerToDate;
-      }
-  // in below line , tech data should not be there, correct it when use it
-      filteredData = filteredData.filter((item) => item.workShift === assignedCustomerShift);
-      setReplaceList(filteredData);
-      console.log('filtered Data of aya', filteredData);
-    } catch (err) {
-      console.log("error in fetching aya data", err);
-    }
-  };
   
   const fetchassignData = async () => {
     try {
@@ -376,28 +355,6 @@ const replaceayaData = async () => {
     }
   };
 
-
-  const handleUpdateReplacement = async(e) =>{
-    e.preventDefault();
-    try{
-      // const response =  await axios.put(`${URL}/ayareg/${id}`)
-      // if(updateReplacement === 'removeReplacement'){
-      //   response,{
-
-      //   }
-      // }else if(updateReplacement === 'extendReplacement'){
-      
-      // }
-      // else if(updateReplacement === 'changeReplacement'){
-
-      // }
-      console.log("error in updating replacement details of customer in aya");
-
-    } catch(e){
-        console.log("error in updating replacement details of customer in aya",e);
-      }
-
-    }
 
     const handleReplaceCustomer = async (e) => {
       // e.preventDefault();
@@ -500,54 +457,6 @@ const replaceayaData = async () => {
   }
   
 
-  const handleReplaceAya = async(e) =>{
-    e.preventDefault();
-    try{
-        const response = await fetch(`${URL}/updateAssignedDetail`,{
-        method : "PUT",
-        body: JSON.stringify({
-          // replaceAyaCode : replaceAyaCode,
-          replaceCustomerFromDate : replaceCustomerFromDate,
-          replaceCustomerToDate : replaceCustomerToDate,
-        }),
-        headers : {
-          "Content-Type" : "application/json",
-        },
-      });
-
-        const data = await response.json();
-        console.log("replace aya details",data);  
-        // alert("data Submitted Successfully");
-
-        const newAssignedCustomerDetails = {
-          assignedCustomerCode: assignedCustomerCode,
-          assignedCustomerName: assignedCustomerName,
-          assignedCustomerFromDate: replaceCustomerFromDate,
-          assignedCustomerToDate: replaceCustomerToDate,
-          assignedCustomerReason: assignedCustomerReason,
-          assignedCustomerRate: assignedAyaRate,
-          assignedCustomerShift: assignedCustomerShift,
-          assignedCustomerPurpose: assignedCustomerPurpose,
-        };
-    
-        const updatedTech = {
-          ...tech,
-          assignedCustomerDetails: [
-            ...tech.assignedCustomerDetails,
-            newAssignedCustomerDetails,
-          ],
-        };
-        setTech(updatedTech);
-        resetValue();
-        alert("Data Submitted Successfully");
-        // handleFormSubmitCustomer(e);
-
-
-      }
-     catch(err){
-      console.log("error in replacing aya",err);
-    }
-  }
 
 
 
@@ -634,10 +543,7 @@ const replaceayaData = async () => {
   }, [assignedCustomerCode]);
 
 
-  const handleCommission = (e)=>{
-    setAssignedAyaRate(assignedCustomerRate - e);
-    console.log("done bro value set, do check it",assignedAyaRate);
-  }
+
 
   useEffect(()=>{
     setCommission(assignedCustomerRate-assignedAyaRate)
@@ -890,7 +796,7 @@ const replaceayaData = async () => {
                     </Col>
                     <Col md = "2">
                       <label className="mb-1  mt-3">Aya Rate</label>
-                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} required></input>
+                      <input type = "number" className="form-control" max = {assignedAyaRate} min='0' onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} required></input>
                     </Col>
                     <Col md="1 mt-3">
                       <div className="mt-4">

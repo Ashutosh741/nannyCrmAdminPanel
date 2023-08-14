@@ -7,14 +7,14 @@ import adminLayout from '../../hoc/adminLayout';
 import axios from "axios";
 import { Form, Navigate, useParams } from "react-router-dom";
 import { URL } from "../../Url";
-import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, FormGroup, Row,Modal } from "react-bootstrap";
 import AyaPaymentReceipt from "./AyaPaymentReceipt";
 
 // set the print page, to A5 styling
 // do all the same changes to aya as
 // onclick of update bill button it should update the details, instead it is pushing new element
 
-const CustomerPaymentReceipt = (props) => {
+const CustomerPaymentReceipt = () => {
 
     const [name, setName] = useState('')  
     const [presentAddress,setPresentAddress] = useState('')
@@ -52,6 +52,8 @@ const CustomerPaymentReceipt = (props) => {
     const[showUpdateButton,setShowUpdateButton] = useState(false);
     const[editIndex,setEditIndex] = useState('');
     const [selectedDate, setSelectedDate] = useState("");
+    const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [itemToDeleteIndex, setItemToDeleteIndex] = useState(null); // State to store the index of the item to delete
 
     const {id} = useParams();
 
@@ -59,10 +61,38 @@ const CustomerPaymentReceipt = (props) => {
       return str.split('-').reverse().join('-');
     }
 
+    const handleDeleteBill = (index) => {
+      // When the delete button is clicked, set the item index to delete and open the modal
+      setItemToDeleteIndex(index);
+      setShowModal(true);
+    };
+  
+
+    const confirmDelete = async () => {
+      try {
+        const response = await axios.delete(`${URL}/deleteBill/${customerId}/${itemToDeleteIndex}`);
+        const data = response.data; // Use response.data instead of response.json()
+        await fetchCustomerData()
+        // console.log("updated data", data);
+        // alert("Bill deleted successfully");
+      } catch (error) {
+        console.error('Error deleting bill', error);
+        alert("Error deleting bill");
+      }
+      setShowModal(false);
+    };
+
+    const cancelDelete = () => {
+      // Cancel deletion and close the modal
+      setShowModal(false);
+      setItemToDeleteIndex(null);
+    };
+    
+
     const fetchEditDetails = async(index)=>{
       setShowUpdateButton(true);
       try{
-        const response = await axios.get(`${URL}/customerreg/${customerCode}`)
+        const response = await axios.get(`${URL}/customerreg/${customerCode ? customerCode : id}`)
         // console.log("what data is",response.data.data.generatedInvoice[index]);
         const data = response.data.data.customerGeneratedInvoice[index];
 
@@ -101,7 +131,7 @@ const CustomerPaymentReceipt = (props) => {
         // alert(index)
 
         try{
-            const response = await axios.get(`${URL}/customerreg/${customerCode}`)
+            const response = await axios.get(`${URL}/customerreg/${customerCode ? customerCode : id}`)
             // console.log("what data is",response.data.data.generatedInvoice[index]);
             const data = response.data.data.customerGeneratedInvoice[index];
 
@@ -133,7 +163,7 @@ const CustomerPaymentReceipt = (props) => {
 
     const fetchCustomerData = async()=>{
         try{
-            const response = await axios.get(`${URL}/customerreg/${customerCode}`);
+            const response = await axios.get(`${URL}/customerreg/${customerCode ? customerCode : id}`);
             console.log("Initial data",response.data.data);
             // console.log(response.data.data._id);
             setCustomerId(response.data.data._id)
@@ -204,27 +234,6 @@ const CustomerPaymentReceipt = (props) => {
     
     // const generatedBill = get_diff_days()*{rate};
 
-    const checkBillFor = ()=>{
-      if(billFor === "Customer"){
-        setShowCustomerCode(true);
-        setShowAyaCode(false);
-        setShowCustomerBill(true);
-        setShowAyaBill(false);
-      }
-      else if(billFor === "Aya"){
-        setShowAyaCode(true);
-        setShowCustomerCode(false);
-        setShowCustomerBill(false);
-        setShowAyaBill(true);
-      }
-      else{
-        setShowAyaCode(false);
-        setShowCustomerCode(false);
-        setShowCustomerBill(false);
-        setShowAyaBill(false);
-      }
-    }
-    
     useEffect(()=>{
         // rate
         // console.log("ek kam ku aa rha",get_diff_days())
@@ -240,9 +249,7 @@ const CustomerPaymentReceipt = (props) => {
     },[fromDate,toDate,rate,customerCode,leaveTaken])
 
     useEffect(()=>{
-      checkBillFor();
       setCustomerCode('');
-      setAyaCode('');
       setSelectedDate('');
       resetBillEntry();
 
@@ -259,7 +266,7 @@ const CustomerPaymentReceipt = (props) => {
       setPaymentMode('Cash');
       // setTransactionDate('');
       setSelectedDate('');
-      setLeaveTaken('')
+      setLeaveTaken('0')
       setSelectedDate('');
     }
 
@@ -458,35 +465,6 @@ const CustomerPaymentReceipt = (props) => {
     <>
     <div className="container">
       <div className="row">
-        <div className="col-4">
-        <FormGroup>
-            <label
-              style={{
-                display: "inline-block",
-                fontSize: "16px",
-                }}
-                className="fw-bold mb-1"
-            
-            >Generate Bill For</label>
-
-            <select
-              className="form-control form-select"
-              value={billFor}
-              // name="gender"
-              onChange={(e) => setBillFor(e.target.value)}
-              required
-
-            >
-              <option value="">Select</option>
-              <option value="Aya">Aya</option>
-              <option value="Customer">Customer</option>
-              {/* <option value="security">Security Money</option> */}
-              
-            </select>
-        </FormGroup>
-        </div>
-        {
-          showCustomerCode && 
           <>
           <div className="col-4 ">
           <div className="">
@@ -526,18 +504,11 @@ const CustomerPaymentReceipt = (props) => {
             </div>
           </div>
         </Col>
-            </>
-        }
-        {
-          showAyaCode && (
-            <AyaPaymentReceipt/>
-          )
-        }
+          </>
       </div>
     </div>
 
 
-      { showCustomerBill && 
       <>
       <div className='container'  ref={tableRef}>
         <div className="row">
@@ -784,7 +755,8 @@ const CustomerPaymentReceipt = (props) => {
                           <th className="">Rate</th>
                           <th className="">Aya Assigned</th>
                           <th className="">Download Bill</th>
-                          <th className="">Edit</th>
+                          <th className="">Actions</th>
+                          {/* <th className="">Delete</th> */}
 
                           {/* <th className="">Invoice</th> */}
                         </tr>
@@ -807,13 +779,37 @@ const CustomerPaymentReceipt = (props) => {
                                 <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
                               </td>
                               <td>
-                                <button className="btn bg-secondary text-white" onClick={() => fetchEditDetails(index)}>Edit</button>
+                                <div className="d-flex gap-2">
+                                <button className="btn bg-secondary text-white" onClick={() => fetchEditDetails(index)}>
+                                <i class="fa-solid fa-pen-to-square"></i>
+
+                                </button>
+                                <button className="btn bg-danger text-white" onClick={() => handleDeleteBill(index)}>
+                                <i class="fa-solid fa-trash"></i>
+
+                                </button>
+
+                                </div>
                               </td>
                             </tr>
                           );
                         }
                       }).reverse()}
                       </tbody>
+                      <Modal show={showModal} onHide={() => setShowModal(false)}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Confirm Deletion</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={cancelDelete}>
+                          Cancel
+                        </Button>
+                        <Button variant="danger" onClick={confirmDelete}>
+                          Delete
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
                     </table>
                   </div>
                 </Col>
@@ -823,7 +819,6 @@ const CustomerPaymentReceipt = (props) => {
       </section>
       )}
       </>
-      }
     </>
   )
 }

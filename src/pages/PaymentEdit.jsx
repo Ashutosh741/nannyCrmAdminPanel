@@ -61,6 +61,7 @@ function PaymentEdit() {
   const[totalPendingAmount,setTotalPendingAmount] = useState('');
   const[totalBill,setTotalBill] = useState('');
   const [paymentDone, setPaymentDone] = useState(0);
+  const [assignedAyaDetails,setAssignedAyaDetails] = useState([]);
 
   // const [mountReceived,setGeneratedAmountReceived] = useState('');
   const { id } = useParams();
@@ -382,11 +383,11 @@ useEffect(() => {
                           <th className="">Date</th>
                           <th className="">Generated Bill</th>
                           <th className="">Payment Mode</th>
-                          <th className="">To Data</th>
                           <th className="">From Date</th>
+
+                          <th className="">To Data</th>
                           <th className="">Rate</th>
                           <th className="">Aya Assigned</th>
-                          <th className="">Actions</th>
                           
                           {/* <th className="">Invoice</th> */}
                         </tr>
@@ -404,17 +405,11 @@ useEffect(() => {
                               <td>{item.generatedDate}</td>
                               <td>{item.generatedBill}</td>
                               <td>{item.generatedPaymentMode}</td>
-                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedFromDate}</td>
+
+                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedRate}</td>
                               <td>{item.generatedAyaAssigned}</td>
-                              <td>
-                              <div className="d-flex gap-3">
-                              <i class="fa-solid fa-eye"></i>
-                              <i class="fa-solid fa-trash"></i>
-                              <i class="fa-solid fa-pen-to-square"></i>
-                              </div>
-                              </td>
                               
                             </tr>
                             

@@ -201,8 +201,11 @@ const get_diff_days = (assignedCustomerFromDate) => {
         let billGenerated = 0;
         customerData.forEach((customer) => {
           // console.log('single customer',customer)
-          if(customer.customerGeneratedInvoice.length <= 0){
-            billGenerated++;
+          if(customer.customerGeneratedInvoice.length <= 0 && customer.assignedAyaDetails.length > 0){
+            let length = customer.assignedAyaDetails.length;
+            if(get_diff_days(customer.assignedAyaDetails[length-1].assignedAyaFromDate) > 30){
+              billGenerated++;
+            }
           }else{
             const reverseData = customer.customerGeneratedInvoice.reverse();
             if(reverseData.length > 0 && reverseData[0].generatedToDate){
@@ -320,8 +323,11 @@ const get_diff_days = (assignedCustomerFromDate) => {
         let ayaPaid = 0;
         customerData.forEach((customer) => {
           // console.log('single customer',customer)
-          if(customer.ayaGeneratedInvoice.length <= 0){
-            ayaPaid++;
+          if(customer.ayaGeneratedInvoice.length <= 0 && customer.assignedCustomerDetails.length > 0){
+            let length = customer.assignedCustomerDetails.length;
+            if(get_diff_days(customer.assignedCustomerDetails[length-1].assignedCustomerFromDate) > 30){
+              ayaPaid++;
+            }
           }else{
             const reverseData = customer.ayaGeneratedInvoice.reverse();
             if(reverseData.length > 0 && reverseData[0].generatedToDate){
