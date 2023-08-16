@@ -24,7 +24,7 @@ const CustomerPaymentList = (props) => {
     //     .then((res) => {
 
     //       const data = res.data.data.map((item) => {
-    //         const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
+    //         const assignedAyaDetails = [...item.assignedAyaDetails].();
     //         return { ...item, assignedAyaDetails };
     //       });
 
@@ -37,12 +37,15 @@ const CustomerPaymentList = (props) => {
     //     });
     // };
 
-    const compareDate = (billDate) => {
+    const compareDate = (toDate) => {
       const todayDate = new Date();
-      // console.log('today date format',todayDate)
-      const replaceDateParts = billDate.split('-');
+      console.log('today date format',todayDate)
+      const replaceDateParts = toDate.split('-');
+      // (currentdate - todate)
+      // DD - MM - YYYY  ---> BILL DATE
+      // YYYY - MM - DD  ---> NEW DATE
       const compareDate = new Date(replaceDateParts[2], replaceDateParts[1] - 1, replaceDateParts[0]);
-      // console.log('billDate format',compareDate)
+      // console.log('toDate format',compareDate)
   
       return Math.max(0,todayDate - compareDate);
   }
@@ -80,11 +83,11 @@ const CustomerPaymentList = (props) => {
             filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
           }
     
-          const data = filteredData.map((item) => {
-            const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
-            return { ...item, assignedAyaDetails };
-          });
-          setList(data);
+          // const data = filteredData.map((item) => {
+          //   const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
+          //   return { ...item, assignedAyaDetails };
+          // });
+          setList(filteredData);
           setLoading(false);
         })
         .catch((error) => {
@@ -280,20 +283,23 @@ const CustomerPaymentList = (props) => {
             width: 130,
             renderCell: (params) => {
               const data = params.row.customerGeneratedInvoice;
+              console.log('invoice data',data)
               const data2 = params.row.assignedAyaDetails;
+              console.log('assigned details', data2)
               if(data.length <= 0 && data2 && data2.length > 0){
                 return <button className="btn btn-default text-black">Not Generated</button>;
-                
+                //  assigned, length check also 
+                // from date difference 30 days
               }
               else if (data && data.length > 0) {
-                console.log('before reverse',data);
+                // console.log('before reverse',data);
                 
-                const reverseData = [...data].reverse(); // Reverse the array
-                const lastGenerated = reverseData[0];
-                console.log('after reverse',reverseData);
+                // const reverseData = [...data].reverse(); // Reverse the array
+                const lastGenerated = data[data.length-1];
+                // console.log('after reverse',reverseData);
           
                 if (compareDate(lastGenerated.generatedToDate) < 30) {
-                  return <button className="btn btn-secondary">Completed</button>;
+                  return <button className="btn btn-success">Completed</button>;
                 } else {
                   return <button className="btn btn-danger">Pending</button>;
                 }
@@ -372,14 +378,14 @@ const CustomerPaymentList = (props) => {
               onCellClick={handleRowClick}
               // onRowClick={handleRowClick}
   
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
-                  },
-                },
-              }}
-              pageSizeOptions={[10]}
+              // initialState={{
+              //   pagination: {
+              //     paginationModel: {
+              //       pageSize: 10,
+              //     },
+              //   },
+              // }}
+              // pageSizeOptions={[10]}
               // checkboxSelection
               disableRowSelectionOnClick
             />

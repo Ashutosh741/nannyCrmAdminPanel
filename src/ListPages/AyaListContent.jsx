@@ -8,6 +8,8 @@ import { Link, Navigate, useNavigate, useNavigation } from "react-router-dom";
 import * as XLSX from "xlsx";
 
 
+//  this page is totally set, with correct detials, no changes required
+
 const AyaListContent = (props) => {
   // console.log("type station",props.type)
 
@@ -37,11 +39,11 @@ console.log(props);
           filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
         }
   
-        const data = filteredData.map((item) => {
-          const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
-          return { ...item, assignedCustomerDetails };
-        });
-        setList(data);
+        // const data = filteredData.map((item) => {
+        //   const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
+        //   return { ...item, assignedCustomerDetails };
+        // });
+        setList(filteredData);
         setLoading(false);
       })
       .catch((error) => {
@@ -55,7 +57,7 @@ console.log(props);
 
   const handleRowClick = (params) => {
     const field = params.field;
-    console.log("aisa kya hai isme", field);
+    // console.log("aisa kya hai isme", field);
     if (field === "assignedCustomerName" || field === "replaceCustomerDetails") {
       return;
       // console.log("bhai tu chaal bhi rha hai ?", params.row.assign);
@@ -69,8 +71,8 @@ console.log(props);
   const checkDateDifference = (data) => {
     if (data && data.length > 0) {
       // const reverseData = data[0].assignedCustomerDetails.reverse();
-      const fromDate = new Date(data[0].assignedCustomerFromDate);
-      const toDate = new Date(data[0].assignedCustomerToDate);
+      const fromDate = new Date(data[data.length-1].assignedCustomerFromDate);
+      const toDate = new Date(data[data.length-1].assignedCustomerToDate);
       const todayDate = new Date();
       // console.log("from date let's see",fromDate);
       // console.log("toDate date let's see",toDate)
@@ -92,8 +94,8 @@ console.log(props);
     const replacedDateDifference = (data) => {
     if (data && data.length > 0) {
       // const reverseData = data[0].assignedCustomerDetails.reverse();
-      const fromDate = new Date(data[0].replaceCustomerFromDate);
-      const toDate = new Date(data[0].replaceCustomerToDate);
+      const fromDate = new Date(data[data.length-1].replaceCustomerFromDate);
+      const toDate = new Date(data[data.length-1].replaceCustomerToDate);
       const todayDate = new Date();
       // console.log("from date let's see",fromDate);
       // console.log("toDate date let's see",toDate)
@@ -124,6 +126,30 @@ console.log(props);
   }, [props.type])
 
   console.log(list.file);
+
+  const compareDate = (toDate) => {
+    // Get the current date
+    const todayDate = new Date();
+  
+    // Split the toDate into day, month, and year parts
+    const replaceDateParts = toDate.split('-');
+    const billDay = parseInt(replaceDateParts[0]);
+    const billMonth = parseInt(replaceDateParts[1]) - 1; // JavaScript months are 0-indexed
+    const billYear = parseInt(replaceDateParts[2]);
+  
+    // Create a Date object for the toDate
+    const currentDate = new Date(billYear, billMonth, billDay);
+  
+    // Calculate the difference in days
+    // const timeDifference = todayDate - currentDate; // Difference in milliseconds
+    // const diffDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    // console.log('aaj ka date',todayDate);
+    // console.log('toDate ka date',currentDate);
+  
+    // console.log('differnce of days',diffDays)
+    return todayDate >= currentDate;
+  };
+  
 
     //download Excel
     // const handleDownloadExcel = () => {
@@ -207,14 +233,25 @@ console.log(props);
             const data = params.row.assignedCustomerDetails;
             // console.log("bhai tahbi mein kisme kr rha tha",data);
             // console.log("bhai tahbi mein kisme kr rha tha",checkDateDifference(data));
+            let size = data.length-1;
+            if(size < 0){
+              return (
+                <Link
+                  to={`/ayaassign/${params.row._id}`}
+                  className="btn-danger btn text-white"
+                >
+                  Assign Customer
+                </Link>
+              );
+            }
 
             if (checkDateDifference(data)){
               return (
                 <Link
-                to={`/customerreg/${data[0].assignedCustomerCode}`}
+                to={`/customerreg/${data[size].assignedCustomerCode}`}
                 className="btn-success btn text-white"
               >
-                {data[0].assignedCustomerName}
+                {data[size].assignedCustomerName}
               </Link>
               )
             }
@@ -241,8 +278,11 @@ console.log(props);
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerRate) {
-              return <>{data[0].assignedCustomerRate}</>;
+            let size = data.length-1;
+            if(size < 0)return;
+
+            if (data && data.length > 0 && data[size].assignedCustomerRate) {
+              return <>{data[size].assignedCustomerRate}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -256,8 +296,11 @@ console.log(props);
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerPurpose) {
-              return <>{data[0].assignedCustomerPurpose}</>;
+            let size = data.length-1;
+            if(size < 0)return;
+
+            if (data && data.length > 0 && data[size].assignedCustomerPurpose) {
+              return <>{data[size].assignedCustomerPurpose}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -271,8 +314,10 @@ console.log(props);
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerShift) {
-              return <>{data[0].assignedCustomerShift}</>;
+            let size = data.length-1;
+            if(size < 0)return;
+            if (data && data.length > 0 && data[size].assignedCustomerShift) {
+              return <>{data[size].assignedCustomerShift}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -286,12 +331,22 @@ console.log(props);
         editable: true,
         renderCell: (params) => {
         const data = params.row.assignedCustomerDetails;
-        if (data && data.length > 0 && data[0].replaceCustomerDetails) {
-          const replaceDetails = data[0].replaceCustomerDetails;
+        let size = data.length-1;
+        console.log('name',params.row.name);
+        console.log('assigned details',params.row.assignedCustomerDetails);
+        console.log('length',size);
+
+        if(size < 0)return null;
+        else if(!compareDate(data[data.length-1].assignedCustomerToDate)){
+          return null;
+        }
+
+        if (data && data.length > 0 && data[size].replaceCustomerDetails) {
+          const replaceDetails = data[size].replaceCustomerDetails;
           if (replaceDetails) {
-            const replaceDetailsCopy = [...replaceDetails].reverse();
+            // const replaceDetailsCopy = [...replaceDetails].reverse();
             // console.log('bhai yeh apne aap chal rrha tha', replaceDetailsCopy);
-            return replacedDateDifference(replaceDetailsCopy)
+            return replacedDateDifference(replaceDetails)
               ? (
                 <Link to={`/ayaassign/${params.row._id}`} className="btn-warning btn text-black">
                   YES
@@ -379,7 +434,7 @@ console.log(props);
         //   },
 
       ];
-    return (
+      return (
         <Box sx={{ height: '100%', width: '100%' }}>
           <DataGrid
             rows={list}
@@ -387,20 +442,17 @@ console.log(props);
             getRowId={getRowId}
             onCellClick={handleRowClick}
             // onRowClick={handleRowClick}
-
+      
             initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
+              // No pagination configuration here
             }}
-            pageSizeOptions={[10]}
+            // pageSizeOptions={[10]}  // Removing pageSizeOptions
             // checkboxSelection
             disableRowSelectionOnClick
           />
         </Box>
       );
+      
 }
 
 export default AyaListContent

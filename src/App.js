@@ -63,7 +63,7 @@ function App() {
                 <Route exact path='/booking' element={<Booking />} />
                 <Route exact path='/testbooking' element={<TestBooking />} />
                 <Route exact path='/payment' element={<Payment />} />
-                <Route exact path='/ayapayment' element={<TotalAvailbleWork />} />
+                <Route exact path='/ayapayment' element={<AyaPaymentList />} />
 
                 <Route path="ayareg" element="">
                     <Route path=':id' element={<AyaDetails />} />

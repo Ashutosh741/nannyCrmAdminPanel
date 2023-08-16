@@ -33,12 +33,12 @@ const AyaPaymentListContent = (props) => {
             filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
           }
     
-          const data = filteredData.map((item) => {
-            const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
-            return { ...item, assignedCustomerDetails };
-          });
+          // const data = filteredData.map((item) => {
+          //   const assignedCustomerDetails = [...item.assignedCustomerDetails].reverse();
+          //   return { ...item, assignedCustomerDetails };
+          // });
           // console.log("filtered data, chcekc it",data);
-          setList(data);
+          setList(filteredData);
           setLoading(false);
         })
         .catch((error) => {
@@ -49,9 +49,9 @@ const AyaPaymentListContent = (props) => {
   
     const handleRowClick = (params) => {
     const field = params.field;
-    console.log("aisa kya hai isme", field);
+    // console.log("aisa kya hai isme", field);
 
-      if (field === "assignedCustomerName") {
+      if (field === "assignedCustomerName" || field === 'paymentstatus') {
         return;
       }
       else {
@@ -66,6 +66,36 @@ const AyaPaymentListContent = (props) => {
     useEffect(() => {
       apiCategory();
     }, [props.type])
+
+    const compareDate = (billDate) => {
+      // Get the current date
+      const todayDate = new Date();
+    
+      // Split the billDate into day, month, and year parts
+      const replaceDateParts = billDate.split('-');
+      const billDay = parseInt(replaceDateParts[0]);
+      const billMonth = parseInt(replaceDateParts[1]) - 1; // JavaScript months are 0-indexed
+      const billYear = parseInt(replaceDateParts[2]);
+    
+      // Create a Date object for the billDate
+      const currentDate = new Date(billYear, billMonth, billDay);
+    
+      // Calculate the difference in days
+      const timeDifference = todayDate - currentDate; // Difference in milliseconds
+      const diffDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      console.log('aaj ka date',todayDate);
+      console.log('billdate ka date',currentDate);
+    
+      console.log('differnce of days',diffDays)
+      return diffDays;
+    };
+    
+    // // Example usage
+    // const billDate = '10-08-2023';
+    // const differenceInDays = compareDate(billDate);
+    // console.log(`The difference between today and ${billDate} is ${differenceInDays} days.`);
+    
+    
   
   
     // console.log(list.file);
@@ -93,13 +123,13 @@ const AyaPaymentListContent = (props) => {
           //     console.log("what's paramas",id);
           // }
         },
-        //   {
-        //     field: 'customerCode',
-        //     headerName: 'CUSTOMER CODE',
-        //     width: 140,
-        //     type: 'string',
-        //     editable: true,
-        //   },
+          {
+            field: 'ayaCode',
+            headerName: 'AYA CODE',
+            width: 120,
+            type: 'string',
+            editable: true,
+          },
         {
             field: "file",
             headerName: "IMAGE",
@@ -119,7 +149,7 @@ const AyaPaymentListContent = (props) => {
             field: 'name',
             headerName: 'AYA NAME',
             type: 'string',
-            width: 140,
+            width: 150,
             editable: true,
           },
           {
@@ -140,18 +170,22 @@ const AyaPaymentListContent = (props) => {
           field: 'assignedCustomerName',
           headerName: 'ASSIGNED',
           type: 'string',
-          width: 145,
+          width: 165,
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerName) {
-              // return <>{data[0].assignedCustomerName}</>;
+            let dLen = data.length;
+            if (data && data.length > 0 && data[dLen-1].assignedCustomerName) {
+              const assignedCustomerName = data[dLen-1].assignedCustomerName;
+              const truncatedName = assignedCustomerName.length > 17 ? assignedCustomerName.substring(0, 40) + '...' : assignedCustomerName;
+          
               return (
                 <Link
-                  to={`/customerreg/${data[0].assignedCustomerCode}`}
+                  to={`/customerreg/${data[dLen-1].assignedCustomerCode}`}
                   className="btn-success btn text-white"
+                  title={assignedCustomerName} // Add the full name as a tooltip
                 >
-                  {data[0].assignedCustomerName}
+                  {truncatedName}
                 </Link>
               );
             } else {
@@ -165,6 +199,7 @@ const AyaPaymentListContent = (props) => {
               );
             }
           },
+          
         },
         
         {
@@ -174,9 +209,12 @@ const AyaPaymentListContent = (props) => {
           width: 60,
           editable: true,
           renderCell: (params) => {
+
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerRate) {
-              return <>{data[0].assignedCustomerRate}</>;
+            let dLen = data.length;
+
+            if (data && data.length > 0 && data[dLen-1].assignedCustomerRate) {
+              return <>{data[dLen-1].assignedCustomerRate}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -186,12 +224,13 @@ const AyaPaymentListContent = (props) => {
           field: 'assignedCustomerPurpose',
           headerName: 'PURPOSE',
           type: 'string',
-          width: 100,
+          width: 120,
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerPurpose) {
-              return <>{data[0].assignedCustomerPurpose}</>;
+            let dLen = data.length;
+            if (data && data.length > 0 && data[dLen-1].assignedCustomerPurpose) {
+              return <>{data[dLen-1].assignedCustomerPurpose}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -205,84 +244,68 @@ const AyaPaymentListContent = (props) => {
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedCustomerDetails;
-            if (data && data.length > 0 && data[0].assignedCustomerShift) {
-              return <>{data[0].assignedCustomerShift}</>;
+            let dLen = data.length;
+            if (data && data.length > 0 && data[dLen-1].assignedCustomerShift) {
+              return <>{data[dLen-1].assignedCustomerShift}</>;
             } else {
               return null; // or render a placeholder text or component
             }
           },
         },
-          // {
-          //   field: 'assign',
-          //   headerName: 'ASSIGNED',
-          //   type: 'string',
-          //   width: 130,
-          //   editable: true,
-          // },
-          
-          // {
-          //   field: 'rate',
-          //   headerName: 'RATE',
-          //   type: 'string',
-          //   width: 80,
-          //   editable: true,
-          // },
-          // {
-          //   field: 'paymentstatus',
-          //   headerName: 'STATUS',
-          //   type: 'string',
-          //   width:70,
-          //   editable: true,
-          // },
+        {
+          field: 'paymentstatus',
+          headerName: 'STATUS',
+          type: 'string',
+          width: 130,
+          renderCell: (params) => {
+            const data = params.row.ayaGeneratedInvoice;
+            // let dLen = data.length;
+            console.log('aya name',params.row.name)
+            console.log('invoice format',data)
 
-
-        //   {
-        //       field: 'workShift',
-        //       headerName: 'SHIFT',
-        //       type: 'string',
-        //       width: 80,
-        //       editable: true,
-        //     },
-
-            {
-              field: 'gender',
-              headerName: 'GENDER',
-              type: 'string',
-              width: 90,
-              editable: true,
-            },
-            {
-              field: 'age',
-              headerName: 'AGE',
-              type: 'number',
-              width: 20,
-              editable: true,
-            },
-            {
-                field: 'guardianName',
-                headerName: 'PARENT NAME',
-                type: 'string',
-                description: 'This column has a value getter and is not sortable.',
-                sortable: false,
-                width: 140,
-              },
-
-
-          //   {
-          //     field: 'daysLeft',
-          //     headerName: 'DAYS LEFT',
-          //     type: 'number',
-          //     width: 160,
-          //     editable: true,
-          //   },
-          //   {
-          //     field: 'customerAssigned',
-          //     headerName: 'CUSTOMER ASSIGNED',
-          //     type: 'number',
-          //     width: 180,
-          //     editable: true,
-          //   },
-
+            const data2 = params.row.assignedCustomerDetails;
+            if(data.length <= 0 && data2 && data2.length > 0){
+              return (
+              <Link
+              to={`/generateAyaBill/${params.row._id}`}
+              className="btn btn-default text-black"
+            >
+              Not Generated
+            </Link>
+              )
+            }
+            else if (data && data.length > 0) {
+              // console.log('before reverse',data);
+              
+              // const reverseData = data; // Reverse the array
+              const lastGenerated = data[data.length-1];
+        
+              if (compareDate(lastGenerated.generatedToDate) < 30) {
+                return (
+                <Link
+                to={`/generateAyaBill/${params.row._id}`}
+                className="btn btn-success text-white"
+              >
+                Completed
+              </Link>
+                )
+              } else {
+                return(
+                <Link
+                to={`/generateAyaBill/${params.row._id}`}
+                className="btn btn-danger text-white"
+              >
+                Pending
+              </Link>
+                )
+              }
+              
+            } 
+            else {
+              return null;
+            }
+          },
+        },
         ];
       return (
           <Box sx={{ height: '100%', width: '100%' }}>
@@ -293,14 +316,14 @@ const AyaPaymentListContent = (props) => {
               onCellClick={handleRowClick}
               // onRowClick={handleRowClick}
   
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
-                  },
-                },
-              }}
-              pageSizeOptions={[10]}
+              // initialState={{
+              //   pagination: {
+              //     paginationModel: {
+              //       pageSize: 10,
+              //     },
+              //   },
+              // }}
+              // pageSizeOptions={[10]}
               // checkboxSelection
               disableRowSelectionOnClick
             />

@@ -221,7 +221,7 @@ console.log(list.file);
         field: 'assignedCustomerName',
         headerName: 'ASSIGNED',
         type: 'string',
-        width: 145,
+        width: 165,
         editable: true,
         renderCell: (params) => {
           const data = params.row.assignedCustomerDetails;
@@ -328,7 +328,46 @@ console.log(list.file);
             }
         }
       },
-    }
+    },
+    // {
+    //   field: 'paymentstatus',
+    //   headerName: 'STATUS',
+    //   type: 'string',
+    //   width: 130,
+    //   renderCell: (params) => {
+    //     const data = params.row.ayaGeneratedInvoice;
+    //     const data2 = params.row.assignedCustomerDetails;
+    //     if(data.length <= 0 && data2 && data2.length > 0){
+    //       return <button className="btn btn-default text-black">Not Generated</button>;
+          
+    //     }
+    //     else if (data && data.length > 0) {
+    //       console.log('before reverse',data);
+          
+    //       const reverseData = [...data].reverse(); // Reverse the array
+    //       const lastGenerated = reverseData[0];
+    //       console.log('after reverse',reverseData);
+    
+    //       if (compareDate(lastGenerated.generatedToDate) < 30) {
+    //         return <button className="btn btn-success">Completed</button>;
+    //       } else {
+    //         return <button className="btn btn-danger">Pending</button>;
+    //       }
+    //     } 
+    //     else {
+    //       return null;
+    //     }
+        
+    //     // else if (params.row.assignedAyaDetails.length > 0) {  
+    //     //   const lastAssigned = [...params.row.assignedAyaDetails].reverse();
+    //     //   if (get_diff_days(lastAssigned[0].assignedAyaFromDate) < 30) {
+    //     //     return <button className="btn btn-default">Not Generated</button>;
+    //     //   }
+    //     // }
+    
+    //     // return <button className="btn btn-dark">Pending</button>;
+    //   },
+    // },
       
       
       // {

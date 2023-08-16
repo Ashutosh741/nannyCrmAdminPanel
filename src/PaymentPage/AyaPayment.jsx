@@ -237,8 +237,8 @@ function AyaPayment() {
                           <th className="">Aya Code</th>
                           <th className="">Generated Bill</th>
                           <th className="">Payment Mode</th>
-                          <th className="">To Data</th>
                           <th className="">From Date</th>
+                          <th className="">To Data</th>
                           <th className="">Rate</th>
                           <th className="">Aya Assigned</th>
                         </tr>
@@ -253,8 +253,8 @@ function AyaPayment() {
                               <td>{ayaCode}</td>
                               <td>{item.generatedBill}</td>
                               <td>{item.generatedPaymentMode}</td>
-                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedFromDate}</td>
+                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedRate}</td>
                               <td>{item.generatedCustomerAssigned}</td>
                             </tr>

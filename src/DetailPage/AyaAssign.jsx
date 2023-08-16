@@ -64,9 +64,7 @@ function AyaAssign() {
 
   const navigate = useNavigate();
 
-  function ReverseString(str) {
-    return str.split('-').reverse().join('-');
-  }
+
 
 
   // abhi mujhe ismein , kya krna hai, ek condition check krna hai , jisse yeh pta chal jaye ki , 
@@ -90,9 +88,10 @@ const replaceayaData = async () => {
 
     if (assignedCustomerDetails.length > 0) {
       // let assignedCustomerDetailsCopy = [...assignedCustomerDetails].slice();
-      let assignedCustomerDetailsCopy = [...assignedCustomerDetails].reverse();
-
-      setPreviousCustomerCode(assignedCustomerDetailsCopy[0].assignedCustomerCode);
+      // let assignedCustomerDetailsCopy = [...assignedCustomerDetails].reverse();
+      let size = assignedCustomerDetails.length-1;
+      if(size < 0)return
+      setPreviousCustomerCode(assignedCustomerDetails[size].assignedCustomerCode);
     }
     setAssignedLength(assignedCustomerDetails.length);
 
@@ -139,7 +138,8 @@ const replaceayaData = async () => {
       const techData = response.data.data;
       
       // Create a shallow copy of assignedCustomerDetails before reversing
-      const reversedAssignedCustomerDetails = [...techData.assignedCustomerDetails].reverse();
+      let assignedLength = assignedCustomerDetails.length;
+      const reversedAssignedCustomerDetails = assignedCustomerDetails;
       // console.log('so whats status of assigned Details in reverse order',reversedAssignedCustomerDetails)
       setTech(techData);
       setAssignedCustomerDetails(reversedAssignedCustomerDetails);
@@ -148,13 +148,14 @@ const replaceayaData = async () => {
         // console.log('yh banda jakar kr kya rhaa',reversedAssignedCustomerDetails[0])
 
         // console.log('bhai date ka result kya a rha',checkDateDifference(reversedAssignedCustomerDetails[0]))
-        if (checkDateDifference(reversedAssignedCustomerDetails[0])) {
+        if (checkDateDifference(reversedAssignedCustomerDetails[assignedLength-1])) {
           setIsAssigned(true);
           // console.log('aya is assigned to any customer');
-          let replaceDetails  = reversedAssignedCustomerDetails[0].replaceCustomerDetails;
+          let replaceDetails  = reversedAssignedCustomerDetails[assignedLength-1].replaceCustomerDetails;
           if(replaceDetails && replaceDetails.length > 0) {
-            let replaceDetailsCopy = [...replaceDetails].reverse();
-            if(replaceDateDifference(replaceDetailsCopy[0])){
+            // let replaceDetailsCopy = [...replaceDetails].reverse();
+            let replaceLen = replaceDetails.length;
+            if(replaceDateDifference(replaceDetails[replaceLen-1])){
               setIsReplaced(true);
               // console.log('customer is rpelaced by someone')
             }
@@ -182,8 +183,9 @@ const replaceayaData = async () => {
       const  drillingData = response.data.data.assignedCustomerDetails;
       if(drillingData.length > 0){
         // let drillingDataCopy = drillingData.slice();
-        let drillingDataCopy = [...drillingData].reverse();
-        setPreviousCustomerCode(drillingDataCopy[0].assignedCustomerCode)
+        // let drillingDataCopy = [...drillingData].reverse();
+        let assignedLen = drillingData.length;
+        setPreviousCustomerCode(drillingData[assignedLen-1].assignedCustomerCode)
       }
       // fetchFilteredAya()
       // console.log("what's techDAata",techData)
@@ -230,12 +232,13 @@ const replaceayaData = async () => {
         if (customer.assignedAyaDetails.length <= 0) {
             return true;
         } else {  
-            const reverseData = customer.assignedAyaDetails.reverse();
+            const reverseData = customer.assignedAyaDetails;
+            let assignedLen = reverseData.length
     
-            if (reverseData.length > 0 && compareDate(reverseData[0].assignedAyaFromDate)) {
+            if (reverseData.length > 0 && compareDate(reverseData[assignedLen-1].assignedAyaFromDate)) {
               if(replaceCustomerToDate){
                 console.log('last chekc for customer filtering')
-                if(compareDate(reverseData[0].assignedAyaFromDate)){
+                if(compareDate(reverseData[assignedLen-1].assignedAyaFromDate)){
                   console.log('successfull filtering')
                   return true;
                 }
@@ -246,7 +249,7 @@ const replaceayaData = async () => {
                 // return true
                 // }
                 // return true;
-            } else if (reverseData[0].assignedAyaToDate && !compareDate(reverseData[0].assignedAyaToDate)) {
+            } else if (reverseData[assignedLen-1].assignedAyaToDate && !compareDate(reverseData[assignedLen-1].assignedAyaToDate)) {
                 return true;
             }
             return false; // If none of the conditions are met, filter out the item

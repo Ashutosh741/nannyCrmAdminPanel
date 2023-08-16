@@ -54,6 +54,7 @@ const CustomerPaymentReceipt = () => {
     const [selectedDate, setSelectedDate] = useState("");
     const [showModal, setShowModal] = useState(false); // State for modal visibility
     const [itemToDeleteIndex, setItemToDeleteIndex] = useState(null); // State to store the index of the item to delete
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const {id} = useParams();
 
@@ -184,12 +185,13 @@ const CustomerPaymentReceipt = () => {
             // console.log(presentAddress)
             // console.log("in which format",data.assignedAyaDetails[0])
             if(data.assignedAyaDetails){
-              const reverseData = data.assignedAyaDetails.reverse();
+              const reverseData = data.assignedAyaDetails;
+              let len = reverseData.length
               console.log("reversed data",reverseData)
-              setAssignedAyaName(reverseData[0].assignedAyaName)
-              setAssignedAyaPurpose(reverseData[0].assignedAyaPurpose)
-              setRate(reverseData[0].assignedAyaRate);
-              console.log("are you there",reverseData[0].assignedAyaName);
+              setAssignedAyaName(reverseData[len-1].assignedAyaName)
+              setAssignedAyaPurpose(reverseData[len-1].assignedAyaPurpose)
+              setRate(reverseData[len-1].assignedAyaRate);
+              console.log("are you there",reverseData[len-1].assignedAyaName);
             }
             setTransactionDate(date);
            
@@ -274,7 +276,7 @@ const CustomerPaymentReceipt = () => {
 
 
     const handleUpdateBill = async (e) => {
-      e.preventDefault();
+      // e.preventDefault();
       try {
 
         const updatedInvoice = {
@@ -314,6 +316,8 @@ const CustomerPaymentReceipt = () => {
         setGeneratedInvoice (updatedInvoices);
         resetBillEntry();
         setShowUpdateButton(false); 
+        setButtonDisabled(false);
+
         // setShowGeneratedButton(true)
 
       } catch (err) {
@@ -328,7 +332,7 @@ const CustomerPaymentReceipt = () => {
 
 
     const handleGenerateBill = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         try {
           const response = await fetch(`${URL}/customerreg/${customerId}`, {
             method: "PUT",
@@ -381,6 +385,8 @@ const CustomerPaymentReceipt = () => {
           setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
           
           resetBillEntry();
+        setButtonDisabled(false); // Disable the button when clicked
+
 
         } catch (err) {
           console.log("error in this customerCode",customerId);
@@ -717,19 +723,34 @@ const CustomerPaymentReceipt = () => {
 
             </div>
             {
-              (showGeneratedButton && !showUpdateButton) ?  (
-                
+              (showGeneratedButton && !showUpdateButton) ? (
                 <div className="print-btn text-center billButton">
-                <button className='btn bg-primary text-white' onClick = {()=>fetchCustomerData()} >Generate Bill</button>
+                  <button
+                    className='btn bg-primary text-white'
+                    onClick={() => {
+                      handleGenerateBill();
+                      setButtonDisabled(true); // Disable the button when clicked
+                    }}
+                    disabled={buttonDisabled} // Set the disabled attribute
+                  >
+                    {buttonDisabled ? 'Generating...' : 'Generate Bill'}
+                  </button>
                 </div>
-                
               ) : (
-                  ((showUpdateButton) ? (
+                (showUpdateButton) ? (
                   <div className="print-btn text-center billButton">
-                  <button className='btn bg-primary text-white' onClick={(e)=>handleUpdateBill(e)}>Update Bill</button>
+                    <button
+                      className='btn bg-primary text-white'
+                      onClick={(e) => {
+                        handleUpdateBill(e);
+                        setButtonDisabled(true); // Disable the button when clicked
+                      }}
+                      disabled={buttonDisabled} // Set the disabled attribute
+                    >
+                      {buttonDisabled ? 'Updating...' : 'Update Bill'}
+                    </button>
                   </div>
-                  ) : null
-                  )
+                ) : null
               )
             }
             </form>

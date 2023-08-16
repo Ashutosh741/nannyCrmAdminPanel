@@ -200,6 +200,19 @@ const get_diff_days = (assignedCustomerFromDate) => {
         // };
             
         const getRowId = (row) => row._id;
+
+        const remainingColumn = {
+          field: 'securityAmount',
+          headerName: 'REMAINING',
+          type: 'string',
+          width: 120,
+          editable: true,
+          renderCell: (params) => {
+            const data = params.row.securityAmount;
+            return 2000-data
+          },
+        };
+        
     
         const columns = [
             { field: 'sr.no',
@@ -313,7 +326,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
               field: 'assignedAyaName',
               headerName: 'ASSIGNED',
               type: 'string',
-              width: 125,
+              width: 145,
               editable: true,
   
               renderCell: (params) => {
@@ -397,9 +410,9 @@ const get_diff_days = (assignedCustomerFromDate) => {
             },
           {
             field: 'replaceAyaDetails',
-            headerName: 'REPLACE',
+            headerName: 'REPLACED',
             type: 'string',
-            width: 80,
+            width: 100,
             editable: true,
   
             renderCell: (params) => {
@@ -428,7 +441,23 @@ const get_diff_days = (assignedCustomerFromDate) => {
                 }
             }
           },
-        }
+        },
+        // {
+        //   field: 'assignedAyaShift',
+        //   headerName: 'REMAINING',
+        //   type: 'string',
+        //   width: 80,
+        //   editable: true,
+        //   renderCell: (params) => {
+        //     const data = params.row.securityAmount;
+        //     if (data && data.length > 0 && data[0].assignedAyaShift) {
+        //       return <>{data[0].assignedAyaShift}</>;
+        //     } else {
+        //       return null; // or render a placeholder text or component
+        //     }
+        //   },
+        // },
+        // location.pathname === "/securityAmount" ? remainingColumn : null,
   
               // {
               //   field: 'gender',
@@ -470,6 +499,9 @@ const get_diff_days = (assignedCustomerFromDate) => {
             //   },
   
           ];
+          if (location.pathname === "/securityAmount") {
+            columns.push(remainingColumn);
+          }
         return (
             <Box sx={{ height: '100%', width: '100%' }}>
               <DataGrid

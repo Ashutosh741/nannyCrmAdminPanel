@@ -85,9 +85,10 @@ const replaceCustomerData = async () => {
 
     if (assignedAyaDetails.length > 0) {
       // let assignedAyaDetailsCopy = [...assignedAyaDetails].slice();
-      let assignedAyaDetailsCopy = [...assignedAyaDetails].reverse();
+      // let assignedAyaDetailsCopy = assignedAyaDetails;
+      let assignedLen = assignedAyaDetails.length
 
-      setPreviousAyaCode(assignedAyaDetailsCopy[0].assignedAyaCode);
+      setPreviousAyaCode(assignedAyaDetails[assignedLen-1].assignedAyaCode);
     }
     setAssignedLength(assignedAyaDetails.length);
 
@@ -134,22 +135,24 @@ const replaceCustomerData = async () => {
       const techData = response.data.data;
       
       // Create a shallow copy of assignedAyaDetails before reversing
-      const reversedAssignedAyaDetails = [...techData.assignedAyaDetails].reverse();
+      const reversedAssignedAyaDetails = techData.assignedAyaDetails;
       // console.log('so whats status of assigned Details in reverse order',reversedAssignedAyaDetails)
       setTech(techData);
       setAssignedAyaDetails(reversedAssignedAyaDetails);
       
       if (reversedAssignedAyaDetails.length > 0) {
         // console.log('yh banda jakar kr kya rhaa',reversedAssignedAyaDetails[0])
+        let assignedLen = reversedAssignedAyaDetails.length
 
         // console.log('bhai date ka result kya a rha',checkDateDifference(reversedAssignedAyaDetails[0]))
-        if (checkDateDifference(reversedAssignedAyaDetails[0])) {
+        if (checkDateDifference(reversedAssignedAyaDetails[assignedLen-1])) {
           setIsAssigned(true);
           // console.log('aya is assigned to any Aya');
           let replaceDetails  = reversedAssignedAyaDetails[0].replaceAyaDetails;
           if(replaceDetails && replaceDetails.length > 0) {
-            let replaceDetailsCopy = [...replaceDetails].reverse();
-            if(replaceDateDifference(replaceDetailsCopy[0])){
+            // let replaceDetailsCopy = [...replaceDetails].reverse();
+            let replaceLen = replaceDetails.length;
+            if(replaceDateDifference(replaceDetails[replaceLen-1])){
               setIsReplaced(true);
               // console.log('Aya is rpelaced by someone')
             }
@@ -177,8 +180,9 @@ const replaceCustomerData = async () => {
       const  drillingData = response.data.data.assignedAyaDetails;
       if(drillingData.length > 0){
         // let drillingDataCopy = drillingData.slice();
-        let drillingDataCopy = [...drillingData].reverse();
-        setPreviousAyaCode(drillingDataCopy[0].assignedAyaCode)
+        // let drillingDataCopy = [...drillingData].reverse();
+        let drillLen = drillingData.length
+        setPreviousAyaCode(drillingData[drillLen-1].assignedAyaCode)
       }
       // fetchFilteredAya()
       // console.log("what's techDAata",techData)
@@ -225,12 +229,13 @@ const replaceCustomerData = async () => {
         if (Aya.assignedCustomerDetails.length <= 0) {
             return true;
         } else {  
-            const reverseData = Aya.assignedCustomerDetails.reverse();
+            const reverseData = Aya.assignedCustomerDetails;
+            let reverseLen = reverseData.length
     
-            if (reverseData.length > 0 && compareDate(reverseData[0].assignedCustomerFromDate)) {
+            if (reverseData.length > 0 && compareDate(reverseData[reverseLen-1].assignedCustomerFromDate)) {
               if(replaceAyaToDate){
                 console.log('last chekc for Aya filtering')
-                if(compareDate(reverseData[0].assignedCustomerFromDate)){
+                if(compareDate(reverseData[reverseLen-1].assignedCustomerFromDate)){
                   console.log('successfull filtering')
                   return true;
                 }
@@ -241,7 +246,7 @@ const replaceCustomerData = async () => {
                 // return true
                 // }
                 // return true;
-            } else if (reverseData[0].assignedCustomerToDate && !compareDate(reverseData[0].assignedCustomerToDate)) {
+            } else if (reverseData[reverseLen-1].assignedCustomerToDate && !compareDate(reverseData[reverseLen-1].assignedCustomerToDate)) {
                 return true;
             }
             return false; // If none of the conditions are met, filter out the item

@@ -115,23 +115,81 @@ const compareFromDate = (billDate) => {
 }
 
 
-const get_diff_days = (assignedCustomerFromDate) => {
+// const get_diff_days = (assignedCustomerFromDate) => {
   
-    const toDateParts = new Date();
-    const fromDateParts = assignedCustomerFromDate.split('-');
-    const toDateObj = new Date(`${toDateParts[1]}-${toDateParts[0]}-${toDateParts[2]}`);
-    const fromDateObj = new Date(`${fromDateParts[1]}-${fromDateParts[0]}-${fromDateParts[2]}`);
-    // const leaveTakenDays = parseFloat(leaveTaken);
+//     const toDateParts = new Date();
+//     const fromDateParts = assignedCustomerFromDate.split('-');
+//     const toDateObj = new Date(`${toDateParts[1]}-${toDateParts[0]}-${toDateParts[2]}`);
+//     const fromDateObj = new Date(`${fromDateParts[1]}-${fromDateParts[0]}-${fromDateParts[2]}`);
+//     // const leaveTakenDays = parseFloat(leaveTaken);
+//     console.log('todate ka format',toDateObj);
+//     console.log('fromdate ka format',fromDateObj);
 
-    if (!isNaN(toDateObj) && !isNaN(fromDateObj)) {
-      const diff = Math.floor((toDateObj.getTime() - fromDateObj.getTime()) / (1000 * 86400));
-      // console.log("difference of date",diff)
-      return diff;
-    } else {
-      console.log('Invalid date or leaveTaken value.');
-      return 0; // Or any other appropriate value to indicate an error.
-    }
-}
+
+//     if (!isNaN(toDateObj) && !isNaN(fromDateObj)) {
+//       const diff = Math.floor((toDateObj.getTime() - fromDateObj.getTime()) / (1000 * 86400));
+//       // console.log("difference of date",diff)
+//       return diff;
+//     } else {
+//       console.log('Invalid date or leaveTaken value.');
+//       return 0; // Or any other appropriate value to indicate an error.
+//     }
+// }
+
+const get_diff_days = (billDate) => {
+  // Get the current date
+  const todayDate = new Date();
+  console.log('billdate initial format',billDate);
+  // Split the billDate into day, month, and year parts
+  const replaceDateParts = billDate.split('-');
+  const billDay = parseInt(replaceDateParts[0]);
+  const billMonth = parseInt(replaceDateParts[1]) - 1; // JavaScript months are 0-indexed
+  const billYear = parseInt(replaceDateParts[2]);
+
+  // Create a Date object for the billDate
+  const currentDate = new Date(billYear, billMonth, billDay);
+
+  // Calculate the difference in days
+  const timeDifference = todayDate - currentDate; // Difference in milliseconds
+  const diffDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  console.log('aaj ka date',todayDate);
+  console.log('billdate ka date',currentDate);
+
+  console.log('differnce of days',diffDays)
+  return diffDays;
+};
+
+// const get_diff_days_between = (billDate,assignedDate) => {
+//   // Get the current date
+//   // const todayDate = new Date();
+//   console.log('billdate initial format',billDate);
+//   // Split the billDate into day, month, and year parts
+//   const replaceDateParts = billDate.split('-');
+//   const billDay = parseInt(replaceDateParts[0]);
+//   const billMonth = parseInt(replaceDateParts[1]) - 1; // JavaScript months are 0-indexed
+//   const billYear = parseInt(replaceDateParts[2]);
+
+//   const assignDateParts = assignedDate.split('-');
+//   const assignDay = parseInt(assignDateParts[0]);
+//   const assignMonth = parseInt(assignDateParts[1]) - 1; // JavaScript months are 0-indexed
+//   const assignYear = parseInt(assignDateParts[2]);
+
+  
+
+//   // Create a Date object for the billDate
+//   const currentDate = new Date(billYear, billMonth, billDay);
+
+//   const todayDate = new Date(assignYear,assignMonth,assignDay);
+
+//   // Calculate the difference in days
+//   const timeDifference = todayDate - currentDate; // Difference in milliseconds
+//   const diffDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+//   console.log('aaj ka date',todayDate);
+//   console.log('billdate ka date',currentDate);
+
+//   console.log('differnce of days',diffDays)
+//   return diffDays;
+// };
 
 
 
@@ -184,33 +242,72 @@ const get_diff_days = (assignedCustomerFromDate) => {
           if (customer.assignedAyaDetails.length <= 0) {
             cnt++;
           } else {
-            const reverseData = customer.assignedAyaDetails.reverse();
+            const reverseData = customer.assignedAyaDetails;
+            let len = reverseData.length
         
-            if (reverseData.length > 0 && reverseData[0].assignedAyaFromDate) {
-              if (compareDate(reverseData[0].assignedAyaFromDate)) {
-                cnt++;
-              } else if (reverseData[0].assignedAyaToDate && !compareDate(reverseData[0].assignedAyaToDate)) {
-                cnt++;
+            if (reverseData.length > 0 && reverseData[len-1].assignedAyaFromDate) {
+              if (compareDate(reverseData[len-1].assignedAyaFromDate)) {
+                if (reverseData[len-1].assignedAyaToDate && !compareDate(reverseData[len-1].assignedAyaToDate)){
+                  cnt++;
+                console.log('to date kam hai')
+
+                }else if(reverseData[len-1].assignedAyaToDate){
+                  cnt++;
+                console.log('to date khaali hi hai')
+
+                }
+                // console.log('to date  khaali hi hai')
               }
             }
           }
         });
+        // console.log('chala yan hi')
         
         setCustomerNotAssigned(cnt);
 
         let billGenerated = 0;
+
+      //   customerData.forEach((customer)=>{
+      //     let assignedLen = customer.assignedAyaDetails.length;
+      //     let assignedData =  customer.assignedAyaDetails;
+      //     let invoiceLen = customer.customerGeneratedInvoice.length
+      //     let generatedData = customer.customerGeneratedInvoice;
+      //     if(len > 0){
+      //       let toDate = assignedData.assignedAyaToDate;
+      //       console.log('todate value',toDate);
+      //       if(!toDate){
+      //         if(invoiceLen <= 0){
+      //           if(get_diff_days(assignedData.assignedAyaFromDate) > 30){
+      //             billGenerated++;
+      //           }else if(get_diff_days(generatedData.generatedToDate) > 30){
+      //             billGenerated++;
+      //           }
+      //         }
+      //       }else{
+      //         if(invoiceLen <= 0 && get_diff_days(generatedData.assignedAyaFromDate) > 30){
+      //           billGenerated++;
+      //         }else if(get_diff_days_between(generatedData[invoiceLen-1].generatedToDate,assignedData.assignedAyaToDate) > 30){
+      //           billGenerated++;
+      //         }
+      //       }
+      //     }
+      // })
+
+
         customerData.forEach((customer) => {
           // console.log('single customer',customer)
-          if(customer.customerGeneratedInvoice.length <= 0 && customer.assignedAyaDetails.length > 0){
+          if(customer.customerGeneratedInvoice.length <= 0){
             let length = customer.assignedAyaDetails.length;
-            if(get_diff_days(customer.assignedAyaDetails[length-1].assignedAyaFromDate) > 30){
+            if(length > 0 && get_diff_days(customer.assignedAyaDetails[length-1].assignedAyaToDate) > 30){
               billGenerated++;
             }
           }else{
-            const reverseData = customer.customerGeneratedInvoice.reverse();
-            if(reverseData.length > 0 && reverseData[0].generatedToDate){
+            const reverseData = customer.customerGeneratedInvoice;
+            let len = reverseData.length
+
+            if(reverseData.length > 0 && reverseData[len-1].generatedToDate){
               // console.log('dekhe to kaise bna hai',get_diff_days(reverseData[0].generatedToDate));
-              if(get_diff_days(reverseData[0].generatedToDate) > 30){
+              if(get_diff_days(reverseData[len-1].generatedToDate) > 30){
 
                 billGenerated++;
               }else{
@@ -305,12 +402,14 @@ const get_diff_days = (assignedCustomerFromDate) => {
           if (customer.assignedCustomerDetails.length <= 0) {
             cnt++;
           } else {
-            const reverseData = customer.assignedCustomerDetails.reverse();
+            const reverseData = customer.assignedCustomerDetails;
+            let len = reverseData.length
+
         
-            if (reverseData.length > 0 && reverseData[0].assignedCustomerFromDate) {
-              if (compareFromDate(reverseData[0].assignedCustomerFromDate)) {
+            if (reverseData.length > 0 && reverseData[len-1].assignedCustomerFromDate) {
+              if (compareFromDate(reverseData[len-1].assignedCustomerFromDate)) {
                 cnt++;
-              } else if (reverseData[0].assignedCustomerToDate && !compareDate(reverseData[0].assignedCustomerToDate)) {
+              } else if (reverseData[len-1].assignedCustomerToDate && !compareDate(reverseData[len-1].assignedCustomerToDate)) {
                 cnt++;
               }
             }
@@ -329,10 +428,11 @@ const get_diff_days = (assignedCustomerFromDate) => {
               ayaPaid++;
             }
           }else{
-            const reverseData = customer.ayaGeneratedInvoice.reverse();
-            if(reverseData.length > 0 && reverseData[0].generatedToDate){
+            const reverseData = customer.ayaGeneratedInvoice;
+            let len = reverseData.length
+            if(reverseData.length > 0 && reverseData[len-1].generatedToDate){
               // console.log('dekhe to kaise bna hai',get_diff_days(reverseData[0].generatedToDate));
-              if(get_diff_days(reverseData[0].generatedToDate) > 30){
+              if(get_diff_days(reverseData[len-1].generatedToDate) > 30){
 
                 ayaPaid++;
               }else{
@@ -612,7 +712,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   {/* <i class="fa-solid fa-user"></i> */}
                   <img src={babysitter} alt="" className="img-fluid boximg" />
                 </div>
-                <h4>Number of Aya</h4>
+                <h4>Aya</h4>
                 <h5 className="fw-bold ">{aya.count}</h5>
               </div>
             </div>
@@ -634,7 +734,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   <img src={rating} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
                 </div>
 
-                <h4>Total Number of Customer</h4>
+                <h4>Customer</h4>
 
                 <h5 className="fw-bold "> {customer.count}</h5>
               </div>
@@ -651,7 +751,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   <img src={ayawork} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
                 </div>
                 <h4>
-                  Total Available Aya for work
+                  Available Aya
                 </h4>
                 <h5 className="fw-bold">{assign}</h5>
               </div>
@@ -673,7 +773,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   <img src={rating} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
                 </div>
                 <h4>
-                  Total Customer not assigned
+                  Customer not assigned
                 </h4>
                 <h5 className="fw-bold">{customerNotAssigned}</h5>
               </div>
@@ -693,7 +793,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                 <div className="card-body-icon">
                   <img src={payment} className="img-fluid boximg" style={{ width: "90px" }} />
                 </div>
-                <h4> Total Customer Bill</h4>
+                <h4>Customer Bill</h4>
                 <h5 className="fw-bold"> {CustomerBill}</h5>
               </div>
             </div>
@@ -707,7 +807,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                 <div className="card-body-icon">
                   <img src={payment} className="img-fluid boximg" style={{ width: "90px" }} />
                 </div>
-                <h4> Total Aya Bill</h4>
+                <h4>Aya Bill</h4>
                 <h5 className="fw-bold"> {ayaGeneratedBill}</h5>
               </div>
             </div>
@@ -735,7 +835,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
                   <img src={advanceicon} alt="" className="img-fluid boximg" />
                 </div>
-                <h4>Customer Not Given base Secuirty Money</h4>
+                <h4>Not Given base Secuirty Money</h4>
                 <h5 className="fw-bold">{securityPaid}</h5>
               </div>
             </div>
@@ -750,7 +850,7 @@ const get_diff_days = (assignedCustomerFromDate) => {
                   {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
                   <img src={pendingicon} alt="" className="img-fluid boximg" />
                 </div>
-                <h4> Total Amount Received from Customer</h4>
+                <h4>Received from Customer</h4>
                 <h5 className="fw-bold">{amountRec}</h5>
               </div>
             </div>

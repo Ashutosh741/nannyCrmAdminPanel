@@ -204,16 +204,30 @@ And you can start making an awesome admin application now.
 
    <!-- what remaining complete it by today
    
-   1. in custoomer list when the customer is replaced, then the overall structure ofassignedAyaDetails, is distorted, don't know why?
+   1. in custoomer list when the customer is replaced, then the overall structure ofassignedAyaDetails, is distorted, don't know why?  ✅
 
-   2. in payment section , show which customer bill is not generated
+   2. in payment section , show which customer bill is not generated ✅
 
    3. then in the payment view, give update, read , and delete functionality, both for aya and customer
 
    4. then show the admin profit on the basis of generated bill of any customer or aya, 
    when generated then the admin profit details get updated
 
-   5. in the security money not given page, we can show the remaining balance remaining of customer
+   5. in the security money not given page, we can show the remaining balance remaining of customer ✅
+
+   6. if the rate is wrong generated, then i have to give edit and delete option, in which the 
+index will be shared and delete and edit api will run, for replace details and assigned details
+
+   7. give option to generate bill for replaced aya
+
+   8. can give customer for leave, if on leave, then show it is assigned
+
+   8. admin dashboard
+
+
+
+
+
 
    
    <!-- miscellaneous
@@ -225,4 +239,5 @@ And you can start making an awesome admin application now.
     5. their should be different page for aya bill and customer bill
     -->
    
+    
     

@@ -7,7 +7,7 @@ import adminLayout from '../../hoc/adminLayout';
 import axios from "axios";
 import { Form, Navigate, useParams } from "react-router-dom";
 import { URL } from "../../Url";
-import { Button, Col, Container, FormGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, FormGroup, Row , Modal} from "react-bootstrap";
 
 
 
@@ -43,6 +43,9 @@ const AyaPaymentReceipt = () => {
     const[showUpdateButton,setShowUpdateButton] = useState(false);
     const[editIndex,setEditIndex] = useState('');
     const [selectedDate, setSelectedDate] = useState("");
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [itemToDeleteIndex, setItemToDeleteIndex] = useState(null); // State to store the index of the item to delete
 
 
     // const [showCuCode,setShowCustomerCode] = useState(false);
@@ -54,6 +57,35 @@ const AyaPaymentReceipt = () => {
     function ReverseString(str) {
       return str.split('-').reverse().join('-');
     }
+
+    
+    const handleDeleteBill = (index) => {
+      // When the delete button is clicked, set the item index to delete and open the modal
+      setItemToDeleteIndex(index);
+      setShowModal(true);
+    };
+  
+
+    const confirmDelete = async () => {
+      try {
+        const response = await axios.delete(`${URL}/deleteBill/${ayaId}/${itemToDeleteIndex}`);
+        const data = response.data; // Use response.data instead of response.json()
+        await fetchAyaData()
+        // console.log("updated data", data);
+        // alert("Bill deleted successfully");
+      } catch (error) {
+        console.error('Error deleting bill', error);
+        alert("Error deleting bill");
+      }
+      setShowModal(false);
+    };
+
+
+    const cancelDelete = () => {
+      // Cancel deletion and close the modal
+      setShowModal(false);
+      setItemToDeleteIndex(null);
+    };
 
     const fetchEditDetails = async(index)=>{
       setShowUpdateButton(true);
@@ -148,13 +180,16 @@ const AyaPaymentReceipt = () => {
             setContactNumber(data.contactNumber);
             setName(data.name);
             if(data.assignedCustomerDetails){
-              const reverseData = data.assignedCustomerDetails.reverse();
+              const reverseData = data.assignedCustomerDetails;
+              let len = reverseData.length
               console.log("reversed data",reverseData)
               setAssignedCustomerDetails(reverseData)
-              setAssignedCustomerName(reverseData[0].assignedCustomerName)
-              setAssignedCustomerPurpose(reverseData[0].assignedCustomerPurpose)
+              setAssignedCustomerName(reverseData[len-1].assignedCustomerName)
+              setAssignedCustomerPurpose(reverseData[len-1].assignedCustomerPurpose)
+              setRate(reverseData[len-1].assignedCustomerRate);
 
-              console.log("Here I'm",reverseData[0].assignedCustomerName);
+
+              console.log("Here I'm",reverseData[len-1].assignedCustomerName);
             }
             setTransactionDate(date);
 
@@ -238,7 +273,7 @@ const AyaPaymentReceipt = () => {
 
       
     const handleUpdateBill = async (e) => {
-      e.preventDefault();
+      // e.preventDefault();
       try {
 
         const updatedInvoice = {
@@ -278,6 +313,8 @@ const AyaPaymentReceipt = () => {
         setGeneratedInvoice (updatedInvoices);
         resetBillEntry();
         setShowUpdateButton(false); 
+        setButtonDisabled(false);
+        // set
         // setShowGeneratedButton(true)
 
       } catch (err) {
@@ -291,7 +328,7 @@ const AyaPaymentReceipt = () => {
 
     
     const handleGenerateBill = async (e) => {
-      e.preventDefault();
+      // e.preventDefault();
       try {
         const response = await fetch(`${URL}/ayareg/${ayaId}`, {
           method: "PUT",
@@ -343,6 +380,8 @@ const AyaPaymentReceipt = () => {
           
           setGeneratedInvoice (prevInvoices => [...prevInvoices, newInvoice]);
         resetBillEntry();
+        setButtonDisabled(false); // Disable the button when clicked
+
       } catch (err) {
         console.log("error in this customerCode",ayaId);
 
@@ -609,7 +648,7 @@ const AyaPaymentReceipt = () => {
                         </div> */}
                         <div className="duration col-6">
                             <label required>FROM DATE:
-                            <input type="text" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
+                            <input type="text" value = {fromDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
                         <div className="to col-6">
@@ -664,21 +703,37 @@ const AyaPaymentReceipt = () => {
 
             </div>
             {
-              (showGeneratedButton && !showUpdateButton) ?  (
-                
+              (showGeneratedButton && !showUpdateButton) ? (
                 <div className="print-btn text-center billButton">
-                <button className='btn bg-primary text-white' onClick = {()=>fetchAyaData()} >Generate Bill</button>
+                  <button
+                    className='btn bg-primary text-white'
+                    onClick={() => {
+                      handleGenerateBill();
+                      setButtonDisabled(true); // Disable the button when clicked
+                    }}
+                    disabled={buttonDisabled} // Set the disabled attribute
+                  >
+                    {buttonDisabled ? 'Generating...' : 'Generate Bill'}
+                  </button>
                 </div>
-                
               ) : (
-                  ((showUpdateButton) ? (
+                (showUpdateButton) ? (
                   <div className="print-btn text-center billButton">
-                  <button className='btn bg-primary text-white' onClick={(e)=>handleUpdateBill(e)}>Update Bill</button>
+                    <button
+                      className='btn bg-primary text-white'
+                      onClick={(e) => {
+                        handleUpdateBill(e);
+                        setButtonDisabled(true); // Disable the button when clicked
+                      }}
+                      disabled={buttonDisabled} // Set the disabled attribute
+                    >
+                      {buttonDisabled ? 'Updating...' : 'Update Bill'}
+                    </button>
                   </div>
-                  ) : null
-                  )
+                ) : null
               )
             }
+
             </form>
         </div>
           </div>
@@ -723,13 +778,37 @@ const AyaPaymentReceipt = () => {
                                 <button className="btn bg-primary text-white" onClick={() => fetchPrintDetails(index)}>Print</button>
                               </td>
                               <td>
-                                <button className="btn bg-secondary text-white" onClick={() => fetchEditDetails(index)}>Edit</button>
+                                <div className="d-flex gap-2">
+                                <button className="btn bg-secondary text-white" onClick={() => fetchEditDetails(index)}>
+                                <i class="fa-solid fa-pen-to-square"></i>
+
+                                </button>
+                                <button className="btn bg-danger text-white" onClick={() => handleDeleteBill(index)}>
+                                <i class="fa-solid fa-trash"></i>
+
+                                </button>
+
+                                </div>
                               </td>
                             </tr>
                           );
                         }
                       }).reverse()}
                       </tbody>
+                      <Modal show={showModal} onHide={() => setShowModal(false)}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Confirm Deletion</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={cancelDelete}>
+                          Cancel
+                        </Button>
+                        <Button variant="danger" onClick={confirmDelete}>
+                          Delete
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
                     </table>
                   </div>
                 </Col>

@@ -27,11 +27,11 @@ const CustomerListContent = (props) => {
           filteredData = res.data.data.filter((item) => item.workinglocation === props.type);
         }
   
-        const data = filteredData.map((item) => {
-          const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
-          return { ...item, assignedAyaDetails };
-        });
-        setList(data);
+        // const data = filteredData.map((item) => {
+        //   const assignedAyaDetails = [...item.assignedAyaDetails].reverse();
+        //   return { ...item, assignedAyaDetails };
+        // });
+        setList(filteredData);
         setLoading(false);
       })
       .catch((error) => {
@@ -82,8 +82,8 @@ const CustomerListContent = (props) => {
     const replacedDateDifference = (data) => {
     if (data && data.length > 0) {
       // const reverseData = data[0].assignedAyaDetails.reverse();
-      const fromDate = new Date(data[0].replaceAyaFromDate);
-      const toDate = new Date(data[0].replaceAyaToDate);
+      const fromDate = new Date(data[data.length-1].replaceAyaFromDate);
+      const toDate = new Date(data[data.length-1].replaceAyaToDate);
       const todayDate = new Date();
       // console.log("from date let's see",fromDate);
       // console.log("toDate date let's see",toDate)
@@ -275,9 +275,11 @@ const CustomerListContent = (props) => {
         if (data && data.length > 0 && data[0].replaceAyaDetails) {
           const replaceDetails = data[0].replaceAyaDetails;
           if (replaceDetails) {
-            const replaceDetailsCopy = [...replaceDetails].reverse();
+            // const replaceDetailsCopy = replaceDetails;
+            // let length =
+
             // console.log('bhai yeh apne aap chal rrha tha', replaceDetailsCopy);
-            return replacedDateDifference(replaceDetailsCopy)
+            return replacedDateDifference(replaceDetails)
               ? (
                 <Link to={`/customerassign/${params.row._id}`} className="btn-warning btn text-black">
                   YES
