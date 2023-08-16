@@ -71,7 +71,7 @@ const CustomerPaymentReceipt = () => {
 
     const confirmDelete = async () => {
       try {
-        const response = await axios.delete(`${URL}/deleteBill/${customerId}/${itemToDeleteIndex}`);
+        const response = await axios.delete(`${URL}/deleteCustomerBill/${customerId}/${itemToDeleteIndex}`);
         const data = response.data; // Use response.data instead of response.json()
         await fetchCustomerData()
         // console.log("updated data", data);
@@ -99,8 +99,8 @@ const CustomerPaymentReceipt = () => {
 
         // const data = response.data.data;
         setRate(data.generatedRate);
-        setFromDate(ReverseString(data.generatedFromDate));
-        setToDate(ReverseString(data.generatedToDate));
+        setFromDate(data.generatedFromDate);
+        setToDate(data.generatedToDate);
         // setgeneratedBill(data.generatedBill);
         // setGeneratedWorkingDays(data.generatedWorkingDays);
         // setAssignedAyaPurpose(data.generatedAyaAssigned);
@@ -138,8 +138,8 @@ const CustomerPaymentReceipt = () => {
 
             // const data = response.data.data;
             setRate(data.generatedRate);
-            setFromDate(ReverseString(data.generatedFromDate));
-            setToDate(ReverseString(data.generatedToDate));
+            setFromDate(data.generatedFromDate);
+            setToDate(data.generatedToDate);
             // setgeneratedBill(data.generatedBill);
             // setGeneratedWorkingDays(data.generatedWorkingDays);
             setAssignedAyaPurpose(data.generatedAyaAssigned);
@@ -170,6 +170,7 @@ const CustomerPaymentReceipt = () => {
             setCustomerId(response.data.data._id)
             setCustomerData(response.data.data);
             const data = response.data.data
+            setCustomerCode(data.customerCode)
             // setSecurityAmount(data.securityAmount);
 
             // console.log("generated Invoice",data.generatedInvoice)
@@ -668,7 +669,7 @@ const CustomerPaymentReceipt = () => {
                         </div> */}
                         <div className="duration col-6">
                             <label required>FROM DATE:
-                            <input type="text" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
+                            <input type="text" value = {fromDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
                         <div className="to col-6">

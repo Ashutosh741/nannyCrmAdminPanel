@@ -897,7 +897,7 @@ const replaceCustomerData = async () => {
                                   </>
                               )}
                             </React.Fragment>
-                          ))}
+                          )).reverse()}
                           </tbody>
                   )}
                 </table>

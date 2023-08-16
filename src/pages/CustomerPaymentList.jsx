@@ -99,7 +99,7 @@ const CustomerPaymentList = (props) => {
   
     const handleRowClick = (params) => {
       const field = params.field;
-      if(field === "assignedAyaName")return ;
+      if(field === "assignedAyaName" || field === "paymentstatus")return ;
       // console.log(`/payment/${params.row._id}`);
   
       else navigate(`/payment/${params.row._id}`);
@@ -287,7 +287,14 @@ const CustomerPaymentList = (props) => {
               const data2 = params.row.assignedAyaDetails;
               console.log('assigned details', data2)
               if(data.length <= 0 && data2 && data2.length > 0){
-                return <button className="btn btn-default text-black">Not Generated</button>;
+                return(
+                  <Link
+                  to={`/generateCustomerBill/${params.row._id}`}
+                  className="btn btn-danger text-white"
+                >
+                  Due
+                </Link>
+                  )
                 //  assigned, length check also 
                 // from date difference 30 days
               }
@@ -299,9 +306,23 @@ const CustomerPaymentList = (props) => {
                 // console.log('after reverse',reverseData);
           
                 if (compareDate(lastGenerated.generatedToDate) < 30) {
-                  return <button className="btn btn-success">Completed</button>;
+                  return (
+                    <Link
+                    to={`/generateCustomerBill/${params.row._id}`}
+                    className="btn btn-success text-white"
+                  >
+                    Paid
+                  </Link>
+                    )
                 } else {
-                  return <button className="btn btn-danger">Pending</button>;
+                  return(
+                    <Link
+                    to={`/generateCustomerBill/${params.row._id}`}
+                    className="btn btn-danger text-white"
+                  >
+                    Due
+                  </Link>
+                    )
                 }
               } 
               else {

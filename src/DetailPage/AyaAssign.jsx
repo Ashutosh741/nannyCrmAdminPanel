@@ -138,9 +138,9 @@ const replaceayaData = async () => {
       const techData = response.data.data;
       
       // Create a shallow copy of assignedCustomerDetails before reversing
-      let assignedLength = assignedCustomerDetails.length;
-      const reversedAssignedCustomerDetails = assignedCustomerDetails;
-      // console.log('so whats status of assigned Details in reverse order',reversedAssignedCustomerDetails)
+      let assignedLength = techData.assignedCustomerDetails.length;
+      const reversedAssignedCustomerDetails = techData.assignedCustomerDetails;
+      console.log('so whats status of assigned Details in reverse order',reversedAssignedCustomerDetails)
       setTech(techData);
       setAssignedCustomerDetails(reversedAssignedCustomerDetails);
       
@@ -903,7 +903,7 @@ const replaceayaData = async () => {
                                   </>
                               )}
                             </React.Fragment>
-                          ))}
+                          )).reverse()}
                           </tbody>
                   )}
                 </table>

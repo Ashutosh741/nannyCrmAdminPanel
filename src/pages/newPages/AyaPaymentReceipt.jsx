@@ -68,7 +68,7 @@ const AyaPaymentReceipt = () => {
 
     const confirmDelete = async () => {
       try {
-        const response = await axios.delete(`${URL}/deleteBill/${ayaId}/${itemToDeleteIndex}`);
+        const response = await axios.delete(`${URL}/deleteAyaBill/${ayaId}/${itemToDeleteIndex}`);
         const data = response.data; // Use response.data instead of response.json()
         await fetchAyaData()
         // console.log("updated data", data);
@@ -91,13 +91,13 @@ const AyaPaymentReceipt = () => {
       setShowUpdateButton(true);
       try{
         const response = await axios.get(`${URL}/ayareg/${ayaCode ? ayaCode : id}`)
-        // console.log("what data is",response.data.data.generatedInvoice[index]);
+        // console.log("what data is",response.data.data.ayaGeneratedInvoice[index]);
         const data = response.data.data.ayaGeneratedInvoice[index];
 
         // const data = response.data.data;
         setRate(data.generatedRate);
-        setFromDate(ReverseString(data.generatedFromDate));
-        setToDate(ReverseString(data.generatedToDate));
+        setFromDate(data.generatedFromDate);
+        setToDate(data.generatedToDate);
         // setgeneratedBill(data.generatedBill);
         // setGeneratedWorkingDays(data.generatedWorkingDays);
         // setAssignedAyaPurpose(data.generatedAyaAssigned);
@@ -135,8 +135,8 @@ const AyaPaymentReceipt = () => {
 
           // const data = response.data.data;
           setRate(data.generatedRate);
-          setFromDate(ReverseString(data.generatedFromDate));
-          setToDate(ReverseString(data.generatedToDate));
+          setFromDate(data.generatedFromDate);
+          setToDate(data.generatedToDate);
           // setgeneratedBill(data.generatedBill);
           // setGeneratedWorkingDays(data.generatedWorkingDays);
           setAssignedCustomerPurpose(data.generatedCustomerAssigned);
@@ -169,6 +169,7 @@ const AyaPaymentReceipt = () => {
             // console.log(response.data.data._id);
             setAyaId(response.data.data._id)
             setAyaData(response.data.data);
+            setAyaCode(response.data.data.ayaCode)
             const data = response.data.data;
             
             // console.log("generated Invoice",data.generatedInvoice)
@@ -274,6 +275,7 @@ const AyaPaymentReceipt = () => {
       
     const handleUpdateBill = async (e) => {
       // e.preventDefault();
+      console.log('paymnet mode, ko kya hoa gya',paymentMode)
       try {
 
         const updatedInvoice = {
@@ -752,8 +754,9 @@ const AyaPaymentReceipt = () => {
                           <th className="">Aya Code</th>
                           <th className="">Generated Bill</th>
                           <th className="">Payment Mode</th>
-                          <th className="">To Data</th>
                           <th className="">From Date</th>
+
+                          <th className="">To Data</th>
                           <th className="">Rate</th>
                           <th className="">Aya Assigned</th>
                           <th className="">Download Bill</th>
@@ -770,8 +773,9 @@ const AyaPaymentReceipt = () => {
                               <td>{ayaCode}</td>
                               <td>{item.generatedBill}</td>
                               <td>{item.generatedPaymentMode}</td>
-                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedFromDate}</td>
+
+                              <td>{item.generatedToDate}</td>
                               <td>{item.generatedRate}</td>
                               <td>{item.generatedCustomerAssigned}</td>
                               <td>

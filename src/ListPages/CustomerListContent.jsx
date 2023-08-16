@@ -191,13 +191,14 @@ const CustomerListContent = (props) => {
           renderCell: (params) => {
             //  i don't know why reverse data aa rha hai, to isko as it is chod do
             const data = params.row.assignedAyaDetails;
+            let dataLen = data.length;
             console.log("bhai tahbi mein kisme kr rha tha",data);
             // console.log("bhai tahbi mein kisme kr rha tha",checkDateDifference(data));
 
-            if (checkDateDifference(data)){
+            if ( dataLen > 0 && checkDateDifference(data)){
               return (
                 <Link
-                to={`/ayareg/${data[0].assignedAyaCode}`}
+                to={`/ayareg/${data[dataLen-1].assignedAyaCode}`}
                 className="btn-success btn text-white"
               >
                 {data[0].assignedAyaName}
@@ -207,7 +208,7 @@ const CustomerListContent = (props) => {
             else{
               return (
                 <Link
-                  to={`/ayaassign/${params.row._id}`}
+                  to={`/customerassign/${params.row._id}`}
                   className="btn-danger btn text-white"
                 >
                   Assign Aya
@@ -227,8 +228,9 @@ const CustomerListContent = (props) => {
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedAyaDetails;
-            if (data && data.length > 0 && data[0].assignedAyaRate) {
-              return <>{data[0].assignedAyaRate}</>;
+            let dataLen = data.length;
+            if (data && data.length > 0 && data[dataLen-1].assignedAyaRate) {
+              return <>{data[dataLen-1].assignedAyaRate}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -242,8 +244,9 @@ const CustomerListContent = (props) => {
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedAyaDetails;
-            if (data && data.length > 0 && data[0].assignedAyaPurpose) {
-              return <>{data[0].assignedAyaPurpose}</>;
+            let dataLen = data.length;
+            if (data && data.length > 0 && data[dataLen-1].assignedAyaPurpose) {
+              return <>{data[dataLen-1].assignedAyaPurpose}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -257,8 +260,9 @@ const CustomerListContent = (props) => {
           editable: true,
           renderCell: (params) => {
             const data = params.row.assignedAyaDetails;
-            if (data && data.length > 0 && data[0].assignedAyaShift) {
-              return <>{data[0].assignedAyaShift}</>;
+            let dataLen = data.length;
+            if (data && data.length > 0 && data[dataLen-1].assignedAyaShift) {
+              return <>{data[dataLen-1].assignedAyaShift}</>;
             } else {
               return null; // or render a placeholder text or component
             }
@@ -272,8 +276,9 @@ const CustomerListContent = (props) => {
         editable: true,
         renderCell: (params) => {
         const data = params.row.assignedAyaDetails;
-        if (data && data.length > 0 && data[0].replaceAyaDetails) {
-          const replaceDetails = data[0].replaceAyaDetails;
+        let dataLen = data.length;
+        if (data && data.length > 0 && data[dataLen-1].replaceAyaDetails) {
+          const replaceDetails = data[dataLen-1].replaceAyaDetails;
           if (replaceDetails) {
             // const replaceDetailsCopy = replaceDetails;
             // let length =

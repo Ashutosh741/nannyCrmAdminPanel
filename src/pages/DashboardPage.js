@@ -724,24 +724,6 @@ const get_diff_days = (billDate) => {
             </a> */}
           </div>
         </div>
-        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomer} style={{ cursor: "pointer" }}>
-          <div className="card text-white o-hidden h-100" style={{background: "#b86d6d"}}>
-            <div className="card-body">
-
-              <div className="mr-5 cardbox mt-3">
-                <div className="card-body-icon">
-                  {/* <i class="fa-solid fa-users"></i> */}
-                  <img src={rating} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
-                </div>
-
-                <h4>Customer</h4>
-
-                <h5 className="fw-bold "> {customer.count}</h5>
-              </div>
-            </div>
-
-          </div>
-        </div>
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleNannywork} style={{ cursor: "pointer" }}>
           <div className="card text-white bg-success  o-hidden h-100">
             <div className="card-body">
@@ -764,6 +746,52 @@ const get_diff_days = (billDate) => {
             </a> */}
           </div>
         </div>
+        <div className="col-xl-3 col-sm-6 mb-3"  style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#008080" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  <img src={payment} className="img-fluid boximg" style={{ width: "90px" }} />
+                </div>
+                <h4>Aya Bill</h4>
+                <h5 className="fw-bold"> {ayaGeneratedBill}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleayaPayment} style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#191970" }}>
+            <div className="card-body mt-3">
+              <div className="mr-5 cardbox">
+                <div className="card-body-icon">
+                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
+                  <img src={salary} alt="" className="img-fluid boximg" />
+                </div>
+                <h4>Aya Amount not Paid</h4>
+                <h5 className="fw-bold">{ayaPaid}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomer} style={{ cursor: "pointer" }}>
+          <div className="card text-white o-hidden h-100" style={{background: "#b86d6d"}}>
+            <div className="card-body">
+
+              <div className="mr-5 cardbox mt-3">
+                <div className="card-body-icon">
+                  {/* <i class="fa-solid fa-users"></i> */}
+                  <img src={rating} alt="" className="img-fluid boximg" style={{ width: "70px" }} />
+                </div>
+
+                <h4>Customer</h4>
+
+                <h5 className="fw-bold "> {customer.count}</h5>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerwork} style={{ cursor: "pointer" }}>
           <div className="card text-white bg-success  o-hidden h-100">
             <div className="card-body">
@@ -799,20 +827,21 @@ const get_diff_days = (billDate) => {
             </div>
           </div>
         </div>
-
-        <div className="col-xl-3 col-sm-6 mb-3"  style={{ cursor: "pointer" }}>
-          <div className="card text-white  o-hidden h-100" style={{ background: "#008080" }}>
+        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerBill} style={{ cursor: "pointer" }}>
+          <div className="card text-white  o-hidden h-100" style={{ background: "#2F4F4F" }}>
             <div className="card-body mt-3">
               <div className="mr-5 cardbox">
                 <div className="card-body-icon">
-                  <img src={payment} className="img-fluid boximg" style={{ width: "90px" }} />
+                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
+                  <img src={pendingicon} alt="" className="img-fluid boximg" />
                 </div>
-                <h4>Aya Bill</h4>
-                <h5 className="fw-bold"> {ayaGeneratedBill}</h5>
+                <h4>Customer Bill not Generated</h4>
+                <h5 className="fw-bold">{billGenerated}</h5>
               </div>
             </div>
           </div>
         </div>
+
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleSecurity} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: "#6495ED" }}>
             <div className="card-body mt-3">
@@ -856,20 +885,7 @@ const get_diff_days = (billDate) => {
             </div>
           </div>
         </div>
-        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleCustomerBill} style={{ cursor: "pointer" }}>
-          <div className="card text-white  o-hidden h-100" style={{ background: "#2F4F4F" }}>
-            <div className="card-body mt-3">
-              <div className="mr-5 cardbox">
-                <div className="card-body-icon">
-                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
-                  <img src={pendingicon} alt="" className="img-fluid boximg" />
-                </div>
-                <h4>Customer Bill not Generated</h4>
-                <h5 className="fw-bold">{billGenerated}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
+
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleayaPayment} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: "#191970" }}>
             <div className="card-body mt-3">
@@ -884,20 +900,7 @@ const get_diff_days = (billDate) => {
             </div>
           </div>
         </div>
-        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleayaPayment} style={{ cursor: "pointer" }}>
-          <div className="card text-white  o-hidden h-100" style={{ background: "#191970" }}>
-            <div className="card-body mt-3">
-              <div className="mr-5 cardbox">
-                <div className="card-body-icon">
-                  {/* <i class="fa-solid fa-hand-holding-dollar"></i> */}
-                  <img src={salary} alt="" className="img-fluid boximg" />
-                </div>
-                <h4>Aya Amount not Paid</h4>
-                <h5 className="fw-bold">{ayaPaid}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
+
         <div className="col-xl-3 col-sm-6 mb-3" onClick={handleProfit} style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: " #7B68EE" }}>
             <div className="card-body mt-3">

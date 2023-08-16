@@ -265,14 +265,14 @@ const AyaPaymentListContent = (props) => {
 
             const data2 = params.row.assignedCustomerDetails;
             if(data.length <= 0 && data2 && data2.length > 0){
-              return (
-              <Link
-              to={`/generateAyaBill/${params.row._id}`}
-              className="btn btn-default text-black"
-            >
-              Not Generated
-            </Link>
-              )
+              return(
+                <Link
+                to={`/generateAyaBill/${params.row._id}`}
+                className="btn btn-danger text-white"
+              >
+                Due
+              </Link>
+                )
             }
             else if (data && data.length > 0) {
               // console.log('before reverse',data);
@@ -286,7 +286,7 @@ const AyaPaymentListContent = (props) => {
                 to={`/generateAyaBill/${params.row._id}`}
                 className="btn btn-success text-white"
               >
-                Completed
+                Paid
               </Link>
                 )
               } else {
@@ -295,7 +295,7 @@ const AyaPaymentListContent = (props) => {
                 to={`/generateAyaBill/${params.row._id}`}
                 className="btn btn-danger text-white"
               >
-                Pending
+                Due
               </Link>
                 )
               }
