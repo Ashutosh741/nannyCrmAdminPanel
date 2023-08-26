@@ -542,13 +542,23 @@ const replaceCustomerData = async () => {
   }, [assignedAyaCode]);
 
 
+  // useEffect(()=>{
+  //   setCommission(assignedAyaRate-assignedCustomerRate)
+  // },[assignedCustomerRate])
+
+  // useEffect(()=>{
+  //   setAssignedCustomerRate(assignedAyaRate - commission)
+  // },[commission])
+
+  
   useEffect(()=>{
-    setCommission(assignedAyaRate-assignedCustomerRate)
-  },[assignedCustomerRate])
+    setCommission(assignedCustomerRate-assignedAyaRate)
+  },[assignedAyaRate])
 
   useEffect(()=>{
-    setAssignedCustomerRate(assignedAyaRate - commission)
+    setAssignedAyaRate(assignedCustomerRate - commission)
   },[commission])
+
 
   useEffect(()=>{
     setReplaceDays(dateDifference());
@@ -785,16 +795,17 @@ const replaceCustomerData = async () => {
                     </Col>
                     <Col md = "2">
                       <label className="mb-1 mt-3">Customer Rate</label>
-                      <input type = "number" className="form-control" onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} min='0' required></input>
+                      <input type = "number" className="form-control" onChange={(e)=>setAssignedCustomerRate(e.target.value)} value={assignedCustomerRate} min='0' required></input>
                     </Col>
                     <Col md = "2">
                       <label className="mb-1  mt-3">Commission</label>
-                      <input type = "number" className="form-control" max = {assignedAyaRate} min='0' onChange={(e)=>setCommission(e.target.value)} value = {commission} required></input>
+                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setCommission(e.target.value)} value = {commission} required></input>
                     </Col>
                     <Col md = "2">
-                      <label className="mb-1  mt-3">Customer Rate</label>
-                      <input type = "number" className="form-control" max = {assignedCustomerRate} min='0' onChange={(e)=>setAssignedCustomerRate(e.target.value)} value={assignedCustomerRate} required></input>
+                      <label className="mb-1  mt-3">Aya Rate</label>
+                      <input type = "number" className="form-control" max = {assignedAyaRate} min='0' onChange={(e)=>setAssignedAyaRate(e.target.value)} value={assignedAyaRate} required></input>
                     </Col>
+
                     <Col md="1 mt-3">
                       <div className="mt-4">
                         <button

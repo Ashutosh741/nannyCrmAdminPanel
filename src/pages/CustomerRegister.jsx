@@ -783,7 +783,7 @@ function CustomerRegister() {
                   <label>ID Card Number:</label>
                   <input
                     className="form-control"
-                    type="number"
+                    type="text"
                     value={idCardNumber}
                     onChange={(e) => setIdCardNumber(e.target.value)}
                     required

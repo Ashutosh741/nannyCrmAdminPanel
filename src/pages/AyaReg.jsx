@@ -217,6 +217,20 @@ function AyaReg() {
     }
   };
 
+  // useEffect(()=>{
+  //   if (sameAddress === true){
+  //     setPermanentAddress(presentAddress);
+  //     setPermanentVill(vill);
+  //     setPermanentStreet(street);
+  //     setPermanentLandmark(landmark);
+  //     setPermanentPost(post);
+  //     setPermanentDistrict(district);
+  //     setPermanentState(state);
+  //     setPermanentPin(pin);
+  //   }
+
+
+  // },[sameAddress,permanentAddress,permanentVill,permanentStreet,permanentLandmark,permanentPost,permanentDistrict,permanentState,permanentPin])
 
   function getAge(dateString) 
 {
@@ -234,6 +248,8 @@ function AyaReg() {
   useEffect(()=>{
     getAge(dateOfBirth);
   },[dateOfBirth])
+
+
 
   return (
     <>
@@ -447,18 +463,22 @@ function AyaReg() {
                   <div
                     className="input-group mt-3  shadow rounded-3 p-3"
                     style={{ background: "#0747a6" }}
-                    onClick={handleCheckAddress}
+                    // onClick={handleCheckAddress}
                   >
                     <input
                       type="checkbox"
                       id="checkaddress"
                       className="me-2"
                       style={{ cursor: "pointer" }}
+                    onClick={handleCheckAddress}
+
                     />
                     <label
                       htmlFor="checkaddress"
                       className="m-0 text-white"
-                      style={{ cursor: "pointer" }}
+                      // style={{ cursor: "pointer" }}
+                    // onClick={handleCheckAddress}
+
                     >
                       If Present Address were same as Permanent Address then
                       Click the Checkbox{" "}
@@ -630,7 +650,7 @@ function AyaReg() {
                     <input
                       className="form-control"
                       name="idCardNumber"
-                      type="number"
+                      type="text"
                       value={idCardNumber}
                       onChange={(e) => setIdCardNumber(e.target.value)}
                       required

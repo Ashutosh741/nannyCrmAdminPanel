@@ -14,6 +14,7 @@ const Attendence = () => {
 
   const [customerData, setCustomerData] = useState(null);
   const [customerCode, setCustomerCode] = useState("");
+  const [customerRate, setCustomerRate] = useState(0);
 
   const fetchCustomerData = async () => {
     try {
@@ -21,6 +22,16 @@ const Attendence = () => {
       setCustomerData(response.data.data);
       console.log(customerCode);
       console.log(customerData);
+      const data = response.data.data;
+      if(data.assignedAyaDetails){
+        const reverseData = data.assignedAyaDetails;
+        let len = reverseData.length
+        // console.log("reversed data",reverseData)
+        // setAssignedAyaName(reverseData[len-1].assignedAyaName)
+        // setAssignedAyaPurpose(reverseData[len-1].assignedAyaPurpose)
+        setCustomerRate(reverseData[len-1].assignedAyaRate);
+        // console.log("are you there",reverseData[len-1].assignedAyaName);
+      }
       // console.log(response);
     } catch (error) {
       console.log("Error fetching customer data:", error);
@@ -86,7 +97,7 @@ const Attendence = () => {
   const renderRows = () => {
     const rows = [];
     // selectedDate.split('').reverse().join('')
-    console.log("yeh kaam krna chahiye",ReverseString(selectedDate))
+    // console.log("yeh kaam krna chahiye",ReverseString(selectedDate))
 
     for (let i = 1; i <= getLastDayOfMonth(); i++) {
       rows.push(
@@ -482,7 +493,7 @@ const Attendence = () => {
                     fontSize: "14px",
                   }}
                 >
-                  Rate :{" "}
+                  Rate :{customerRate}
                 </h4>
                 <input
                   type="text"
