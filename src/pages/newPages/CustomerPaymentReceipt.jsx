@@ -331,6 +331,29 @@ const CustomerPaymentReceipt = () => {
   
 
 
+    // const handleGenerateAya = async (e) => {
+    //   e.preventDefault();
+    //   // console.log("yeah bro running",assignedAyaId);
+    //   try {
+    //     const response = await axios.put(`${URL}/ayareg/${assignedAyaId}`, {
+    //       assignedCustomerCode: tech.customerCode,
+    //       assignedCustomerName: tech.name,
+    //       assignedCustomerFromDate: assignedAyaFromDate,
+    //       assignedCustomerToDate: assignedAyaToDate,
+    //       assignedCustomerReason: assignedAyaReason,
+    //       assignedCustomerRate: assignedAyaRate,
+    //       assignedCustomerShift: assignedAyaShift,
+    //       assignedCustomerPurpose: assignedAyaPurpose,
+    //     });
+    //     const data = response.data;
+    //     console.log("it's show time ", data);
+    //     await fetchassignData();
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+
+
 
     const handleGenerateBill = async (e) => {
         // e.preventDefault();
@@ -361,7 +384,7 @@ const CustomerPaymentReceipt = () => {
             },
           });
         //   await customerData();
-    
+        // handleGenerateAya()
           const data = await response.json();
           console.log("updated data",data);
           alert("data Submitted Succesfully");
