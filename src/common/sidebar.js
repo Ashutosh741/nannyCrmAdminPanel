@@ -90,6 +90,11 @@ const Sidebar = () => {
                             <i class="fa-solid fa-coins"></i> Gen... Aya Bill
                         </NavLink>
                     </li>
+                    <li className="my-3">
+                        <NavLink tag="a" className="" to="/generateSecurityBill">
+                            <i class="fa-solid fa-coins"></i> Security Bill
+                        </NavLink>
+                    </li>
                 </ul>
             </PerfectScrollbar>
             <div className="dropdown fixed-bottom-dropdown">

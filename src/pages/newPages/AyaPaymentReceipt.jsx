@@ -395,11 +395,6 @@ const AyaPaymentReceipt = () => {
     function convertNumberToWords(number) {
       const units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
       const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-    
-      if (number === 0) {
-        return 'zero';
-      }
-    
       if (number < 20) {
         return units[number];
       }
@@ -505,11 +500,16 @@ const AyaPaymentReceipt = () => {
             <div className="col-12">
 
             <div className="row receipt">
-                    <div className="col-6 text-start mb-4">
+                    <div className="col-4 text-start mb-4">
                         <img src = {logo} className='companyLogo img-fluid'/>
                     </div>
-                    <div className="col-6 contactNumber">
-                        <span>MOBILE NO : 97349-15314<br></br></span>
+                    <div className="col-4">
+                      <div className="receipt_back">
+                      <h6 className="mt-2">PAYMENT RECEIPT</h6>
+                      </div>
+                    </div>
+                    <div className="col-4 contactNumber">
+                        <span className="nobreak">MOBILE NO : 97349-15314<br></br></span>
                         <span>70010-85855</span>
                     </div>
                     <div className="col-12 companyName mt-2">
@@ -535,7 +535,7 @@ const AyaPaymentReceipt = () => {
                     <div className="col-12 row-2 d-flex mb-2">
                       <div className="col-6">
                         <div className="partyName">
-                            <span>PARTY NAME: <strong>{name}</strong></span>
+                            <span>AYA NAME: <strong>{name}</strong></span>
                         </div>
                         </div>
                         <div className="col-6">
@@ -615,7 +615,7 @@ const AyaPaymentReceipt = () => {
                     <div className="col-12 row-4  d-flex mb-2">
                       <div className="div col-6 d-flex">
                         <div className="purpose">
-                            <span>ASSIGNED TO: <strong>{assignedCustomerName}</strong></span>
+                            <span>PARTY NAME: <strong>{assignedCustomerName}</strong></span>
                         </div>
                         {/* <select className="form-select options" aria-label="Default select example" required>
                             <option selected>select</option>
@@ -635,7 +635,7 @@ const AyaPaymentReceipt = () => {
                             <span>MOBILE NO:{contactNumber}</span>
                         </div>
                         <div className="rate col-6">
-                                <span>RATE:</span>
+                                <span>RATE: <span className="fw-bold me-2">Rs</span></span>
                                 <input type="number" min="0" value={rate}/>
                         </div>
                         {/* <div className="securityMoney col-4 d-flex">
@@ -693,13 +693,13 @@ const AyaPaymentReceipt = () => {
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>CUSTOMER SIGNATURE</span>
+                        <h6>CUSTOMER SIGNATURE</h6>
                     </div>
                     <div className="col-6 text-center mb-2">
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>FOR: JOY GURU JANAKALYAN TRUST & SERVICE</span>
+                        <h6>FOR: JOY GURU JANAKALYAN TRUST & SERVICE</h6>
                     </div>
                 </div>
 

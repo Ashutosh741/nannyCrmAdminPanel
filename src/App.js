@@ -36,6 +36,7 @@ import CustomerPaymentReceipt from './pages/newPages/CustomerPaymentReceipt';
 import AyaPaymentReceipt from './pages/newPages/AyaPaymentReceipt';
 import AyaBill from './pages/newPages/AyaBill';
 import CustomerBill from './pages/newPages/CustomerBill';
+import SecurityDeposit from './pages/newPages/SecurityDeposit';
 
 
 function App() {
@@ -98,7 +99,7 @@ function App() {
                 {/* <Route path='generateBill' element = {<CustomerPaymentReceipt/>}/> */}
                 <Route path='generateCustomerBill' element = {<CustomerPaymentReceipt/>}/>
                 <Route path='generateAyaBill' element = {<AyaPaymentReceipt/>}/>
-
+                <Route path='generateSecurityBill' element = {<SecurityDeposit/>}/>
                 <Route path="generateAyaBill" element="">
                     <Route path=':id' element={<AyaPaymentReceipt />} />
                 </Route>

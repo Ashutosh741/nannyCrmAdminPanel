@@ -205,7 +205,8 @@ function AyaReg() {
       setPermanentDistrict(district);
       setPermanentState(state);
       setPermanentPin(pin);
-    } else {
+    }
+     else {
       setPermanentAddress("");
       setPermanentVill("");
       setPermanentStreet("");

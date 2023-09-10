@@ -901,7 +901,7 @@ const get_diff_days = (billDate) => {
           </div>
         </div>
 
-        <div className="col-xl-3 col-sm-6 mb-3" onClick={handleProfit} style={{ cursor: "pointer" }}>
+        <div className="col-xl-3 col-sm-6 mb-3" style={{ cursor: "pointer" }}>
           <div className="card text-white  o-hidden h-100" style={{ background: " #7B68EE" }}>
             <div className="card-body mt-3">
               <div className="mr-5 cardbox">

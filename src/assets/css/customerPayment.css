@@ -63,6 +63,8 @@
 .currency{
     border-right: 3px solid black;
     padding: 7px 10px;
+    background-color: bisque;
+
     /* padding : 10px 20px; */
 }
 
@@ -250,4 +252,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-bottom: 1rem;
     vertical-align: top;
     border-color: initial;
+}
+
+.signature{
+    /* white-space: nowrap; */
+    /* font-size: 12px; */
+}
+
+.receipt_back{
+    border: 1px solid black;
+    background-color: bisque;
+    /* width: fit-content; */
+    text-align: center;
+    /* padding: 5px 10px ; */
+}
+
+.nobreak{
+    /* white-space: nowrap; */
 }

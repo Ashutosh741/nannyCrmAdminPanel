@@ -429,11 +429,6 @@ const CustomerPaymentReceipt = () => {
     function convertNumberToWords(number) {
         const units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
         const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-      
-        if (number === 0) {
-          return 'zero';
-        }
-      
         if (number < 20) {
           return units[number];
         }
@@ -547,10 +542,15 @@ const CustomerPaymentReceipt = () => {
             <div className="col-12">
 
                 <div className="row receipt">
-                    <div className="col-6 text-start mb-4">
+                    <div className="col-4 text-start mb-4">
                         <img src = {logo} className='companyLogo img-fluid'/>
                     </div>
-                    <div className="col-6 contactNumber">
+                    <div className="col-4">
+                      <div className="receipt_back">
+                      <h6 className="mt-2">MONEY RECEIPT</h6>
+                      </div>
+                    </div>
+                    <div className="col-4 contactNumber">
                         <span>MOBILE NO : 97349-15314<br></br></span>
                         <span>70010-85855</span>
                     </div>
@@ -677,7 +677,7 @@ const CustomerPaymentReceipt = () => {
                             <span>MOBILE NO:{contactNumber}</span>
                         </div>
                         <div className="rate col-6">
-                                <span>RATE:</span>
+                                <span>RATE: <span className="fw-bold me-2">Rs</span></span>
                                 <input type="number" min="0" value={rate}/>
                         </div>
                         {/* <div className="securityMoney col-4 d-flex">
@@ -723,7 +723,7 @@ const CustomerPaymentReceipt = () => {
                         <div className="col-3"></div>
                         <div className="col-6">
                             <div className="display text-start">
-                                <span className='currency'>RS-</span>
+                                <span className='currency '>RS-</span>
                                
                                 <span className='amount'> <strong>{generatedBill}</strong>/-</span>
                                 
@@ -735,13 +735,13 @@ const CustomerPaymentReceipt = () => {
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>CUSTOMER SIGNATURE</span>
+                        <h6 className="signature">CUSTOMER SIGNATURE</h6>
                     </div>
                     <div className="col-6 text-center mb-2">
                         <div className="line">
                             <hr></hr>
                         </div>
-                        <span>FOR: JOY GURU JANAKALYAN TRUST & SERVICE</span>
+                        <h6 className="signature">FOR: JOY GURU JANAKALYAN TRUST & SERVICE</h6>
                     </div>
                 </div>
 

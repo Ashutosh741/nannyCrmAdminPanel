@@ -49,15 +49,35 @@ function CustomerRegister() {
   const [customerSpeak, setCustomerSpeak] = useState([]);
   const [forService, setForService] = useState("");
   const [file, setFile] = useState(null);
-  const [sameAddress, setSameAddress] = useState(false);
+  const [sameAddress, setSameAddress] = useState(true);
   // const [aadharCardNumber,setAadharCardNumber] = useState('');
   // const [aadharCardImage,setAadharCardImage] = useState(null);
   const [idCardImage,setIdCardImage] = useState(null);  
   const[casteCategory,setCasteCategory] = useState('')
   const [baseRate,setBaseRate] = useState('');
   const [workinglocation, setWorkingLocation] = useState("");
-
-
+  const [isChecked, setIsChecked] = useState(false);
+  const [showCooking, setShowCooking] = useState(false);
+  const [showHousekeeping, setShowHousekeeping] = useState(false);
+  const [patientGender,setPatientGender] = useState('');
+  const [patientName,setPatientName] = useState('');
+  const [patientFather,setPatientFather] = useState('');
+  const [patientAddress,setPatientAddress] = useState('')
+  const [patientNumber,setPatientNumber] = useState('');
+  const [patientDOB,setPatientDOB] = useState('');
+  const [patientCategory,setPatientCategory]= useState('');
+  const [patientService,setPatientService] = useState('');
+  const [childName,setChildName] = useState('');
+  const [childMother,setChildMother] = useState('');
+  const [childAddress,setChildAddress] = useState('');
+  const [childNumber,setChildNumber] = useState('');
+  const [childDOB,setChildDOB]= useState('');
+  const [childCategory,setChildCategory] = useState('');
+  const [childService,setChildService] = useState('');
+  const [totalPerson,setTotalPerson] = useState('');
+  const [dayTiming,setDayTiming] = useState('');
+  const [nightTiming,setNightTiming] = useState('');
+  const [totalRoom,setTotalRoom] = useState('');
   const navigate = useNavigate();
 
   const resetForm = () => {
@@ -207,9 +227,25 @@ function CustomerRegister() {
     formData.append("baseRate",baseRate);
     formData.append("workinglocation", workinglocation);
     formData.append("forService", forService);
-
-
-
+    formData.append('patientGender',patientGender);
+    formData.append('patientName',patientName);
+    formData.append('patientFather',patientFather);
+    formData.append('patientAddress',patientAddress);
+    formData.append('patientNumber',patientNumber);
+    formData.append('patientDOB',patientDOB);
+    formData.append('patientCategory',patientCategory);
+    formData.append('patientService',patientService);
+    formData.append('childName',childName);
+    formData.append('childMother',childMother);
+    formData.append('childAddress',childAddress);
+    formData.append('childNumber',childNumber);
+    formData.append('childDOB',childDOB);
+    formData.append('childCategory',childCategory);
+    formData.append('childService',childService);
+    formData.append('totalPerson',totalPerson);
+    formData.append('dayTiming',dayTiming);
+    formData.append('nightTiming',nightTiming);
+    formData.append('totalRoom',totalRoom);
 
     axios
       .post(`${URL}/customerreg`, formData, {
@@ -262,29 +298,86 @@ function CustomerRegister() {
       getAge(dateOfBirth);
     },[dateOfBirth])
 
+  //   useEffect(()=>{
+  //     if (sameAddress === true) {
+  //       setPermanentAddress(presentAddress);
+  //       setPermanentVill(vill);
+  //       setPermanentStreet(street);
+  //       setPermanentLandmark(landmark);
+  //       setPermanentPost(post);
+  //       setPermanentDistrict(district);
+  //       setPermanentState(state);
+  //       setPermanentPin(pin);
+  //     } 
+  //   },[presentAddress,vill,street,landmark,post,district,state,pin])
 
-  const handleCheckAddress = () => {
-    setSameAddress(!sameAddress);
-    console.log("same Address", sameAddress);
-    if (sameAddress === true) {
-      setPermanentAddress(presentAddress);
-      setPermanentVill(vill);
-      setPermanentStreet(street);
-      setPermanentLandmark(landmark);
-      setPermanentPost(post);
-      setPermanentDistrict(district);
-      setPermanentState(state);
-      setPermanentPin(pin);
-    } else {
-      setPermanentAddress("");
-      setPermanentVill("");
-      setPermanentStreet("");
-      setPermanentLandmark("");
-      setPermanentPost("");
-      setPermanentDistrict("");
-      setPermanentState("");
-      setPermanentPin("");
-    }
+  // const handleCheckAddress = () => {
+  //   setSameAddress(!sameAddress);
+  //   console.log("same Address", sameAddress);
+  //   if (sameAddress === true) {
+  //     setPermanentAddress(presentAddress);
+  //     setPermanentVill(vill);
+  //     setPermanentStreet(street);
+  //     setPermanentLandmark(landmark);
+  //     setPermanentPost(post);
+  //     setPermanentDistrict(district);
+  //     setPermanentState(state);
+  //     setPermanentPin(pin);
+  //   } else {
+  //     setPermanentAddress("");
+  //     setPermanentVill("");
+  //     setPermanentStreet("");
+  //     setPermanentLandmark("");
+  //     setPermanentPost("");
+  //     setPermanentDistrict("");
+  //     setPermanentState("");
+  //     setPermanentPin("");
+  //   }
+  // };
+
+  
+    useState(()=>{
+      if (isChecked) {
+        setPermanentAddress(presentAddress);
+        setPermanentVill(vill);
+        setPermanentStreet(street);
+        setPermanentLandmark(landmark);
+        setPermanentPost(post);
+        setPermanentDistrict(district);
+        setPermanentState(state);
+        setPermanentPin(pin);
+      }
+    },[isChecked])
+
+    const handleCheckAddress = () => {
+      setSameAddress(!sameAddress);
+      console.log("same Address", sameAddress);
+      if (sameAddress === true) {
+        setPermanentAddress(presentAddress);
+        setPermanentVill(vill);
+        setPermanentStreet(street);
+        setPermanentLandmark(landmark);
+        setPermanentPost(post);
+        setPermanentDistrict(district);
+        setPermanentState(state);
+        setPermanentPin(pin);
+      } else {
+        setPermanentAddress("");
+        setPermanentVill("");
+        setPermanentStreet("");
+        setPermanentLandmark("");
+        setPermanentPost("");
+        setPermanentDistrict("");
+        setPermanentState("");
+        setPermanentPin("");
+      }
+    };
+
+  const handleChecked = () => {
+    setIsChecked(!isChecked);
+
+    // If the checkbox is checked, copy Present Address to Permanent Address
+
   };
 
   return (
@@ -420,7 +513,7 @@ function CustomerRegister() {
               </Col>
               <Col md="4">
                   <FormGroup>
-                    <label>Base Rate</label>
+                    <label>Monthly Rate</label>
                     <input
                       type="number"
                       name="baseRate"
@@ -474,7 +567,12 @@ function CustomerRegister() {
                     className="form-control form-select"
                     value={forService}
                     name="forService"
-                    onChange={(e) => setForService(e.target.value)}
+                    onChange={(e) => {
+                      const selectedService = e.target.value;
+                      setForService(selectedService);
+                      setShowCooking(selectedService === 'Cooking' || selectedService === 'Cooking-and-housekeeping');
+                      setShowHousekeeping(selectedService === 'Housekeeping' || selectedService === 'Cooking-and-housekeeping');
+                    }}
                     required
                   >
                     <option value="">Select</option>
@@ -490,6 +588,91 @@ function CustomerRegister() {
                   </select>
                 </FormGroup>
               </Col>
+              {showCooking && (
+                  <>
+                <Col md = '4'>
+                <FormGroup>
+                  <label className="mb-0">Cooking :</label>
+                  <div className="d-flex gap-3 align-items-center">
+                  <div className="option">
+                  <input className="me-1" type = "checkbox"/>
+                  <label>Breakfast</label>
+                  </div>
+                  <div className="option">
+                  <input  className="me-1"  type = "checkbox"/>
+                  <label>Lunch</label>
+                  </div>
+                  <div className="option">
+                  <input  className="me-1"  type = "checkbox"/>
+                  <label>Dinner</label>
+                  </div>
+                  </div>
+                  </FormGroup>
+              </Col>
+              <Col md = '4'>
+              <label>Total Person</label>
+
+                <FormGroup>
+                  <input className="bg-white form-control"
+                      value={totalPerson}
+                      onChange={(e) => setTotalPerson(e.target.value)} type= "number"/>
+                </FormGroup>
+              </Col>
+              <Col md = '4'>
+                <FormGroup>
+                  <label>Timing</label>
+                  <div className="d-flex gap-3 align-items-center">
+                  <div className="option">
+                  <label>Day</label>
+                  <input className="ps-2 form-control" value = {dayTiming} onChange={(e)=>setDayTiming(e.target.value)} type = "time"/>
+                  </div>
+                  <div className="option">
+                  <label>Night</label>
+                  <input  className="ps-2 form-control"  value = {nightTiming} onChange={(e)=>setNightTiming(e.target.value)}  type = "time"/>
+                  </div>
+                  </div>
+                </FormGroup>
+              </Col>
+                  </>
+              )}
+
+              {showHousekeeping && (
+                <>
+                              <Col md = '4'>
+                <FormGroup>
+                  <label className="mb-0">House Keeping :</label>
+                  <div className="d-flex gap-3 align-items-center">
+                  <div className="option">
+                  <input className="me-1" type = "checkbox"/>
+                  <label>Clining</label>
+                  </div>
+                  <div className="option">
+                  <input  className="me-1"  type = "checkbox"/>
+                  <label>Dusting</label>
+                  </div>
+                  <div className="option">
+                  <input  className="me-1"  type = "checkbox"/>
+                  <label>Washing</label>
+                  </div>
+                  </div>
+                  </FormGroup>
+              </Col>
+              <Col md = '4'>
+              <label>Total Room</label>
+                <FormGroup>
+                  <input className="bg-white form-control" value = {totalRoom} onChange={(e)=>setTotalRoom(e.target.value)} type= "number"></input>
+                </FormGroup>
+              </Col>
+              <Col md = '4'>
+              <label>Total Family Member</label>
+
+                <FormGroup>
+                  <input className="bg-white form-control" value = {totalPerson} onChange={(e)=>setTotalPerson(e.target.value)} type= "number"></input>
+                </FormGroup>
+              </Col>
+                </>
+              )}
+
               <Col md="4">
                   <FormGroup>
                     <label for="idProof">Working Location:</label>
@@ -608,29 +791,33 @@ function CustomerRegister() {
               </Col>
 
               <Col md="12">
-                <div
-                  className="input-group mt-3  shadow rounded-3 p-3"
-                  style={{ background: "#0747a6" }}
-                  onClick={handleCheckAddress}
-                >
-                  <input
-                    type="checkbox"
-                    id="checkaddress"
-                    className="me-2"
-                    style={{ cursor: "pointer" }}
-                  />
-                  <label
-                    htmlFor="checkaddress"
-                    className="m-0 text-white"
-                    style={{ cursor: "pointer" }}
+                  <div
+                    className="input-group mt-3  shadow rounded-3 p-3"
+                    style={{ background: "#0747a6" }}
+                    // onClick={handleCheckAddress}
                   >
-                    If Present Address were same as Permanent Address then Click
-                    the Checkbox{" "}
-                  </label>
-                </div>
-              </Col>
+                    <input
+                      type="checkbox"
+                      id="checkaddress"
+                      className="me-2"
+                      style={{ cursor: "pointer" }}
+                    onClick={handleCheckAddress}
+
+                    />
+                    <label
+                      htmlFor="checkaddress"
+                      className="m-0 text-white"
+                      // style={{ cursor: "pointer" }}
+                    // onClick={handleCheckAddress}
+
+                    >
+                      If Present Address were same as Permanent Address then
+                      Click the Checkbox{" "}
+                    </label>
+                  </div>
+                </Col>
               <Col md="12">
-                <h3 className="">Permanenet Address</h3>
+                <h3 className="">Permanent Address</h3>
               </Col>
               <Col md="4">
                 <FormGroup>
@@ -1035,6 +1222,225 @@ function CustomerRegister() {
                   </select>
                 </FormGroup>
               </Col>
+              <Col md ='12'>
+                <h3>Patient Status</h3>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label htmlFor="gender">Gender:</label>
+
+                  <select
+                    className="form-control form-select"
+                    value={patientGender}
+                    onChange={(e) => setPatientGender(e.target.value)}
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                  </select>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Name:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={patientName}
+                    required
+                    onChange={(e) => setPatientName(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Father's / Husband Name:</label>
+                  <input
+                    type="text"
+                    value={patientFather}
+                    className="form-control"
+                    required
+                    onChange={(e) => setPatientFather(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Working Address:</label>
+                  <input
+                    type="text"
+                    value={patientAddress}
+                    className="form-control"
+                    required
+                    onChange={(e) => setPatientAddress(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Mobile No</label>
+                  <input
+                    type="number"
+                    value={patientNumber}
+                    className="form-control"
+                    required
+                    onChange={(e) => setPatientNumber(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="dateOfBirth">Date of Birth:</label>
+                    <input
+                      type="date"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      className="form-control"
+                      value={patientDOB}
+                      onChange={(e) => setPatientDOB(e.target.value)}
+                      required
+
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                <FormGroup>
+                  <label htmlFor="gender">Category:</label>
+
+                  <select
+                    className="form-control form-select"
+                    value={patientCategory}
+                    onChange={(e) => setPatientCategory(e.target.value)}
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="M">Medical</option>
+                    <option value="F">Surgical</option>
+                  </select>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label htmlFor="gender">Attend Service</label>
+
+                  <select
+                    className="form-control form-select"
+                    value={patientService}
+                    onChange={(e) => setPatientService(e.target.value)}
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="M">Day</option>
+                    <option value="F">Night</option>
+                  </select>
+                </FormGroup>
+              </Col>
+              <Col md = '12'>
+                <h3>Child Status</h3>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Child Name</label>
+                  <input
+                    type="text"
+                    value={childName}
+                    className="form-control"
+                    required
+                    onChange={(e) => setChildName(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Baby of Mothers Name</label>
+                  <input
+                    type="text"
+                    value={childMother}
+                    className="form-control"
+                    required
+                    onChange={(e) => setChildMother(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    value={childAddress}
+                    className="form-control"
+                    required
+                    onChange={(e) => setChildAddress(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label>Mobile No</label>
+                  <input
+                    type="number"
+                    value={childNumber}
+                    className="form-control"
+                    required
+                    onChange={(e) => setChildNumber(e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                  <FormGroup>
+                    <label htmlFor="dateOfBirth">Date of Birth:</label>
+                    <input
+                      type="date"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      className="form-control"
+                      value={childDOB}
+                      onChange={(e) => setChildDOB(e.target.value)}
+                      required
+
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                <FormGroup>
+                  <label htmlFor="gender">Category:</label>
+
+                  <select
+                    className="form-control form-select"
+                    value={childCategory}
+                    onChange={(e) => setChildCategory(e.target.value)}
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="M">Medical</option>
+                    <option value="F">Surgical</option>
+                  </select>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <label htmlFor="gender">Attend Service</label>
+
+                  <select
+                    className="form-control form-select"
+                    value={childService}
+                    onChange={(e) => setChildService(e.target.value)}
+                    id="gender"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="M">Day</option>
+                    <option value="F">Night</option>
+                  </select>
+                </FormGroup>
+              </Col>
+
               <Col md="12">
                 <div className="mt-3">
                   <button type="submit" className="btn bg-primary text-white">
