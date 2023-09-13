@@ -539,7 +539,7 @@ const AyaPaymentReceipt = () => {
                         </div>
                         </div>
                         <div className="col-6">
-                        <div className="paymentMode d-flex">
+                        <div className="paymentMode fw-bold d-flex">
                             <span>PAYMENT MODE : </span>
                         <select className="form-select options" aria-label="Default select example"   onChange={(e) => setPaymentMode(e.target.value)} value = {paymentMode} required>
                             {/* <option value = "select">select</option> */}
@@ -557,12 +557,12 @@ const AyaPaymentReceipt = () => {
                         <>
                         <div className="col-12 row-3 d-flex mb-2">
                         <div className="address col-6">
-                            <span>ADDRESS: {presentAddress}</span>
+                            <span>ADDRESS: <strong>{presentAddress}</strong></span>
                         </div>
                         <div className="col-6">
                       <div className="paymentMode d-flex">
                           <span>UPI:</span>
-                          <select className="form-select options" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
+                          <select className="form-select options fw-bold" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
                           <option selected>select</option>
                           <option value="paytm">PAYTM</option>
                           <option value="gpay">GPAY</option>
@@ -590,7 +590,7 @@ const AyaPaymentReceipt = () => {
                       <div className="col-12 row-3 mb-2">
                       <div className="transactionId">
                           <span>TRANSACTION NO:</span>
-                          <input type="text" value ={transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
+                          <input type="text" className="fw-bold" value ={transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
 
                       </div>
                       </div>
@@ -607,7 +607,7 @@ const AyaPaymentReceipt = () => {
                       (
                     <div className="col-12 row-3 mb-2">
                         <div className="address">
-                            <span>ADDRESS:{presentAddress}</span>
+                            <span>ADDRESS:<strong>{presentAddress}</strong></span>
                         </div>
                     </div> 
                       )
@@ -632,7 +632,7 @@ const AyaPaymentReceipt = () => {
                     </div>
                     <div className="col-12 row-5 mb-2">
                         <div className="mobile col-6">
-                            <span>MOBILE NO:{contactNumber}</span>
+                            <span>MOBILE NO:<strong>{contactNumber}</strong></span>
                         </div>
                         <div className="rate col-6">
                                 <span>RATE: <span className="fw-bold me-2">Rs</span></span>
@@ -650,12 +650,12 @@ const AyaPaymentReceipt = () => {
                         </div> */}
                         <div className="duration col-6">
                             <label required>FROM DATE:
-                            <input type="text" value = {fromDate} onChange={(e)=>setToDate(e.target.value)}/>
+                            <input type="text" className="fw-bold" value = {fromDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
                         <div className="to col-6">
                             <label required>TO DATE:
-                            <input type="text" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
+                            <input type="text" className="fw-bold" value = {toDate} onChange={(e)=>setToDate(e.target.value)}/>
                             </label>
                         </div>
 
@@ -664,7 +664,7 @@ const AyaPaymentReceipt = () => {
                     <div className="col-12 row-6 mb-2">
                     <div className="leave col-6">
                           <label>LEAVE :  
-                            <input value = {leaveTaken} min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
+                            <input value = {leaveTaken} className="fw-bold" min = "0" type = "number" onChange={(e) => setLeaveTaken(e.target.value)} ></input>
                           </label>
                         </div>
                         <div className="total col-6">
@@ -674,7 +674,7 @@ const AyaPaymentReceipt = () => {
 
                     <div className="col-12 row-7 mb-2">
                         <div className="amountInWord">
-                            <span>TOTAL AMOUNT (IN WORDS): {convertNumberToWords(generatedBill)}</span>
+                            <span>TOTAL AMOUNT (IN WORDS):<strong> {convertNumberToWords(generatedBill)}</strong></span>
                         </div>
                     </div>
                     <div className="col-12 row text-center mt-3 mb-5">

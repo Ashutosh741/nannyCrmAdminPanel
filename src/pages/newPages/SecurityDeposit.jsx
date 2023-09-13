@@ -575,7 +575,7 @@ const SecurityDeposit = () => {
                             <div className="col-6">
                             <div className="paymentMode d-flex">
                                 <span>PAYMENT MODE : </span>
-                            <select className="form-select options" aria-label="Default select example"   onChange={(e) => setPaymentMode(e.target.value)} value = {paymentMode} required>
+                            <select className="form-select options fw-bold" aria-label="Default select example"   onChange={(e) => setPaymentMode(e.target.value)} value = {paymentMode} required>
                                 {/* <option value = "select">select</option> */}
                                 <option value="cash">CASH</option>
                                 <option value="online">ONLINE</option>
@@ -591,12 +591,12 @@ const SecurityDeposit = () => {
                             <>
                             <div className="col-12 row-3 d-flex mb-2">
                             <div className="address col-6">
-                                <span>ADDRESS: {presentAddress}</span>
+                                <span>ADDRESS: <strong>{presentAddress}</strong></span>
                             </div>
                             <div className="col-6">
                           <div className="paymentMode d-flex">
                               <span>UPI:</span>
-                              <select className="form-select options" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
+                              <select className="form-select options fw-bold" aria-label="Default select example" onChange={(e) => setUpi(e.target.value)} value = {upi} required>
                               <option selected>select</option>
                               <option value="paytm">PAYTM</option>
                               <option value="gpay">GPAY</option>
@@ -624,7 +624,7 @@ const SecurityDeposit = () => {
                           <div className="col-12 row-3 mb-2">
                           <div className="transactionId">
                               <span>TRANSACTION NO:</span>
-                              <input type="text" value ={transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
+                              <input type="text" className="fw-bold" value ={transactionId} onChange={(e)=>setTransactionId(e.target.value)}/>
     
                           </div>
                           </div>
@@ -641,7 +641,7 @@ const SecurityDeposit = () => {
                           (
                         <div className="col-12 row-3 mb-2">
                             <div className="address">
-                                <span>ADDRESS:{presentAddress}</span>
+                                <span>ADDRESS:<strong>{presentAddress}</strong></span>
                             </div>
                         </div> 
                           )
@@ -655,7 +655,7 @@ const SecurityDeposit = () => {
                         </div>
                         <div className="col-12 row-5 mb-2">
                             <div className="mobile col-6">
-                                <span>MOBILE NO:{contactNumber}</span>
+                                <span>MOBILE NO:<strong>{contactNumber}</strong></span>
                             </div>
                             <div className="mobile col-6">
                                 <span>SECURITY DEPOSIT RS:<strong>{securityAmount}</strong></span>
@@ -664,7 +664,7 @@ const SecurityDeposit = () => {
     
                         <div className="col-12 row-7 mb-2">
                             <div className="amountInWord">
-                                <span>TOTAL AMOUNT (IN WORDS): {convertNumberToWords(securityAmount)}</span>
+                                <span>TOTAL AMOUNT (IN WORDS): <strong>{convertNumberToWords(securityAmount)}</strong></span>
                             </div>
                         </div>
                         <div className="col-12 row text-center mt-3 mb-5">
